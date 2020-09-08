@@ -1,0 +1,72 @@
+{
+
+  "INVALID_PHONE_NUMBER_KEY": "رقم الجوال غير صحيح",
+  "INVALID_MAIL_ADDRESS": "البريد الالكتروني غير صحيح",
+  "SERVER_UNREACHABLE": "غير قادر علي الوصول الي الخادم يرجي المحاولة لاحقا",
+  "REQUIRED_FIELD_ERROR_MESSAGE_KEY": "حقل مطلوب",
+  "PICK_KEY": "التقط",
+  "PRINT_KEY": "الطباعه",
+  "DELIVER_KEY": "التوصيل",
+  "PICK_PHOTOS_KEY": "اخنر صورك",
+  "AND_PRINT_KEY": "و اطبع",
+  "READ_MORE_KEY": "المزيد",
+  "PICK_N_PRINT_KEY": "أسهل طريقة للاحتفاظ بذكرياتك معك ، اختر صورك المفضلة من مكتبة الصور الخاصة بك ، وسنطبعها ونقوم بتجميعها لك في لمح البصر",
+  "CHOOSE_PACKAGE_KEY": "اختر باقه",
+  "WHAT_WE_OFFER": "نحن نقدم مجموعة واسعة من الإطارات الجاهزة\nحدد مجموعة واحدة لك",
+  "PACKAGE_SIZE": "{} صور",
+  "PRICE_TEXT": "{} جنيه",
+  "SAVE_TEXT": "وفر {} جنيه",
+  "GO_LABEL": "انطلق",
+  "REQUEST_EXTRA_PACKAGES_THAN": "اكثر من {} قطع",
+  "CHECKOUT_EXTRA_RATE": " مشاهده عروضنا الخاصه",
+  "SELECT_PHOTOS_TO_BE_PRINTED": "اختر الصور التي تريد طبعها",
+  "PICK_YOUR_PHOTOS_KEY": "اختر صورك",
+  "BLACK_FRAME": "اطار اسود",
+  "WHITE_FRAME": "اطار ابيض",
+  "SELECT_FRAME_OPTIONS": "اختر شكل الاطار",
+  "WITH_PATH" : "مع تحديد",
+  "SAVE_ORDER_AND_CONTINUE_LATER": "احفظ طلبك و استكمل لاحقا",
+  "PROCEED_TO_CHECKOUT": "اكمل للدفع",
+  "SAVE_ORDER_AND_CONTINUE_SHOPPING": "احفظ طلبك و تابع التسوق",
+  "CHOOSE_DIFFERENT_SET": "اختر مجموعه اخرى",
+  "SELECT_YOUR_PHOTOS": "اختر صورك",
+  "SELECT_YOUR_PHOTOS_DESCRIPTION": "حدد الصور التي سنستخدمها في مجموعات الإطارات",
+  "UPLOAD_YOUR_OWN_LABEL": "اختر من هاتفك",
+  "OR_LABEL": "او",
+  "PICK_FROM_SOCIAL_MEDIA": "اختر من الفيسبوك او انستجرام",
+  "UPLOAD_YOUR_MEMORY": "ارفع اروع الزكريات",
+  "INSTAGRAM_LABEL": "انستجرام",
+  "SELECT_FROM_FACEBOOK": "اختر من صور الفيسبوك",
+  "SELECT_FROM_INSTAGRAM": "اختر من صور انستجرام",
+  "FACEBOOK_LABEL": "فيسبوك",
+  "CAPTURE_IMAGE_USING": "التقاط الصوره عن طريق",
+  "UNABLE_TO_READ_IMAGE": "عفوا لم نستطع قراءه الصوره يرجي اختيار الصوره مجددا"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+

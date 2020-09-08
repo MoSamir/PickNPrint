@@ -1,0 +1,61 @@
+{
+
+  "SERVER_UNREACHABLE": "Unable to communicate with server , please try again in awhile",
+  "INVALID_MAIL_ADDRESS": "Invalid Email address",
+  "INVALID_PHONE_NUMBER_KEY": "Invalid phone number",
+  "REQUIRED_FIELD_ERROR_MESSAGE_KEY": "Required field",
+  "PICK_KEY": "Pick",
+  "PRINT_KEY": "Print",
+  "DELIVER_KEY": "Deliver",
+  "PICK_PHOTOS_KEY": "Pick Photos ...",
+  "AND_PRINT_KEY": "& Print",
+  "READ_MORE_KEY": "Read more",
+  "PICK_N_PRINT_KEY": "  the easiest way to keep your memories with you, pick your favorite photos from you photo library, and we will print it and delver it for you in a glance",
+  "CHOOSE_PACKAGE_KEY": "Choose package",
+  "WHAT_WE_OFFER":"we’r offering a wide range of ready made frames\nselect the one suite you",
+  "PACKAGE_SIZE": "{} Packs",
+  "PRICE_TEXT": "{} LE",
+  "SAVE_TEXT": "save {} LE",
+  "GO_LABEL": "GO",
+  "REQUEST_EXTRA_PACKAGES_THAN": "More than {} Packages",
+  "CHECKOUT_EXTRA_RATE": "Check our special rates",
+  "SELECT_PHOTOS_TO_BE_PRINTED": "Select the photos you would like to print",
+  "PICK_YOUR_PHOTOS_KEY": "Pick your photos",
+  "BLACK_FRAME": "Black frame",
+  "WHITE_FRAME": "White frame",
+  "SELECT_FRAME_OPTIONS": "Select frame options",
+  "WITH_PATH" : "With path",
+  "SAVE_ORDER_AND_CONTINUE_LATER": "Save your order & Continue later",
+  "PROCEED_TO_CHECKOUT": "Proceed to checkout",
+  "SAVE_ORDER_AND_CONTINUE_SHOPPING": "Save order & Continue shopping",
+  "CHOOSE_DIFFERENT_SET": "Choose different set",
+  "SELECT_YOUR_PHOTOS": "Select your photos",
+  "SELECT_YOUR_PHOTOS_DESCRIPTION": "Select the Photos we will use on the frame sets",
+  "UPLOAD_YOUR_OWN_LABEL": "Upload Your Own",
+  "OR_LABEL": "Or",
+  "PICK_FROM_SOCIAL_MEDIA": "Pick from facebook Or Instagram",
+  "UPLOAD_YOUR_MEMORY": "Upload your best memories",
+  "INSTAGRAM_LABEL": "Instagram",
+  "FACEBOOK_LABEL": "Facebook",
+  "SELECT_FROM_INSTAGRAM": "Select from your Instagram Images",
+  "SELECT_FROM_FACEBOOK": "Select from your Facebook Images",
+  "CAPTURE_IMAGE_USING": "Pick image from",
+  "UNABLE_TO_READ_IMAGE": "Unable to read the image please try again"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
