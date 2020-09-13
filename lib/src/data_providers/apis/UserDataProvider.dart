@@ -119,7 +119,6 @@ class UserDataProvider{
         Constants.SHARED_PREFERENCE_USER_PASSWORD, encryptPassword);
   }
 
-
   static Future<UserViewModel> getUser() async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
     var userJson =
@@ -133,6 +132,19 @@ class UserDataProvider{
     }
   }
 
-
-
+  static Future<ResponseViewModel<UserViewModel>> registerNewUser(UserViewModel userModel, String userPassword) async{
+    
+    await Future.delayed(Duration(seconds: 2),(){});
+    return ResponseViewModel<UserViewModel>(
+      isSuccess: true,
+      responseData: UserViewModel(
+        userToken: '',
+        userId: 1,
+        userName: 'Username',
+        userPhoneNumber: '+201013615170',
+        userMail: 'mohamedsamir731@gmail.com'
+      ),
+    );
+    
+  }
 }

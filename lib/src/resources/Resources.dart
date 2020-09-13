@@ -14,6 +14,7 @@ class Resources{
   static const String USER_PLACEHOLDER_IMG = "assets/images/user_icon_img.png";
   static const String FACEBOOK_LOGO_IMG = "assets/images/facebook_icon.png";
   static const String INSTAGRAM_LOGO_IMG = "assets/images/instgram_icon.png";
+  static const String LOGO_BANNER_IMG = "assets/images/login_background.png";
 
 
 

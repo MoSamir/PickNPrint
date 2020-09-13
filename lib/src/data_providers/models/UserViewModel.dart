@@ -1,9 +1,10 @@
 class UserViewModel {
 
-  var userId , userName , userMail , userPhoneNumber , userToken;
+  var userId , userName , userMail , userPhoneNumber , userToken , userProfileImage;
 
 
-  UserViewModel({this.userId, this.userName, this.userMail, this.userPhoneNumber , this.userToken});
+
+  UserViewModel({this.userId, this.userName, this.userMail, this.userPhoneNumber , this.userProfileImage ,this.userToken});
 
   static UserViewModel fromAnonymous(){
     return UserViewModel(
@@ -12,8 +13,8 @@ class UserViewModel {
   }
 
 
-  static bool isAnonymous(UserViewModel user){
-    return user.userId == -1;
+   bool isAnonymous(){
+    return userId == -1;
   }
 
   Map<String,dynamic> toJson() {

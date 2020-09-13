@@ -94,5 +94,9 @@ class Repository {
   static addToCart({PackageModel advertisementViewModel}) {}
   static removeFromCart({PackageModel advertisementViewModel}) {}
 
+  static Future<ResponseViewModel<UserViewModel>>registerNewUser({UserViewModel userModel, String userPassword}) async{
+    return UserDataProvider.registerNewUser(userModel,  userPassword);
+  }
+
 
 }

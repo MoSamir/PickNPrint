@@ -6,6 +6,8 @@ class LocalKeys{
   static const String INVALID_MAIL_ADDRESS = "INVALID_MAIL_ADDRESS";
   static const String INVALID_PHONE_NUMBER_KEY = "INVALID_PHONE_NUMBER_KEY";
   static const String REQUIRED_FIELD_ERROR_MESSAGE_KEY = "REQUIRED_FIELD_ERROR_MESSAGE_KEY";
+  static const String COMING_SOON = "COMING_SOON";
+
 
  //--------------------------------- HOME SCREEN ------------------------------
 
@@ -54,6 +56,71 @@ class LocalKeys{
   static const String SELECT_FROM_FACEBOOK = "SELECT_FROM_FACEBOOK";
   static const String CAPTURE_IMAGE_USING = "CAPTURE_IMAGE_USING";
   static const String UNABLE_TO_READ_IMAGE = "UNABLE_TO_READ_IMAGE";
+
+  //--------------------- LOGIN SCREEN -----------------------------------------
+
+  static const String SIGN_IN = "SIGN_IN";
+  static const String PASSWORD_LABEL = "PASSWORD_LABEL";
+  static const String MAIL_ADDRESS = "MAIL_ADDRESS";
+  static const String DONT_HAVE_ACCOUNT_YET = "DONT_HAVE_ACCOUNT_YET";
+  static const String SIGN_UP = "SIGN_UP";
+  static const String SIGN_UP_WITH_FACEBOOK = "SIGN_UP_WITH_FACEBOOK";
+  static const String FORGET_YOUR_PASSWORD = "FORGET_YOUR_PASSWORD";
+
+//------------------------ REGISTER SCAN ---------------------------------------
+
+  static const String REGISTER_NEW_ACCOUNT = "REGISTER_NEW_ACCOUNT";
+  static const String USER_NAME_LABEL = "USER_NAME_LABEL";
+  static const String USER_EMAIL_LABEL = "USER_EMAIL_LABEL";
+  static const String PHONE_NUMBER_LABEL = "PHONE_NUMBER_LABEL";
+  static const String CONFIRM_PASSWORD_LABEL = "CONFIRM_PASSWORD_LABEL";
+  static const String PASSWORDS_NOT_MATCH = "PASSWORDS_NOT_MATCH";
+
+
+//------------------------- SAVE ADDRESS --------------------------------------
+
+  static const String THANKS_LABEL = "THANKS_LABEL";
+  static const String NEW_ACCOUNT_CREATION_MESSAGE = "NEW_ACCOUNT_CREATION_MESSAGE";
+  static const String PICK_SHIPPING_ADDRESS = "PICK_SHIPPING_ADDRESS";
+  static const String SELECT_AREA_LABEL = "SELECT_AREA_LABEL";
+  static const String SELECT_CITY_LABEL = "SELECT_CITY_LABEL";
+  static const String SELECT_ADDRESS_LANDMARK = "SELECT_ADDRESS_LANDMARK";
+  static const String SELECT_BUILDING = "SELECT_BUILDING";
+  static const String SELECT_ADDRESS = "SELECT_ADDRESS";
+
+
+//----------------------- CREATE ORDER SCREEN ----------------------------------
+
+  static const String PACKAGE_SET = "PACKAGE_SET";
+  static const String WITHOUT_PATH = "WITHOUT_PATH";
+  static const String SHIPPING_FEES = "SHIPPING_FEES";
+  static const String PROMO_CODE = "PROMO_CODE";
+  static const String PROMO_CODE_HINT = "PROMO_CODE_HINT";
+  static const String SUBTOTAL_LABEL = "SUBTOTAL_LABEL";
+  static const String TOTAL_LABEL = "TOTAL_LABEL";
+  static const String PLACE_ORDER = "PLACE_ORDER";
+  static const String ORDER_DETAILS = "ORDER_DETAILS";
+  static const String PLEASE_CHECK_ORDER = "PLEASE_CHECK_ORDER";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

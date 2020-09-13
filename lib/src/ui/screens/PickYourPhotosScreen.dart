@@ -2,10 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+import 'package:picknprint/src/ui/screens/LoginScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -75,7 +79,22 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               SizedBox(height: 5,),
               Center(
                 child: GestureDetector(
-                  onTap: (){},
+                  onTap: (){
+                    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+                    } else {
+
+                      Fluttertoast.showToast(
+                          msg: (LocalKeys.COMING_SOON).tr(),
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    }
+                  },
                   child: Container(
                     width: MediaQuery.of(context).size.width - 32,
                     height: 45,
@@ -86,6 +105,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
                   ),
                 ),
+                // i love you 
               ),
               SizedBox(height: 5,),
               GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: (){},),

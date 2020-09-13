@@ -40,7 +40,69 @@
   "SELECT_FROM_INSTAGRAM": "Select from your Instagram Images",
   "SELECT_FROM_FACEBOOK": "Select from your Facebook Images",
   "CAPTURE_IMAGE_USING": "Pick image from",
-  "UNABLE_TO_READ_IMAGE": "Unable to read the image please try again"
+  "UNABLE_TO_READ_IMAGE": "Unable to read the image please try again",
+  "COMING_SOON": "Coming soon",
+  "SIGN_IN": "Sign In",
+  "PASSWORD_LABEL": "Password",
+  "MAIL_ADDRESS": "Email address",
+  "DONT_HAVE_ACCOUNT_YET": "Don't have account ?",
+  "SIGN_UP": "Register account",
+  "FORGET_YOUR_PASSWORD": "Forget your password ?",
+  "SIGN_UP_WITH_FACEBOOK": "Sign up using facebook",
+  "REGISTER_NEW_ACCOUNT": "Register new account",
+  "USER_NAME_LABEL": "Username",
+  "USER_EMAIL_LABEL": "Mail address",
+  "PHONE_NUMBER_LABEL": "Phone number",
+  "CONFIRM_PASSWORD_LABEL": "Confirm password",
+  "PASSWORDS_NOT_MATCH": "Passwords doesn't match",
+  "THANKS_LABEL": "Thanks",
+  "NEW_ACCOUNT_CREATION_MESSAGE": "for Creating a new Account",
+  "PICK_SHIPPING_ADDRESS": "Please select the shipping address",
+  "SELECT_AREA_LABEL": "Select City",
+  "SELECT_CITY_LABEL": "Select Area",
+  "SELECT_ADDRESS": "Select address",
+  "SELECT_BUILDING": "Building number",
+  "SELECT_ADDRESS_LANDMARK": "Address landmark",
+  "PACKAGE_SET": "Packs Set",
+  "WITHOUT_PATH": "Without Path",
+  "SHIPPING_FEES": "Shipping Fees",
+  "PROMO_CODE_HINT": "Type the code here",
+  "PROMO_CODE": "Promo Code",
+  "SUBTOTAL_LABEL": "Subtotal",
+  "TOTAL_LABEL": "Total",
+  "PLACE_ORDER": "Place the order",
+  "ORDER_DETAILS": "Order Details",
+  "PLEASE_CHECK_ORDER": "Please check your order details carefully before proceeding "
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -40,32 +40,39 @@
   "SELECT_FROM_INSTAGRAM": "اختر من صور انستجرام",
   "FACEBOOK_LABEL": "فيسبوك",
   "CAPTURE_IMAGE_USING": "التقاط الصوره عن طريق",
-  "UNABLE_TO_READ_IMAGE": "عفوا لم نستطع قراءه الصوره يرجي اختيار الصوره مجددا"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "UNABLE_TO_READ_IMAGE": "عفوا لم نستطع قراءه الصوره يرجي اختيار الصوره مجددا",
+  "COMING_SOON": "قريبا",
+  "SIGN_IN": "تسجيل دخول",
+  "PASSWORD_LABEL": "كلمه المرور",
+  "MAIL_ADDRESS": "البريد الاليكتروني",
+  "DONT_HAVE_ACCOUNT_YET": "ليس لديك حساب",
+  "SIGN_UP": "تسجيل حساب",
+  "FORGET_YOUR_PASSWORD": "نسيت كلمه المرور",
+  "SIGN_UP_WITH_FACEBOOK": "سجل هن طريق الفيسبوك",
+  "REGISTER_NEW_ACCOUNT": "تسجيل حساب جديد",
+  "USER_NAME_LABEL": "اسم المستخدم",
+  "USER_EMAIL_LABEL": "البريد الاليكتروني",
+  "PHONE_NUMBER_LABEL": "رقم الهاتف",
+  "CONFIRM_PASSWORD_LABEL": "اكد كلمه المرور",
+  "PASSWORDS_NOT_MATCH": "كلمتي المرور غير متطابقين",
+  "THANKS_LABEL": "شكرا",
+  "NEW_ACCOUNT_CREATION_MESSAGE": "لتسجيل حساب جديد",
+  "PICK_SHIPPING_ADDRESS": "يرجي اختيار مكان التوصيل",
+  "SELECT_AREA_LABEL": "اختر منطقه",
+  "SELECT_CITY_LABEL": "اختر مدينه",
+  "SELECT_ADDRESS": "عنوانك",
+  "SELECT_BUILDING": "رقم المبنى",
+  "SELECT_ADDRESS_LANDMARK": "علامه مميزه",
+  "PACKAGE_SET": "مجموعات",
+  "WITHOUT_PATH": "بدون اطار",
+  "SHIPPING_FEES": "مصاريف الشحن",
+  "PROMO_CODE_HINT": "اكتب رمز الخصم",
+  "PROMO_CODE": "بطاقه خصم",
+  "SUBTOTAL_LABEL": "بدون خصم",
+  "TOTAL_LABEL": "الاجمالي",
+  "PLACE_ORDER": "نفذ الطلب",
+  "ORDER_DETAILS": "تفاصيل الطلب",
+  "PLEASE_CHECK_ORDER": "يرجي مراجعه الطلب جيدا قبل الاستكمال"
 
 }
 

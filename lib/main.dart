@@ -27,7 +27,6 @@ void main() async{
   Constants.CURRENT_LOCALE = "ar";
 
 
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black12,
     statusBarBrightness: Brightness.dark,
