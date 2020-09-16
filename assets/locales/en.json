@@ -17,7 +17,7 @@
   "PRICE_TEXT": "{} LE",
   "SAVE_TEXT": "save {} LE",
   "GO_LABEL": "GO",
-  "REQUEST_EXTRA_PACKAGES_THAN": "More than {} Packages",
+  "REQUEST_EXTRA_PACKAGES_THAN": "More than {} Packages ?",
   "CHECKOUT_EXTRA_RATE": "Check our special rates",
   "SELECT_PHOTOS_TO_BE_PRINTED": "Select the photos you would like to print",
   "PICK_YOUR_PHOTOS_KEY": "Pick your photos",
@@ -72,7 +72,18 @@
   "TOTAL_LABEL": "Total",
   "PLACE_ORDER": "Place the order",
   "ORDER_DETAILS": "Order Details",
-  "PLEASE_CHECK_ORDER": "Please check your order details carefully before proceeding "
+  "PLEASE_CHECK_ORDER": "Please check your order details carefully before proceeding ",
+  "THANKS_FOR_ORDERING": "Thanks for your Order",
+  "ORDER_NUMBER": "Order Number {}",
+  "DAYS_LABEL": "Days",
+  "ORDER_WILL_BE_SHIPPED": "Order will be shipped about",
+  "CHECK_YOUR_ORDERS": "You can checked your orders",
+  "HERE_LABEL": "here",
+  "INQUIRY_HELP_MESSAGE": "for any inquiry or information call us at",
+  "START_COLLECTION": "Select collection",
+  "PRICE_START_FROM": "Starting From {} LE",
+  "BUY_NOW": "Buy Now",
+  "CREATE_NEW_PACKAGE" : "Create your Tailor made Package"
 
 
 

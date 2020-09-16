@@ -16,6 +16,7 @@ import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
+import 'package:picknprint/src/ui/screens/OrderConfirmationScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/OrderPackSizeStackWidget.dart';
@@ -101,6 +102,12 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
               }
               else if(state is OrderCreationLoadedSuccessState){
                 // Navigate to Order Confirmation
+
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderConfirmationScreen(
+                  orderNumber: state.orderNumber,
+                  orderShippingDuration: state.shippingDuration,
+                )));
+
               }
             },
             builder:  (context, state){

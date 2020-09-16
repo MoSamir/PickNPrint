@@ -102,6 +102,31 @@ class LocalKeys{
   static const String ORDER_DETAILS = "ORDER_DETAILS";
   static const String PLEASE_CHECK_ORDER = "PLEASE_CHECK_ORDER";
 
+//------------------------- THANKS FOR ORDERING SCREEN -------------------------
+
+  static const String THANKS_FOR_ORDERING = "THANKS_FOR_ORDERING";
+  static const String ORDER_NUMBER = "ORDER_NUMBER";
+  static const String DAYS_LABEL = "DAYS_LABEL";
+  static const String ORDER_WILL_BE_SHIPPED = "ORDER_WILL_BE_SHIPPED";
+  static const String CHECK_YOUR_ORDERS = "CHECK_YOUR_ORDERS";
+  static const String HERE_LABEL = "HERE_LABEL";
+  static const String INQUIRY_HELP_MESSAGE = "INQUIRY_HELP_MESSAGE";
+  static const String START_COLLECTION = "START_COLLECTION";
+  static const String PRICE_START_FROM = "PRICE_START_FROM";
+  static const String BUY_NOW = "BUY_NOW";
+  static const String CREATE_NEW_PACKAGE = "CREATE_NEW_PACKAGE";
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

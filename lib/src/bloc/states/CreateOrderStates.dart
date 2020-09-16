@@ -8,7 +8,8 @@ class OrderCreationLoadingState extends CreateOrderStates{}
 class OrderCreationInitialState extends CreateOrderStates{}
 class OrderCreationLoadedSuccessState extends CreateOrderStates{
   final String orderNumber ;
-  OrderCreationLoadedSuccessState({this.orderNumber});
+  final String shippingDuration ;
+  OrderCreationLoadedSuccessState({this.orderNumber , this.shippingDuration});
 
 }
 class OrderCreationLoadingFailureState extends CreateOrderStates{

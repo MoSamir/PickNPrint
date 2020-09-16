@@ -1,3 +1,4 @@
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,6 +97,10 @@ class Repository {
 
   static Future<ResponseViewModel<UserViewModel>>registerNewUser({UserViewModel userModel, String userPassword}) async{
     return UserDataProvider.registerNewUser(userModel,  userPassword);
+  }
+
+  static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
+    return UserDataProvider.createOrder(orderModel);
   }
 
 

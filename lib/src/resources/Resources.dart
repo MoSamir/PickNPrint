@@ -15,6 +15,8 @@ class Resources{
   static const String FACEBOOK_LOGO_IMG = "assets/images/facebook_icon.png";
   static const String INSTAGRAM_LOGO_IMG = "assets/images/instgram_icon.png";
   static const String LOGO_BANNER_IMG = "assets/images/login_background.png";
+  static const String INFORMATION_ICON_IMG = "assets/images/information_icon.png";
+  static const String INFORMATION_BANNER_IMG = "assets/images/order_information_banner.png";
 
 
 

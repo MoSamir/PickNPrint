@@ -8,11 +8,13 @@ import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 
 class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataStates>{
+
   ApplicationDataBloc(ApplicationDataStates initialState) : super(initialState);
 
 
   List<PackageModel> applicationPackages = List();
   int maxPackageSize  = 0 ;
+  String contactUsPhone = "01013615170";
 
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
@@ -146,5 +147,15 @@ class UserDataProvider{
       ),
     );
     
+  }
+
+  static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
+
+    await Future.delayed(Duration(seconds: 2),(){});
+    return ResponseViewModel<List<String>>(
+      responseData: ['123456','5'],
+      isSuccess: true,
+    );
+
   }
 }

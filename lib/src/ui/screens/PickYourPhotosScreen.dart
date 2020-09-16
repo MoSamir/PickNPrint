@@ -9,6 +9,7 @@ import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
@@ -43,81 +44,84 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: PickNPrintAppbar(hasDrawer: true,appbarColor: AppColors.black,),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                color: AppColors.offWhite,
-                padding: EdgeInsets.symmetric(vertical: 16 , horizontal: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text((LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(), style: TextStyle(
-                      fontSize: 20,
-                      color: AppColors.black,
-                    ), ),
-                    Text((LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(), style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.lightBlue,
-                    ), ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 5,),
-              frameOptionsWidget(),
-              Container(height: 170,
-                color: AppColors.white,
-                child: Center(
-                  child: getFramesList(),),
-              ),
-              SizedBox(height: 10,),
-              GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ) , onTap: (){},),
-              SizedBox(height: 5,),
-              Center(
-                child: GestureDetector(
-                  onTap: (){
-                    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-                    } else {
-
-                      Fluttertoast.showToast(
-                          msg: (LocalKeys.COMING_SOON).tr(),
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 32,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: AppColors.lightBlue,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
+      child: WillPopScope(
+        onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
+        child: Scaffold(
+          appBar: PickNPrintAppbar(hasDrawer: true,appbarColor: AppColors.black,),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  color: AppColors.offWhite,
+                  padding: EdgeInsets.symmetric(vertical: 16 , horizontal: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text((LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(), style: TextStyle(
+                        fontSize: 20,
+                        color: AppColors.black,
+                      ), ),
+                      Text((LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(), style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.lightBlue,
+                      ), ),
+                    ],
                   ),
                 ),
-                // i love you 
-              ),
-              SizedBox(height: 5,),
-              GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: (){},),
-              SizedBox(height: 5,),
-              GestureDetector(child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
-                decoration: TextDecoration.underline,
-              ), ) , onTap: (){
-                Navigator.of(context).pop();
-              },),
-              SizedBox(height: 10,),
-              PickNPrintFooter(),
-            ],
+                SizedBox(height: 5,),
+                frameOptionsWidget(),
+                Container(height: 170,
+                  color: AppColors.white,
+                  child: Center(
+                    child: getFramesList(),),
+                ),
+                SizedBox(height: 10,),
+                GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ) , onTap: (){},),
+                SizedBox(height: 5,),
+                Center(
+                  child: GestureDetector(
+                    onTap: (){
+                      if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+                      } else {
+
+                        Fluttertoast.showToast(
+                            msg: (LocalKeys.COMING_SOON).tr(),
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width - 32,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
+                    ),
+                  ),
+                  // i love you
+                ),
+                SizedBox(height: 5,),
+                GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: (){},),
+                SizedBox(height: 5,),
+                GestureDetector(child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
+                  decoration: TextDecoration.underline,
+                ), ) , onTap: (){
+                  Navigator.of(context).pop();
+                },),
+                SizedBox(height: 10,),
+                PickNPrintFooter(),
+              ],
+            ),
           ),
         ),
       ),

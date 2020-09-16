@@ -17,7 +17,7 @@
   "PRICE_TEXT": "{} جنيه",
   "SAVE_TEXT": "وفر {} جنيه",
   "GO_LABEL": "انطلق",
-  "REQUEST_EXTRA_PACKAGES_THAN": "اكثر من {} قطع",
+  "REQUEST_EXTRA_PACKAGES_THAN": "اكثر من {} قطع ؟",
   "CHECKOUT_EXTRA_RATE": " مشاهده عروضنا الخاصه",
   "SELECT_PHOTOS_TO_BE_PRINTED": "اختر الصور التي تريد طبعها",
   "PICK_YOUR_PHOTOS_KEY": "اختر صورك",
@@ -72,7 +72,26 @@
   "TOTAL_LABEL": "الاجمالي",
   "PLACE_ORDER": "نفذ الطلب",
   "ORDER_DETAILS": "تفاصيل الطلب",
-  "PLEASE_CHECK_ORDER": "يرجي مراجعه الطلب جيدا قبل الاستكمال"
+  "PLEASE_CHECK_ORDER": "يرجي مراجعه الطلب جيدا قبل الاستكمال",
+  "THANKS_FOR_ORDERING": "شكرا لطلبك",
+  "ORDER_NUMBER": "طلبك رقم {}",
+  "DAYS_LABEL": "ايام",
+  "ORDER_WILL_BE_SHIPPED": "طلبك سوف يصل خلال",
+  "CHECK_YOUR_ORDERS": "يمكنك مطالعه طلباتك من",
+  "HERE_LABEL": "هنا",
+  "INQUIRY_HELP_MESSAGE": "للاسئله او الاستفسارات يرجي الاتصال برقم",
+  "START_COLLECTION": "مجموعه جديده",
+  "PRICE_START_FROM": "السعر يبدأ من {} جنيه",
+  "BUY_NOW": "اشتري",
+  "CREATE_NEW_PACKAGE" : "اصنع طلبك بنفسك"
+
+
+
+
+
+
+
+
 
 }
 
