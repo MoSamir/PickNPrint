@@ -3,6 +3,8 @@ import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
+import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 
@@ -22,6 +24,10 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       yield* _handleOrderCreation(event);
       return ;
     }
+    if(event is SaveOrder){
+      yield* _handleSaveOrder(event);
+      return ;
+    }
 
 
   }
@@ -39,6 +45,23 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       yield OrderCreationLoadingFailureState(
         error: orderCreationResult.errorViewModel,
         failureEvent: event,
+      );
+      return ;
+    }
+  }
+
+  Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
+    yield OrderCreationLoadingState();
+    ResponseViewModel<String> saveOrderResponse = await Repository.saveOrderToLater(event.order);
+    if(saveOrderResponse.isSuccess){
+      yield OrderSavingSuccessState(
+        orderNumber: saveOrderResponse.responseData,
+      );
+      return;
+    } else {
+      OrderSavingFailedState(
+        failedEvent: event,
+        error: saveOrderResponse.errorViewModel,
       );
       return ;
     }

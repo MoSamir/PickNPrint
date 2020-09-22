@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:picknprint/src/Repository.dart';
+import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
+import 'package:picknprint/src/resources/facebookImagePicker/flutter_facebook_image_picker.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -89,7 +92,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
                           child: Center(
                             child: GestureDetector(
-                              onTap: (){},
+                              onTap: _pickImageFromFacebook,
                               child: Container(
                                 width: MediaQuery.of(context).size.width - 32,
                                 height: 55,
@@ -286,5 +289,27 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
           fontSize: 16.0
       );
     }
+  }
+
+  void _pickImageFromFacebook() async{
+
+
+    ResponseViewModel<String> fbToken = await Repository.loginWithFacebook();
+    if(fbToken.isSuccess){
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => FacebookImagePicker(
+            fbToken.responseData,
+            onDone: (items) {
+              Navigator.pop(context);
+                if(items != null && items.length > 0)
+                  Navigator.pop(context, items[0].source);
+            },
+            onCancel: () => Navigator.pop(context),
+          ),
+        ),
+      );
+    }
+
   }
 }

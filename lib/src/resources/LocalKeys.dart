@@ -7,6 +7,8 @@ class LocalKeys{
   static const String INVALID_PHONE_NUMBER_KEY = "INVALID_PHONE_NUMBER_KEY";
   static const String REQUIRED_FIELD_ERROR_MESSAGE_KEY = "REQUIRED_FIELD_ERROR_MESSAGE_KEY";
   static const String COMING_SOON = "COMING_SOON";
+  static const String BACK_LABEL = "BACK_LABEL";
+
 
 
  //--------------------------------- HOME SCREEN ------------------------------
@@ -115,6 +117,25 @@ class LocalKeys{
   static const String PRICE_START_FROM = "PRICE_START_FROM";
   static const String BUY_NOW = "BUY_NOW";
   static const String CREATE_NEW_PACKAGE = "CREATE_NEW_PACKAGE";
+
+//------------------------------ ORDER SAVING CONFIRMATION SUCCESS -------------
+
+  static const String YOUR_ORDER_SAVED = "YOUR_ORDER_SAVED";
+  static const String YOU_CAN_BACK = "YOU_CAN_BACK";
+  static const String CONTINUE_SHOPPING_LABEL = "CONTINUE_SHOPPING_LABEL";
+
+//-------------------------------- ORDER ERROR SCREEN --------------------------
+
+  static const String BACK_TO_ORDER = "BACK_TO_ORDER";
+  static const String DO_NOT_HAVE_IMAGES_YET = "DO_NOT_HAVE_IMAGES_YET";
+  static const String IMAGE_IS_TOO_SMALL = "IMAGE_IS_TOO_SMALL";
+  static const String SOME_IMAGES_IS_MISSING = "SOME_IMAGES_IS_MISSING";
+
+
+
+
+
+
 
 
 

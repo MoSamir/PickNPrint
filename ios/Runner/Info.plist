@@ -53,5 +53,26 @@
     <string>PickNPrint request access to your audio to capture your video</string>
 
 
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>fb349241062926474</string>
+            </array>
+        </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>349241062926474</string>
+    <key>FacebookDisplayName</key>
+    <string>Pick & Print</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>fbapi</string>
+        <string>fb-messenger-share-api</string>
+        <string>fbauth2</string>
+        <string>fbshareextension</string>
+    </array>
+
 </dict>
 </plist>

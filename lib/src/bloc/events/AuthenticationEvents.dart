@@ -3,10 +3,9 @@ abstract class AuthenticationEvents {}
 class AuthenticateUser extends AuthenticationEvents{}
 
 class LoginUser extends AuthenticationEvents{
-  final String userPhoneNumber ;
+  final String userEmail ;
   final String userPassword ;
-  final bool vendorLogin ;
-  LoginUser({this.userPhoneNumber , this.userPassword, this.vendorLogin});
+  LoginUser({this.userEmail , this.userPassword});
 }
 
 class Logout extends AuthenticationEvents{}

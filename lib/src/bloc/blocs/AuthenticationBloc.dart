@@ -33,7 +33,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
     }
     else if(event is LoginUser){
       yield AuthenticationLoading();
-      yield* _loginUser(event.userPhoneNumber , event.userPassword , event);
+      yield* _loginUser(event.userEmail , event.userPassword , event);
       return ;
     }
     else if(event is Logout){

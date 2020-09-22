@@ -6,8 +6,9 @@ class OrderModel {
   PackageModel orderPackage ;
   AddressViewModel orderAddress;
   bool frameWithPath , isWhiteFrame ;
+  DateTime orderTime ;
   List<String> userImages = List();
-  OrderModel({this.orderPackage , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+  OrderModel({this.orderPackage , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
 
 

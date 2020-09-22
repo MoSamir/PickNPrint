@@ -18,15 +18,24 @@ class UserViewModel {
   }
 
   Map<String,dynamic> toJson() {
-    return {};
+    return {
+    "userId": userId,
+    "userName": userName ,
+    "userMail" : userMail  ,
+    "userPhoneNumber": userPhoneNumber ,
+    "userToken": userToken ,
+    "userProfileImage": userProfileImage,
+    };
   }
 
-  static UserViewModel fromJson(decode) {
-    return UserViewModel.fromAnonymous();
+  static UserViewModel fromJson(userJson) {
+    return UserViewModel(
+      userId: userJson['userId'],
+      userName: userJson['userName'],
+      userPhoneNumber: userJson['userPhoneNumber'],
+      userMail: userJson['userMail'],
+      userToken: userJson['userToken'],
+      userProfileImage: userJson['userProfileImage'],
+    );
   }
-
-
-
-
-
 }

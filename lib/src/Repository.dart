@@ -1,8 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
-import 'package:picknprint/src/resources/Constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'data_providers/apis/ApplicationDataProvider.dart';
 import 'data_providers/apis/UserDataProvider.dart';
 import 'data_providers/models/PackageModel.dart';
@@ -13,7 +15,23 @@ class Repository {
 
   static Future<ResponseViewModel<List<PackageModel>>>
   getUserCart() async {
-    return ResponseViewModel<List<PackageModel>>(responseData: [],isSuccess: true ,errorViewModel: null);
+    return ResponseViewModel<List<PackageModel>>(responseData: [
+      PackageModel(
+          packagePrice: 150,
+          packageSaving: 20,
+          packageSize: 3
+      ),
+      PackageModel(
+          packagePrice: 150,
+          packageSaving: 20,
+          packageSize: 6
+      ),
+      PackageModel(
+          packagePrice: 150,
+          packageSaving: 20,
+          packageSize: 4
+      )
+    ],isSuccess: true ,errorViewModel: null);
   }
 
 
@@ -102,6 +120,37 @@ class Repository {
   static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
     return UserDataProvider.createOrder(orderModel);
   }
+
+  static Future<ResponseViewModel<String>> saveOrderToLater(OrderModel order) async{
+    return UserDataProvider.saveOrder(order);
+  }
+
+
+//
+  static Future<ResponseViewModel<void>> loginWithFacebook() async {
+
+    final facebookLogin = FacebookLogin();
+    await facebookLogin.logOut();
+    final result = await facebookLogin.logIn(['email','user_photos']);
+    String token = result.accessToken.token;
+
+    if(token != null){
+      return ResponseViewModel<String>(
+        isSuccess: true,
+        responseData: token,
+      );
+    } else {
+      return ResponseViewModel<String>(
+        isSuccess: false,
+        errorViewModel: ErrorViewModel(
+          errorCode: 404,
+          errorMessage: result.errorMessage,
+        ),
+      );
+    }
+
+  }
+
 
 
 }

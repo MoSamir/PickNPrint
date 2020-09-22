@@ -83,7 +83,16 @@
   "START_COLLECTION": "Select collection",
   "PRICE_START_FROM": "Starting From {} LE",
   "BUY_NOW": "Buy Now",
-  "CREATE_NEW_PACKAGE" : "Create your Tailor made Package"
+  "CREATE_NEW_PACKAGE" : "Create your Tailor made Package",
+  "YOUR_ORDER_SAVED": "Your Order Has Been Saved",
+  "YOU_CAN_BACK": "You can get back & Complete your order any time from your profile under my saved orders",
+  "CONTINUE_SHOPPING_LABEL": "Continue shopping",
+  "BACK_TO_ORDER": "Back to order",
+  "DO_NOT_HAVE_IMAGES_YET" : "If you didn’t find the chosen photos for your frame, you can save the order now and get back when you be ready :)",
+  "SOME_IMAGES_IS_MISSING": "We Miss Some Photos :)\nIt Seems That yes still didn’t Add all your Photos\nmake Sure you added all photos for all frames",
+  "IMAGE_IS_TOO_SMALL": "The Selected Image is too Small :(\nPlease make sure to select a good quality photos",
+  "BACK_LABEL": "Back"
+
 
 
 

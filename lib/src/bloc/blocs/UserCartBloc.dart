@@ -16,7 +16,7 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
 
   List<PackageModel> _userCart = List();
   List<PackageModel> _userAuctions = List();
-  BehaviorSubject<bool> _cartHasItems = BehaviorSubject<bool>();
+  BehaviorSubject<int> _cartHasItems = BehaviorSubject<int>();
 
 
   @override
@@ -25,13 +25,12 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
     super.close();
   }
 
-  Stream<bool> get cartItemsStream => _cartHasItems.stream;
+  Stream<int> get cartItemsStream => _cartHasItems.stream;
 
-  Function(bool) get cartHasItemsSink => _cartHasItems.sink.add;
+  Function(int) get cartItemsSink => _cartHasItems.sink.add;
 
   int get cartLength => _userCart != null ? _userCart.length : 0;
 
-  int get auctionsLength => _userAuctions != null ? _userAuctions.length : 0;
 
   List<PackageModel> get getCart => _userCart;
 
@@ -41,22 +40,24 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
   Stream<UserCartStates> mapEventToState(UserCartEvents event) async* {
     bool isConnected = await NetworkUtilities.isConnected();
     if (isConnected == false) {
-
-
-
       return;
     }
     if (event is AddItemToCart) {
       yield* _handleAddItemToCart(event);
       return;
-    } else if (event is LoadCartEvent) {
+    }
+    else if (event is LoadCartEvent) {
       yield* _handleCartItemsLoading(event);
       return;
-    } else if (event is RemoveItemFromCart) {
+    }
+    else if (event is RemoveItemFromCart) {
       yield* _handleRemoveItemFromCart(event);
       return;
     }
   }
+
+
+
 
   Stream<UserCartStates> _handleAddItemToCart(AddItemToCart event) async* {
     yield UserCartLoading();
@@ -66,7 +67,7 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
     if (addToCartResponse.isSuccess) {
       _userCart.clear();
       _userCart = addToCartResponse.responseData;
-      cartHasItemsSink(_userCart.length > 0);
+      cartItemsSink(_userCart.length);
       yield UserCartEventSuccess();
       return;
     } else {
@@ -85,7 +86,7 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
     if (addToCartResponse.isSuccess) {
       _userCart.clear();
       _userCart = addToCartResponse.responseData;
-      cartHasItemsSink(_userCart.length > 0);
+      cartItemsSink(_userCart.length);
       yield UserCartEventSuccess();
       return;
     } else {
@@ -101,7 +102,7 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
 
     if (cartResponse.isSuccess) {
       _userCart = cartResponse.responseData;
-      cartHasItemsSink(_userCart != null ? _userCart.length > 0 : false);
+      cartItemsSink(_userCart != null ? _userCart.length : 0);
 
       yield UserCartEventSuccess();
       return;
@@ -111,7 +112,6 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
       return;
     }
   }
-
 
   double calculateCart() {
     double advertisementTotalPrice = 0.0;
@@ -124,4 +124,9 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
   void clear() {
     _userCart.clear();
   }
+
+
+
+
+
 }

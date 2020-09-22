@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
@@ -11,11 +13,14 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
+import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/NumberedBoxWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+import '../../Repository.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -52,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldState,
       drawer: Drawer(
@@ -63,7 +69,37 @@ class _HomeScreenState extends State<HomeScreen> {
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
             child: BlocConsumer(
-              listener: (context , state){},
+              listener: (context , state){
+                if (state is ApplicationDataLoadingFailureState) {
+                  if (state.error.errorCode == HttpStatus.requestTimeout) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) {
+                          return NetworkErrorView();
+                        });
+                  } else if (state.error.errorCode ==
+                      HttpStatus.serviceUnavailable) {
+                    Fluttertoast.showToast(
+                        msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: state.error.errorMessage ?? '',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                }
+              },
               builder: (context , state){
                 return ModalProgressHUD(
                   inAsyncCall: state is ApplicationDataLoadingState,
@@ -135,52 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         else
                                           _scaffoldState.currentState.openDrawer();
                                       },
-
                                       appbarColor: AppColors.transparent,
-                                      actions: <Widget>[
-                                        Container(
-                                            color: AppColors.transparent,
-                                            width: 30, height: 30, child: FlatButton(
-                                          onPressed: (){},
-                                          padding: EdgeInsets.all(0),
-                                          child: Center(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Icon(Icons.shopping_cart , color: AppColors.white ,size: 25,),
-                                                ),
-                                                Positioned(
-                                                    top: 3,
-                                                    right: 0,
-                                                    width: 18,
-                                                    height: 18,
-                                                    //alignment: Alignment.topRight,
-                                                    child: Container(
-                                                      width: 18,
-                                                      height: 18,
-                                                      decoration: BoxDecoration(
-                                                        color: AppColors.red,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Center(child: Text('59' , textScaleFactor: 1 ,style: TextStyle(
-                                                        color: AppColors.white,
-                                                        fontSize: 12,
-                                                      ),)),
-                                                    )
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )),
-                                        Container(
-                                            color: AppColors.transparent,
-                                            width: 30, height: 30, child: IconButton(
-                                          onPressed: (){},
-                                          padding: EdgeInsets.all(0),
-                                          icon: ImageIcon(AssetImage(Resources.USER_PLACEHOLDER_IMG ) ,color: AppColors.white ,size: 25,),
-                                        )),
-                                      ],
                                     ),
                                   ),
 
