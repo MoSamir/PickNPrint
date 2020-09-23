@@ -12,7 +12,7 @@ import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
-import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
+import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
@@ -146,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               GestureDetector(
                                 onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
                                     comingFromRegistration: true,
                                   )));
                                 },

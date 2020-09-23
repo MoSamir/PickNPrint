@@ -89,6 +89,9 @@ class LocalKeys{
   static const String SELECT_ADDRESS_LANDMARK = "SELECT_ADDRESS_LANDMARK";
   static const String SELECT_BUILDING = "SELECT_BUILDING";
   static const String SELECT_ADDRESS = "SELECT_ADDRESS";
+  static const String SAVE_ADDRESS = "SAVE_ADDRESS";
+  static const String YOUR_UPDATES_ARE_SUCCESS = "YOUR_UPDATES_ARE_SUCCESS";
+
 
 
 //----------------------- CREATE ORDER SCREEN ----------------------------------
@@ -130,6 +133,18 @@ class LocalKeys{
   static const String DO_NOT_HAVE_IMAGES_YET = "DO_NOT_HAVE_IMAGES_YET";
   static const String IMAGE_IS_TOO_SMALL = "IMAGE_IS_TOO_SMALL";
   static const String SOME_IMAGES_IS_MISSING = "SOME_IMAGES_IS_MISSING";
+
+
+//------------------------------- SHIPPING ADDRESS ----------------------------
+
+
+
+  static const String SELECT_SHIPPING_ADDRESS = "SELECT_SHIPPING_ADDRESS";
+  static const String SOMEONE_WILL_CALL_YOU = "SOMEONE_WILL_CALL_YOU";
+  static const String EDIT_ADDRESS = "EDIT_ADDRESS";
+  static const String DELETE_ADDRESS = "DELETE_ADDRESS";
+  static const String SELECT_ADDRESS_AND_CONTINUE = "SELECT_ADDRESS_AND_CONTINUE";
+  static const String ADD_NEW_ADDRESS = "ADD_NEW_ADDRESS";
 
 
 

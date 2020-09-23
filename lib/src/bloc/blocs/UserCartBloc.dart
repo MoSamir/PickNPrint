@@ -57,8 +57,6 @@ class UserCartBloc extends Bloc<UserCartEvents , UserCartStates>{
   }
 
 
-
-
   Stream<UserCartStates> _handleAddItemToCart(AddItemToCart event) async* {
     yield UserCartLoading();
     ResponseViewModel<List<PackageModel>> addToCartResponse =

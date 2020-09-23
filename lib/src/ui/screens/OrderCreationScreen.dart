@@ -17,7 +17,7 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/screens/OrderConfirmationScreen.dart';
-import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
+import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/OrderPackSizeStackWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';

@@ -22,16 +22,3 @@ class AuthenticationFailed extends AuthenticationStates {
   AuthenticationFailed({this.error, this.failedEvent});
 }
 
-class WaitingNewPassword extends AuthenticationStates {
-  final String phoneNumber;
-
-  WaitingNewPassword({this.phoneNumber});
-}
-
-class PhoneVerificationSuccess extends AuthenticationStates {
-  final String verificationCode;
-
-  PhoneVerificationSuccess({this.verificationCode});
-}
-
-class ResetPasswordSuccess extends AuthenticationStates {}

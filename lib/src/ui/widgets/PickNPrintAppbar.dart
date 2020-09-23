@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
+import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
@@ -37,9 +39,9 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer(
-      bloc: BlocProvider.of<AuthenticationBloc>(context),
+      bloc: BlocProvider.of<UserBloc>(context),
       listener: (context , state){
-        if (state is AuthenticationFailed) {
+        if (state is UserDataLoadingFailedState) {
           if (state.error.errorCode == HttpStatus.requestTimeout) {
             showDialog(
                 context: context,
@@ -105,8 +107,8 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
     );
   }
 
-  Widget getUser(AuthenticationStates state) {
-    if(state is UserAuthenticated && state.currentUser.isAnonymous() == false)
+  Widget getUser(UserBlocStates state) {
+    if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false)
       return Container(
         color: AppColors.transparent,
         width: 30, height: 30, child: IconButton(
@@ -128,6 +130,8 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
         ),),
       ));
   }
+
+
   Widget getCartSize() {
     return StreamBuilder<int>(
       stream: BlocProvider.of<UserCartBloc>(context).cartItemsStream,

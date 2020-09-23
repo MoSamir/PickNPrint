@@ -25,6 +25,7 @@ import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 
 import 'OrderSavingConfirmationScreen.dart';
 import 'SelectImageSourceScreen.dart';
+import 'AddNewShippingAddressScreen.dart';
 class PickYourPhotosScreen extends StatefulWidget {
 
   final PackageModel userSelectedPackage;
@@ -137,15 +138,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                             if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
                             } else {
-                              Fluttertoast.showToast(
-                                  msg: (LocalKeys.COMING_SOON).tr(),
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0
-                              );
+
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
+                                comingFromRegistration: false,
+                              )));
+
                             }
                           },
                           child: Container(

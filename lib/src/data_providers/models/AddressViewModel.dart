@@ -3,6 +3,12 @@ class AddressViewModel {
   String addressName , buildingNumber , additionalInformation;
   AddressViewModel({this.city , this.additionalInformation , this.addressName , this.area , this.buildingNumber});
 
+  @override
+  String toString() {
+    return '${city.name} , ${area.name} , $buildingNumber $addressName';
+  }
+
+
 }
 
 class LocationModel {
@@ -10,4 +16,9 @@ class LocationModel {
   String name ;
   List<LocationModel> childLocations ;
   LocationModel({this.id, this.name , this.childLocations});
+
+
+
+
+
 }

@@ -1,14 +1,20 @@
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+
 class UserViewModel {
 
   var userId , userName , userMail , userPhoneNumber , userToken , userProfileImage;
+  UserViewModel({this.userId, this.userName, this.userMail, this.userSavedAddresses , this.userPhoneNumber , this.userProfileImage ,this.userToken});
+  List<AddressViewModel> userSavedAddresses ;
 
 
 
-  UserViewModel({this.userId, this.userName, this.userMail, this.userPhoneNumber , this.userProfileImage ,this.userToken});
+
+
 
   static UserViewModel fromAnonymous(){
     return UserViewModel(
       userId: -1,
+      userSavedAddresses: List<AddressViewModel>(),
     );
   }
 
@@ -36,6 +42,7 @@ class UserViewModel {
       userMail: userJson['userMail'],
       userToken: userJson['userToken'],
       userProfileImage: userJson['userProfileImage'],
+      userSavedAddresses: List<AddressViewModel>(),
     );
   }
 }

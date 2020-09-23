@@ -6,16 +6,28 @@ abstract class UserBlocStates{}
 
 class UserDataLoadingState extends UserBlocStates{}
 class UserDataLoadedState extends UserBlocStates{}
-
 class UserDataLoadingFailedState extends UserBlocStates{
 
-  final UserBlocEvents failureEvent ;
+  final UserBlocEvents failedEvent ;
   final ErrorViewModel error ;
-  UserDataLoadingFailedState({this.failureEvent , this.error});
+  UserDataLoadingFailedState({this.failedEvent , this.error});
 
 
 }
 
 
+class WaitingNewPassword extends UserBlocStates {
+  final String phoneNumber;
+
+  WaitingNewPassword({this.phoneNumber});
+}
+
+class PhoneVerificationSuccess extends UserBlocStates {
+  final String verificationCode;
+
+  PhoneVerificationSuccess({this.verificationCode});
+}
+
+class ResetPasswordSuccess extends UserBlocStates {}
 
 

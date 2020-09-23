@@ -41,38 +41,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
       yield* _logoutUser(event);
       return;
     }
-    else if(event is ReloadUser){
-      _handleUserReloading(event);
-    }
-    else if(event is ForgetPassword){
-      yield* _handleForgetPassword(event);
-      return ;
-    } else if(event is VerifyPhoneNumber){
-      yield* _handleVerifyPhoneNumber(event);
 
-    } else if(event is ResetPassword){
-      yield* _handleResetPassword(event);
-
-    }
   }
 
   Stream<AuthenticationStates> _checkIfUserLoggedIn() async*{
+    yield AuthenticationLoading();
+
     UserViewModel loggedInUser = await Repository.getUser();
     currentUser = loggedInUser;
     yield UserAuthenticated(currentUser: loggedInUser);
     return ;
   }
   Stream<AuthenticationStates> _loginUser(String userPhoneNumber, String userPassword ,LoginUser event) async*{
+    yield AuthenticationLoading();
     if(currentUser != null ){
       await Repository.signOut();
     }
-
     ResponseViewModel<UserViewModel> apiResponse = await Repository.signIn(userPhoneNumber:userPhoneNumber , userPassword:userPassword);
     if(apiResponse.isSuccess){
       await Repository.saveUser(apiResponse.responseData);
       await Repository.saveEncryptedPassword(userPassword);
       currentUser = apiResponse.responseData ;
-
       yield UserAuthenticated(currentUser: currentUser);
       return;
     } else {
@@ -81,80 +70,17 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
     }
   }
   Stream<AuthenticationStates> _logoutUser(event) async*{
-
+    yield AuthenticationLoading();
     ResponseViewModel responseViewModel = await Repository.signOut();
     if(responseViewModel.isSuccess){
       currentUser = UserViewModel.fromAnonymous();
       await Repository.clearCache();
-
       yield UserAuthenticated(
           currentUser: UserViewModel.fromAnonymous());
     } else {
       yield AuthenticationFailed(failedEvent: event , error: responseViewModel.errorViewModel);
     }
   }
-  Stream<AuthenticationStates> _handleForgetPassword(ForgetPassword event) async*{
-    yield AuthenticationLoading();
-    ResponseViewModel<bool> responseViewModel = await Repository.resendCodeForPhone(phoneNumber: event.phoneNumber);
-    this.phoneNumber = event.phoneNumber;
-    if(responseViewModel.isSuccess){
-      yield WaitingNewPassword(phoneNumber: event.phoneNumber);
-      return ;
-    } else {
-      yield AuthenticationFailed(error: responseViewModel.errorViewModel , failedEvent: event);
-      return ;
-    }
-  }
-
-
-
-
-
-  Stream<AuthenticationStates> _handleVerifyPhoneNumber(
-      VerifyPhoneNumber event) async* {
-    yield AuthenticationLoading();
-    ResponseViewModel<bool> responseViewModel = await Repository.verifyUser(
-        verificationCode: event.authenticationCode,
-        userPhoneNumber: event.phoneNumber);
-
-    if (responseViewModel.isSuccess) {
-      yield PhoneVerificationSuccess(
-          verificationCode: event.authenticationCode);
-      return;
-    } else {
-      yield AuthenticationFailed(
-          error: responseViewModel.errorViewModel, failedEvent: event);
-      return;
-    }
-  }
-
-  Stream<AuthenticationStates> _handleResetPassword(
-      ResetPassword event) async* {
-    yield AuthenticationLoading();
-    ResponseViewModel<bool> responseViewModel = await Repository.resetPassword(
-        phoneNumber: event.phoneNumber ,
-        verificationCode: event.verificationCode,
-        password: event.newPassword,
-        confirmPassword: event.confirmNewPassword);
-
-    if (responseViewModel.isSuccess) {
-      yield ResetPasswordSuccess();
-      return;
-    } else {
-      yield AuthenticationFailed(
-          error: responseViewModel.errorViewModel, failedEvent: event);
-      return;
-    }
-  }
-
-  void _handleUserReloading(ReloadUser event) async{
-    UserViewModel loginResponse = await Repository.makeSilentLogin();
-    if(loginResponse != null) {
-      this.currentUser = loginResponse;
-    }
-  }
-
-
 
 }
 
