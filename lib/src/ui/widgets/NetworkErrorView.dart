@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:picknprint/src/resources/Constants.dart';
+
 
 class NetworkErrorView extends StatefulWidget {
   @override
@@ -50,8 +52,6 @@ class _NetworkErrorViewState extends State<NetworkErrorView>
     });
 
     _animController.forward();
-
-
     super.initState();
   }
 

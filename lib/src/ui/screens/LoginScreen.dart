@@ -16,6 +16,7 @@ import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
+import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/RegisterScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer(
-      bloc: authenticationBloc,
+      cubit: authenticationBloc,
       builder: (context, state){
         return ModalProgressHUD(
           inAsyncCall: state is AuthenticationLoading,
@@ -54,10 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
             onTap: (){
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: SafeArea(
-              child: Scaffold(
-                appBar: PickNPrintAppbar(hasDrawer: true,appbarColor: AppColors.black,),
-                body: BlocConsumer(
+            child: BaseScreen(
+              hasDrawer: true,
+              child: BlocConsumer(
                   listener: (context, state){
                     if (state is AuthenticationFailed) {
                       if (state.error.errorCode == HttpStatus.requestTimeout) {
@@ -94,207 +94,197 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.pop(context);
                     }
                   },
-                  bloc: authenticationBloc,
+                  cubit: authenticationBloc,
                   builder: (context, state){
                     return ModalProgressHUD(
                       inAsyncCall: state is AuthenticationLoading,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: <Widget>[
-                                      SizedBox(height: 5,),
-                                      Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ), textAlign: TextAlign.start,),
-                                      SizedBox(height: 5,),
-                                      Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                                      Form(
-                                        key: _loginFormKey,
-                                        child: Column(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(height: 5,),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),                            child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ), textAlign: TextAlign.start,),
+                          ),
+                          SizedBox(height: 5,),
+                          Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
+                          Form(
+                            key: _loginFormKey,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: TextFormField(
+                                      validator: Validator.mailValidator,
+                                      controller: usernameTextController,
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            width: .5,
+                                            color: AppColors.lightBlue,
+                                          ),
+                                        ),
+                                        fillColor: AppColors.offWhite,
+                                        filled: true,
+                                        hintText: (LocalKeys.MAIL_ADDRESS).tr(),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            width: .5,
+                                            color: AppColors.lightBlue,
+                                          ),
+                                        ),
+                                        alignLabelWithHint: true,
+                                      ),
+                                      textInputAction: TextInputAction.next,
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: TextFormField(
+                                      validator: Validator.requiredField,
+                                      controller: passwordTextController,
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            width: .5,
+                                            color: AppColors.lightBlue,
+                                          ),
+                                        ),
+                                        fillColor: AppColors.offWhite,
+                                        filled: true,
+                                        hintText: (LocalKeys.PASSWORD_LABEL).tr(),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            width: .5,
+                                            color: AppColors.lightBlue,
+                                          ),
+                                        ),
+                                        alignLabelWithHint: true,
+                                      ),
+                                      textInputAction: TextInputAction.done,
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(_loginFormKey.currentState.validate()) {
+                                        authenticationBloc.add(LoginUser(
+                                          userEmail: usernameTextController
+                                              .text,
+                                          userPassword: passwordTextController
+                                              .text,
+                                        ));
+                                      }
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.lightBlue,
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                      ),
+                                      child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                              child: TextFormField(
-                                                validator: Validator.mailValidator,
-                                                controller: usernameTextController,
-                                                decoration: InputDecoration(
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                                    borderSide: BorderSide(
-                                                      width: .5,
-                                                      color: AppColors.lightBlue,
-                                                    ),
-                                                  ),
-                                                  fillColor: AppColors.offWhite,
-                                                  filled: true,
-                                                  hintText: (LocalKeys.MAIL_ADDRESS).tr(),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                                    borderSide: BorderSide(
-                                                      width: .5,
-                                                      color: AppColors.lightBlue,
-                                                    ),
-                                                  ),
-                                                  alignLabelWithHint: true,
-                                                ),
-                                                textInputAction: TextInputAction.next,
-                                                keyboardType: TextInputType.emailAddress,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                              child: TextFormField(
-                                                validator: Validator.requiredField,
-                                                controller: passwordTextController,
-                                                decoration: InputDecoration(
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                                    borderSide: BorderSide(
-                                                      width: .5,
-                                                      color: AppColors.lightBlue,
-                                                    ),
-                                                  ),
-                                                  fillColor: AppColors.offWhite,
-                                                  filled: true,
-                                                  hintText: (LocalKeys.PASSWORD_LABEL).tr(),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                                    borderSide: BorderSide(
-                                                      width: .5,
-                                                      color: AppColors.lightBlue,
-                                                    ),
-                                                  ),
-                                                  alignLabelWithHint: true,
-                                                ),
-                                                textInputAction: TextInputAction.done,
-                                                obscureText: true,
-                                              ),
+                                            Text((LocalKeys.DONT_HAVE_ACCOUNT_YET).tr()),
+                                            SizedBox(width: 5,),
+                                            GestureDetector(
+                                              onTap: (){
+                                                print("Hello World");
+                                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                                              },
+                                              child: Text((LocalKeys.SIGN_UP).tr() , style: TextStyle(
+                                                color: AppColors.lightBlue,
+                                                decoration: TextDecoration.underline,
+                                              ) ,),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          if(_loginFormKey.currentState.validate()) {
-                                            authenticationBloc.add(LoginUser(
-                                              userEmail: usernameTextController
-                                                  .text,
-                                              userPassword: passwordTextController
-                                                  .text,
-                                            ));
-                                          }
-                                        },
+                                        GestureDetector(
+                                          onTap: (){},
+                                          child: Text((LocalKeys.FORGET_YOUR_PASSWORD).tr(),),
+                                        ),
+                                      ],
+                                    ),),
+                                  Text((LocalKeys.OR_LABEL).tr(), style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onTap: (){},
                                         child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          height: 50,
+                                          width: MediaQuery.of(context).size.width - 32,
+                                          height: 55,
                                           decoration: BoxDecoration(
-                                            color: AppColors.lightBlue,
+                                            color: AppColors.lightBlack,
                                             borderRadius: BorderRadius.all(Radius.circular(10)),
                                           ),
-                                          child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Text((LocalKeys.DONT_HAVE_ACCOUNT_YET).tr()),
-                                                SizedBox(width: 5,),
-                                                GestureDetector(
-                                                  onTap: (){
-                                                    print("Hello World");
-                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
-                                                  },
-                                                  child: Text((LocalKeys.SIGN_UP).tr() , style: TextStyle(
-                                                    color: AppColors.lightBlue,
-                                                    decoration: TextDecoration.underline,
-                                                  ) ,),
-                                                ),
-                                              ],
-                                            ),
-                                            GestureDetector(
-                                              onTap: (){},
-                                              child: Text((LocalKeys.FORGET_YOUR_PASSWORD).tr(),),
-                                            ),
-                                          ],
-                                        ),),
-                                      Text((LocalKeys.OR_LABEL).tr(), style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
-                                        child: Center(
-                                          child: GestureDetector(
-                                            onTap: (){},
-                                            child: Container(
-                                              width: MediaQuery.of(context).size.width - 32,
-                                              height: 55,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.lightBlack,
+                                          child: Row(
+                                            children: <Widget>[
+                                              ClipRRect(
                                                 borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                child: Image.asset(Resources.FACEBOOK_LOGO_IMG),
                                               ),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                    child: Image.asset(Resources.FACEBOOK_LOGO_IMG),
-                                                  ),
-                                                  SizedBox(width: 8,),
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Expanded(
-                                                            child: Text((LocalKeys.FACEBOOK_LABEL).tr(), style: TextStyle(
-                                                              color: AppColors.white,
-                                                            ), textAlign: TextAlign.center,),
-                                                          ),
-                                                          Expanded(
-                                                            child: Text((LocalKeys.SIGN_UP_WITH_FACEBOOK).tr(), style: TextStyle(
-                                                              color: AppColors.white,
-                                                            ), textAlign: TextAlign.center,),
-                                                          ),
-
-                                                        ],
+                                              SizedBox(width: 8,),
+                                              Expanded(
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                        child: Text((LocalKeys.FACEBOOK_LABEL).tr(), style: TextStyle(
+                                                          color: AppColors.white,
+                                                        ), textAlign: TextAlign.center,),
                                                       ),
-                                                    ),
+                                                      Expanded(
+                                                        child: Text((LocalKeys.SIGN_UP_WITH_FACEBOOK).tr(), style: TextStyle(
+                                                          color: AppColors.white,
+                                                        ), textAlign: TextAlign.center,),
+                                                      ),
+
+                                                    ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            PickNPrintFooter(),
-                          ],
-                        ),
+                          ),
+
+                        ],
                       ),
                     );
                   },
                 ),
               ),
             ),
-          ),
         );
       },
       listener: (context, state){

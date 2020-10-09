@@ -27,7 +27,7 @@
   "WITH_PATH" : "With path",
   "SAVE_ORDER_AND_CONTINUE_LATER": "Save your order & Continue later",
   "PROCEED_TO_CHECKOUT": "Proceed to checkout",
-  "SAVE_ORDER_AND_CONTINUE_SHOPPING": "Save order & Continue shopping",
+  "ADD_TO_CART_AND_CONTINUE_SHOPPING": "Add to cart & Continue shopping",
   "CHOOSE_DIFFERENT_SET": "Choose different set",
   "SELECT_YOUR_PHOTOS": "Select your photos",
   "SELECT_YOUR_PHOTOS_DESCRIPTION": "Select the Photos we will use on the frame sets",
@@ -99,7 +99,45 @@
   "DELETE_ADDRESS": "Delete address",
   "EDIT_ADDRESS": "Edit address",
   "SELECT_ADDRESS_AND_CONTINUE": "Select address and continue",
-  "ADD_NEW_ADDRESS": "Add new address"
+  "ADD_NEW_ADDRESS": "Add new address",
+  "HELLO_LABEL": "Hello",
+  "EDIT_PROFILE_IMAGE": "Edit Profile image",
+  "MY_BASIC_DATA": "My basic data",
+  "EDIT_LABEL": "Edit",
+  "SAVE_LABEL" : "Save",
+  "MY_SAVED_ADDRESSES": "My Saved addresses",
+  "UPDATE_MY_PASSWORD": "Update My password",
+  "LOGOUT": "Logout",
+  "SELECT_PACKAGE": "Select Pack",
+  "MANAGE_YOUR_INFORMATION": "Manage your data & Subscriptions",
+  "MY_PROFILE": "My Profile",
+  "MY_SHIPPING_ADDRESSES": "Shipping addresses",
+  "MY_CART_DESCRIPTION": "Your current Orders awaiting for you :)",
+  "MY_CART": "My Cart",
+  "MY_ORDER_DESCRIPTION": "Current, Previous & Saved Orders in one Place",
+  "MY_ORDER": "My Order",
+  "SAVED_UNCOMPLETED": "Saved uncompleted orders",
+  "PREVIOUS_ORDERS": "Previous Orders",
+  "ACTIVE_ORDERS": "Current Orders",
+  "HAVE_PROBLEM": "Have a Problem ?",
+  "HAVE_PROBLEM_DESCRIPTION": "Let's help you",
+  "CANCEL_LABEL": "Cancel",
+  "DELETION_CONFIRMATION_MESSAGE" : "Are you sure you want to delete this address?",
+  "RETYPE_NEW_PASSWORD_LABEL": "Re-Type Password",
+  "NEW_PASSWORD_LABEL": "Choose a Password",
+  "OLD_PASSWORD_LABEL": "Your Old Password",
+  "YOUR_ORDER_ADDED_TO_CART": "Your Order added to Cart Successfully",
+  "YOU_CAN_PROCEED": "you can proceed to checkout any time by clicking the",
+  "CART_LABEL": "Cart",
+  "ICON_LABEL": "icon"
+
+
+
+
+
+
+
+
 
 
 

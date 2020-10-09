@@ -2,13 +2,16 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
 import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
 import 'package:picknprint/src/bloc/events/UserCartEvents.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 
@@ -84,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
 
       },
-      bloc: BlocProvider.of<AuthenticationBloc>(context),
+      cubit: BlocProvider.of<AuthenticationBloc>(context),
     );
   }
 

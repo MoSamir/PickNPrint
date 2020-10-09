@@ -13,28 +13,24 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^0.1.3
-  flutter_bloc: 5.0.0
+  flutter_bloc: 6.0.6
   easy_localization: 2.3.3
-  fluttertoast: 7.0.4
+  fluttertoast: 7.1.1
   http: 0.12.2
   dio: 3.0.10
   firebase_core: 0.5.0
-  firebase_auth: 0.18.0+1
-  file_picker: 1.10.0
+  firebase_auth: 0.18.1+1
+  file_picker: 2.0.6
   modal_progress_hud: 0.1.3
-  shared_preferences: 0.5.7+1
+  shared_preferences: 0.5.12
   youtube_player_iframe: 1.1.0
   xxtea: 2.0.3
-  rxdart: 0.24.0
-  image_picker: 0.6.7+7
-  url_launcher: 5.5.3
+  rxdart: 0.24.1
+  image_picker: 0.6.7+11
+  url_launcher: 5.7.2
   intl: 0.16.1
   flutter_facebook_login: 3.0.0
-
-
-
-
+  flutter_webview_plugin: 0.3.11
 
 
 
@@ -58,4 +54,20 @@ flutter:
     - assets/images/
     - assets/images/flags/
     - assets/fonts/
+
+  fonts:
+    - family: Araboto
+      fonts:
+        - asset: assets/fonts/arabic/ArbFONTS-Araboto-Light.ttf
+          weight: 300
+        - asset: assets/fonts/arabic/ArbFONTS-Araboto-Normal.ttf
+          weight: 400
+        - asset: assets/fonts/arabic/ArbFONTS-Araboto-Medium.ttf
+          weight: 500
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/english/Nunito-Regular.ttf
+          weight: 300
+        - asset: assets/fonts/english/Nunito-Bold.ttf
+          weight: 700
 

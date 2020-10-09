@@ -27,7 +27,7 @@
   "WITH_PATH" : "مع تحديد",
   "SAVE_ORDER_AND_CONTINUE_LATER": "احفظ طلبك و استكمل لاحقا",
   "PROCEED_TO_CHECKOUT": "اكمل للدفع",
-  "SAVE_ORDER_AND_CONTINUE_SHOPPING": "احفظ طلبك و تابع التسوق",
+  "ADD_TO_CART_AND_CONTINUE_SHOPPING": "اضف للسله و تابع التسوق",
   "CHOOSE_DIFFERENT_SET": "اختر مجموعه اخرى",
   "SELECT_YOUR_PHOTOS": "اختر صورك",
   "SELECT_YOUR_PHOTOS_DESCRIPTION": "حدد الصور التي سنستخدمها في مجموعات الإطارات",
@@ -99,7 +99,42 @@
   "DELETE_ADDRESS": "حذف العنوان",
   "EDIT_ADDRESS": "تعديل العنوان",
   "SELECT_ADDRESS_AND_CONTINUE": "اختيار العنوان و الاستكمال",
-  "ADD_NEW_ADDRESS": "اضافه عنوان جديد"
+  "ADD_NEW_ADDRESS": "اضافه عنوان جديد",
+  "HELLO_LABEL": "اهلا",
+  "EDIT_PROFILE_IMAGE": "تعديل الصوره",
+  "MY_BASIC_DATA": "بياناتي",
+  "EDIT_LABEL": "تعديل",
+  "SAVE_LABEL" : "حفظ",
+  "MY_SAVED_ADDRESSES": "عناويني المحفوظه",
+  "UPDATE_MY_PASSWORD": "تغيير كلمه المرور",
+  "LOGOUT": "خروج",
+  "SELECT_PACKAGE": "اختر حزمه",
+  "MANAGE_YOUR_INFORMATION": "ادر ملفك الشخصي و اشتراكاتك",
+  "MY_PROFILE": "ملفي الشخصي",
+  "MY_SHIPPING_ADDRESSES": "عناوين الشحن",
+  "MY_CART_DESCRIPTION": "طلباتك في انتظارك :)",
+  "MY_CART": "سله الطلبات",
+  "MY_ORDER_DESCRIPTION": "طلباتك السابقه , الحاليه و الطلبات المحفوظه كلها في مكان واحد",
+  "MY_ORDER": "طلباتي",
+  "SAVED_UNCOMPLETED": "طلباتك المحفوظه الغير مكتمله",
+  "PREVIOUS_ORDERS": "طلباتك السابقه",
+  "ACTIVE_ORDERS": "طلباتك الحاليه",
+  "HAVE_PROBLEM": "لديك مشكله ؟",
+  "HAVE_PROBLEM_DESCRIPTION": "دعنا نقدم لك المساعده ",
+  "CANCEL_LABEL": "الغاء",
+  "DELETION_CONFIRMATION_MESSAGE" : "هل انت متأكد انك تريد ان تزيل هذا العنوان ؟",
+  "RETYPE_NEW_PASSWORD_LABEL": "اعد تأكيد كلمه المرور الجديده",
+  "NEW_PASSWORD_LABEL": "اختر كلمه مرور جديده",
+  "OLD_PASSWORD_LABEL": "كلمه مرورك القديمه",
+  "YOUR_ORDER_ADDED_TO_CART": "طلبك تم اضافته للسله بنجاح",
+  "YOU_CAN_PROCEED": "يمكنك المتابعه في اي وقت عن طريق الضغط علي ",
+  "CART_LABEL": "السله",
+  "ICON_LABEL": ""
+
+
+
+
+
 
 
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -72,6 +73,40 @@ class UserDataProvider{
       isSuccess: true,
       responseData: UserViewModel(
         userId: 1,
+        userSavedAddresses: [
+          AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          AddressViewModel(
+            buildingNumber: '27',
+            addressName: 'Work',
+            additionalInformation: 'Sakalia Street',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+
+        ],
         userMail: 'mohamedsamir731@gmai.com',
         userToken: '',
         userName: 'Mohamed Samir',

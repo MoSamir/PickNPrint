@@ -14,5 +14,10 @@ class Constants {
   static  String CURRENT_LOCALE = "ar-EG/";
   static const String ENCRYPTION_KEY = "NMTqSkzCE64OtCFWfyy062Qhp469KO9RA6N2ucCsCYdkoWT1M3L6bT17vm1L3z+HOdIF6SKx4BCCf863DlXDn1VObrHdCRhip2/wg5ooagwrP2GVA6pfYRco2+DSIP0o";
 
+  static const int adaptiveScreenHeight = 2960 ;
+  static const int adaptiveScreenWidth = 1440 ;
+
+
+
 
 }

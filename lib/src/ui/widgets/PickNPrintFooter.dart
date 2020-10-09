@@ -13,7 +13,7 @@ class PickNPrintFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: SizedBox(
+      child: Container(
         height: 150,
         width: MediaQuery.of(context).size.width,
         child: Column(

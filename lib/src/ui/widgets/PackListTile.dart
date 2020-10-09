@@ -9,30 +9,33 @@ import 'OrderPackSizeStackWidget.dart';
 class PackListTile extends StatelessWidget {
 
   final PackageModel package ;
-  final Function onBuyPressed ;
-  PackListTile({this.package , this.onBuyPressed});
+  final Function onBuyPressed , onCardClick;
+  final Color backgroundColor ;
+  final bool isColoredStack ;
+  PackListTile({this.package , this.isColoredStack , this.onBuyPressed , this.onCardClick , this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 8),
-      child: Container(
-//      padding: EdgeInsets.symmetric(vertical: 8,horizontal: 2),
-        height: 50,
-        decoration: BoxDecoration(
-          color: AppColors.offWhite,
-          borderRadius: BorderRadius.all(Radius.circular(8))
-        ),
-        child: Center(
+    return GestureDetector(
+      onTap: onCardClick ?? (){},
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 4,),
+        child: Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? AppColors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(8))
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max
                   ,children: <Widget>[
-                  OrderPackSizeStackWidget(packageSize: package.packageSize,),
+                  OrderPackSizeStackWidget(packageSize: package.packageSize, isColored: isColoredStack ?? true),
                   SizedBox(width: 10,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,30 +44,37 @@ class PackListTile extends StatelessWidget {
                       Text('${package.packageSize} ${(LocalKeys.PACKAGE_SET).tr()}' , style: TextStyle(
                         color: AppColors.lightBlue,
                       ),),
-                      Text((LocalKeys.PRICE_START_FROM).tr(args:[package.packagePrice.toString()])),
+                      Text((LocalKeys.PRICE_START_FROM).tr(args:[package.packagePrice.toString()]), style: TextStyle(
+                        color: (backgroundColor == null || backgroundColor == AppColors.transparent) ? AppColors.white : AppColors.black,
+                      ),),
                     ],
                   ),
                 ],
                 ),
               ),
-              GestureDetector(onTap: onBuyPressed,
-                child: Container(
-                  width: 70,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: AppColors.lightBlue,
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: Center(
-                    child: Text(
-                        (LocalKeys.BUY_NOW).tr(),
-                      style: TextStyle(
-                        color: AppColors.white,
+              Visibility(
+                visible: onBuyPressed != null,
+                replacement: Container(height: 0, width: 0,),
+                child: GestureDetector(
+                  onTap: onBuyPressed,
+                  child: Container(
+                    width: 70,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: AppColors.lightBlue,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: Center(
+                      child: Text(
+                          (LocalKeys.BUY_NOW).tr(),
+                        style: TextStyle(
+                          color: AppColors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
+                ),
               ),
               SizedBox(width: 5,),
             ],

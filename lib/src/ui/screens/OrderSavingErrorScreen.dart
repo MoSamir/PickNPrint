@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
+
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+
 
 
 class OrderSavingErrorScreen extends StatelessWidget {
@@ -14,6 +16,7 @@ class OrderSavingErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Container(
         color: AppColors.lightBlack,
@@ -38,7 +41,7 @@ class OrderSavingErrorScreen extends StatelessWidget {
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
-                        height: 50,
+                        height: (50),
                         decoration: BoxDecoration(
                           color: AppColors.lightBlue,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -72,7 +75,7 @@ class OrderSavingErrorScreen extends StatelessWidget {
                             FlatButton(
                               onPressed: (){},
                               color: AppColors.white,
-                              child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center,),
+                              child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center,),
                             ),
                           ],
                         ),
@@ -93,8 +96,8 @@ class OrderSavingErrorScreen extends StatelessWidget {
 
                       },
                       child: Container(
-                        height: 50,
-                        width: 50,
+                        height: (50),
+                        width: (50),
                         child: Center(child: Icon(Icons.save , color: AppColors.white, size: 35,),),
                         decoration: BoxDecoration(
                           color: AppColors.lightBlue,

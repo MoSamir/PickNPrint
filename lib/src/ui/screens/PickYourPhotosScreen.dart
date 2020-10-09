@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
@@ -13,16 +14,22 @@ import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+import 'package:picknprint/src/ui/BaseScreen.dart';
+
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
+import 'package:picknprint/src/ui/screens/OrderAddedToCartSuccessfullyScreen.dart';
 import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
+import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 
+import 'CheckoutUserOrder.dart';
 import 'OrderSavingConfirmationScreen.dart';
 import 'SelectImageSourceScreen.dart';
 import 'AddNewShippingAddressScreen.dart';
@@ -44,6 +51,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   @override
   void initState() {
     super.initState();
+
+
+
     createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
     List<String> imagesList = List();
     for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++)
@@ -54,17 +64,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: WillPopScope(
-        onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: PickNPrintAppbar(hasDrawer: true,appbarColor: AppColors.black,),
-          body: BlocConsumer(
+    return WillPopScope(
+      onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: BaseScreen(
+          hasDrawer: true,
+          child: BlocConsumer(
             listener: (context , state){
-
-              print("State is $state");
-
               if (state is OrderCreationLoadingFailureState) {
                 if (state.error.errorCode == HttpStatus.requestTimeout) {
                   showDialog(
@@ -100,79 +107,67 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             builder: (context , state){
               return ModalProgressHUD(
                 inAsyncCall: state is OrderCreationLoadingState,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        color: AppColors.offWhite,
-                        padding: EdgeInsets.symmetric(vertical: 16 , horizontal: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text((LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(), style: TextStyle(
-                              fontSize: 20,
-                              color: AppColors.black,
-                            ), ),
-                            Text((LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(), style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.lightBlue,
-                            ), ),
-                          ],
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      color: AppColors.offWhite,
+                      padding: EdgeInsets.symmetric(vertical: 16 , horizontal: 8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text((LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(), style: TextStyle(
+                            fontSize: 20,
+                            color: AppColors.black,
+                          ), ),
+                          Text((LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(), style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.lightBlue,
+                          ), ),
+                        ],
                       ),
-                      SizedBox(height: 5,),
-                      frameOptionsWidget(),
-                      Container(height: 170,
-                        color: AppColors.white,
-                        child: Center(
-                          child: getFramesList(),),
-                      ),
-                      SizedBox(height: 10,),
-                      GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ) , onTap: _saveOrderForLater,),
-                      SizedBox(height: 5,),
-                      Center(
-                        child: GestureDetector(
-                          onTap: (){
-                            if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-                            } else {
-
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
-                                comingFromRegistration: false,
-                              )));
-
-                            }
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width - 32,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: AppColors.lightBlue,
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
+                    ),
+                    SizedBox(height: 5,),
+                    frameOptionsWidget(),
+                    Container(height: 170,
+                      color: AppColors.white,
+                      child: Center(
+                        child: getFramesList(),),
+                    ),
+                    SizedBox(height: 10,),
+                    GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ) , onTap: _saveOrderForLater,),
+                    SizedBox(height: 5,),
+                    Center(
+                      child: GestureDetector(
+                        onTap: _proceedToCheckout,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 32,
+                          height: (45),
+                          decoration: BoxDecoration(
+                            color: AppColors.lightBlue,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
+                          child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
                         ),
-                        // i love you
                       ),
-                      SizedBox(height: 5,),
-                      GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: _saveOrderAndContinueShopping,),
-                      SizedBox(height: 5,),
-                      GestureDetector(child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ), ) , onTap: (){
-                        Navigator.of(context).pop();
-                      },),
-                      SizedBox(height: 10,),
-                      PickNPrintFooter(),
-                    ],
-                  ),
+                      // i love you
+                    ),
+                    SizedBox(height: 5,),
+                    GestureDetector(child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: _addToCartAndContinueShopping,),
+                    SizedBox(height: 5,),
+                    GestureDetector(child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
+                      decoration: TextDecoration.underline,
+                    ), ) , onTap: (){
+                      Navigator.of(context).pop();
+                    },),
+                    SizedBox(height: 10,),
+
+                  ],
                 ),
               );
             },
-            bloc: createOrderBloc,
+            cubit: createOrderBloc,
           ),
         ),
       ),
@@ -204,8 +199,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   child: Row(
                     children: <Widget>[
                       Container(
-                        width: 25,
-                        height: 25,
+                        width: (25),
+                        height: (25),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.white,
@@ -243,8 +238,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   child: Row(
                     children: <Widget>[
                       Container(
-                        width: 25,
-                        height: 25,
+                        width: (25),
+                        height: (25),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.black,
@@ -296,8 +291,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
         child: AnimatedContainer(
           duration: Duration(seconds: 2),
-          height: 150,
-          width: 150,
+          height: (150),
+          width: (150),
           decoration: BoxDecoration(
             color: userOrder.frameWithPath ? AppColors.black : AppColors.white,
 
@@ -383,6 +378,23 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     }
     else
       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginScreen()));
+  }
+
+  void _proceedToCheckout() {
+    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+    } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
+        comingFromRegistration: false,
+      )));
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+    }
+  }
+
+
+  void _addToCartAndContinueShopping() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderAddedToCartSuccessfullyScreen()));
   }
 }
 

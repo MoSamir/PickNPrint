@@ -40,7 +40,7 @@ class LocalKeys{
   static const String WITH_PATH = "WITH_PATH";
   static const String SAVE_ORDER_AND_CONTINUE_LATER = "SAVE_ORDER_AND_CONTINUE_LATER";
   static const String PROCEED_TO_CHECKOUT = "PROCEED_TO_CHECKOUT";
-  static const String SAVE_ORDER_AND_CONTINUE_SHOPPING = "SAVE_ORDER_AND_CONTINUE_SHOPPING";
+  static const String ADD_TO_CART_AND_CONTINUE_SHOPPING = "ADD_TO_CART_AND_CONTINUE_SHOPPING";
   static const String CHOOSE_DIFFERENT_SET = "CHOOSE_DIFFERENT_SET";
 
 
@@ -145,6 +145,74 @@ class LocalKeys{
   static const String DELETE_ADDRESS = "DELETE_ADDRESS";
   static const String SELECT_ADDRESS_AND_CONTINUE = "SELECT_ADDRESS_AND_CONTINUE";
   static const String ADD_NEW_ADDRESS = "ADD_NEW_ADDRESS";
+
+
+
+//------------------------------- PROFILE SCREEN -------------------------------
+
+  static const String HELLO_LABEL = "HELLO_LABEL";
+  static const String EDIT_PROFILE_IMAGE = "EDIT_PROFILE_IMAGE";
+  static const String MY_BASIC_DATA = "MY_BASIC_DATA";
+  static const String EDIT_LABEL = "EDIT_LABEL";
+  static const String SAVE_LABEL = "SAVE_LABEL";
+  static const String MY_SAVED_ADDRESSES = "MY_SAVED_ADDRESSES";
+  static const String LOGOUT = "LOGOUT";
+  static const String UPDATE_MY_PASSWORD = "UPDATE_MY_PASSWORD";
+
+
+//--------------------------- DRAWER NAVIGATOR ---------------------------------
+
+  static const String SELECT_PACKAGE = "SELECT_PACKAGE";
+  static const String MANAGE_YOUR_INFORMATION = "MANAGE_YOUR_INFORMATION";
+  static const String MY_PROFILE = "MY_PROFILE";
+  static const String MY_SHIPPING_ADDRESSES = "MY_SHIPPING_ADDRESSES";
+
+  static const String MY_CART = "MY_CART";
+  static const String MY_CART_DESCRIPTION = "MY_CART_DESCRIPTION";
+
+  static const String MY_ORDER = "MY_ORDER";
+  static const String MY_ORDER_DESCRIPTION = "MY_ORDER_DESCRIPTION";
+  static const String SAVED_UNCOMPLETED = "SAVED_UNCOMPLETED";
+  static const String PREVIOUS_ORDERS = "PREVIOUS_ORDERS";
+  static const String ACTIVE_ORDERS = "ACTIVE_ORDERS";
+
+  static const String HAVE_PROBLEM_DESCRIPTION = "HAVE_PROBLEM_DESCRIPTION";
+  static const String HAVE_PROBLEM = "HAVE_PROBLEM";
+
+
+//----------------------- CHANGE PASSWORD SCREEN -------------------------------
+
+  static const String CANCEL_LABEL = "CANCEL_LABEL";
+  static const String OLD_PASSWORD_LABEL = "OLD_PASSWORD_LABEL";
+  static const String NEW_PASSWORD_LABEL = "NEW_PASSWORD_LABEL";
+  static const String RETYPE_NEW_PASSWORD_LABEL = "RETYPE_NEW_PASSWORD_LABEL";
+
+
+//---------------------- DELETE ADDRESS SCREEN ---------------------------------
+
+
+  static const String DELETION_CONFIRMATION_MESSAGE = "DELETION_CONFIRMATION_MESSAGE";
+
+//--------------------- ORDER ADDITION TO CART SUCCESS -------------------------
+
+
+  static const String YOUR_ORDER_ADDED_TO_CART = "YOUR_ORDER_ADDED_TO_CART";
+  static const String YOU_CAN_PROCEED = "YOU_CAN_PROCEED";
+  static const String CART_LABEL = "CART_LABEL";
+  static const String ICON_LABEL = "ICON_LABEL";
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

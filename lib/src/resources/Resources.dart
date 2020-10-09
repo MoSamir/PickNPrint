@@ -18,9 +18,16 @@ class Resources{
   static const String SHIPPING_ADDRESS_BANNER_IMG = "assets/images/shipping_address_banner.png";
   static const String INFORMATION_ICON_IMG = "assets/images/information_icon.png";
   static const String INFORMATION_BANNER_IMG = "assets/images/order_information_banner.png";
+  static const String LOGOUT_ICON = "assets/images/logout_icon.png";
 
 
 
+
+  //------------- FONTS ----------------------------------------------------
+
+
+  static const String arabic_font_family = "Araboto";
+  static const String english_font_family = "Nunito";
 
 
 }

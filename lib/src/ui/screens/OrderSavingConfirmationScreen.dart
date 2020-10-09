@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+
 class OrderSavingConfirmationScreen extends StatelessWidget {
 
   final String orderNumber;
@@ -10,6 +13,7 @@ class OrderSavingConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       color: AppColors.lightBlack,
       child: Column(
@@ -18,7 +22,7 @@ class OrderSavingConfirmationScreen extends StatelessWidget {
           Text((LocalKeys.YOUR_ORDER_SAVED).tr()),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: (50),
             decoration: BoxDecoration(
               color: AppColors.lightBlue,
               borderRadius: BorderRadius.all(Radius.circular(10)),

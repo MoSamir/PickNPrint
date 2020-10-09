@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
+
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../BaseScreen.dart';
 class OrderConfirmationScreen extends StatelessWidget {
 
   final String orderNumber ;
@@ -21,9 +26,9 @@ class OrderConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PickNPrintAppbar(hasDrawer: true,appbarColor: AppColors.black,),
-      body: SingleChildScrollView(
+
+    return BaseScreen(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -52,27 +57,27 @@ class OrderConfirmationScreen extends StatelessWidget {
             Center(
               child: RichText(
                 text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: (LocalKeys.ORDER_WILL_BE_SHIPPED).tr(),
-                      style: TextStyle(
-                        color: AppColors.black,
+                    children: [
+                      TextSpan(
+                        text: (LocalKeys.ORDER_WILL_BE_SHIPPED).tr(),
+                        style: TextStyle(
+                          color: AppColors.black,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: ' ${(orderShippingDuration.toString())} ',
-                      style: TextStyle(
-                        color: AppColors.lightBlue,
+                      TextSpan(
+                        text: ' ${(orderShippingDuration.toString())} ',
+                        style: TextStyle(
+                          color: AppColors.lightBlue,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: ' ${(LocalKeys.DAYS_LABEL).tr()}',
-                      style: TextStyle(
-                        color: AppColors.black,
-                      ),
-                    )
+                      TextSpan(
+                        text: ' ${(LocalKeys.DAYS_LABEL).tr()}',
+                        style: TextStyle(
+                          color: AppColors.black,
+                        ),
+                      )
 
-                  ]
+                    ]
                 ),
               ),
             ),
@@ -129,17 +134,17 @@ class OrderConfirmationScreen extends StatelessWidget {
                 color: AppColors.lightBlue,
               ),),
             ),
-
             ListView.builder(itemBuilder: (context, index){
               return PackListTile(
+                isColoredStack: false,
+                backgroundColor: AppColors.offWhite,
                 onBuyPressed: (){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages[index],)), (route) => false);
                 },
                 package: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages[index],
               );
             } , physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.all(0), shrinkWrap: true, itemCount: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages.length,),
-
+              padding: EdgeInsets.all(0), shrinkWrap: true, itemCount: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages.length,),
             Container(
               padding: EdgeInsets.symmetric(vertical: 15 , horizontal: 8),
               color: AppColors.white,
@@ -168,11 +173,10 @@ class OrderConfirmationScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 25,),
-            PickNPrintFooter(),
           ],
         ),
       ),
+      hasDrawer: true,
     );
   }
 

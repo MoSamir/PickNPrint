@@ -133,7 +133,6 @@ class Repository {
     await facebookLogin.logOut();
     final result = await facebookLogin.logIn(['email','user_photos']);
     String token = result.accessToken.token;
-
     if(token != null){
       return ResponseViewModel<String>(
         isSuccess: true,
@@ -148,7 +147,6 @@ class Repository {
         ),
       );
     }
-
   }
 
 

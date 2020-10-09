@@ -16,46 +16,58 @@ class UserAddressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Card(
-          elevation: 2,
-          color: AppColors.addressCardBg,
-          child: RadioButtonListTile<AddressViewModel>(
-              title: Text(address.toString()),
-              groupValue: address , value: address, selected: isChecked, onChanged: (AddressViewModel value){
-              onSelectAddress(value);
-              return ;
-          }),
-        ),
-        Row(
-          children: <Widget>[
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Card(
+            elevation: 2,
+            color: AppColors.addressCardBg,
+            child: RadioButtonListTile<AddressViewModel>(
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(address.toString() , textAlign: TextAlign.start,),
+                ),
+                groupValue: address , value: address, selected: isChecked, onChanged: (AddressViewModel value){
+                onSelectAddress(value);
+                return ;
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: (){
+                    onEditAddress(address);
+                    return;
+                  },
+                 child: Text((LocalKeys.EDIT_ADDRESS).tr()),
 
-            GestureDetector(
-              onTap: (){
-                onEditAddress(address);
-                return;
-              },
-             child: Text((LocalKeys.EDIT_ADDRESS).tr()),
+                ),
+                SizedBox(width: 10,),
+                Container(
+                  height: 10, width: 3,
+                  color: AppColors.lightBlack,
+                ),
+                SizedBox(width: 5,),
+                GestureDetector(
+                  onTap: (){
+                    onDeleteAddress(address);
+                    return;
+                  },
+                  child: Text((LocalKeys.DELETE_ADDRESS).tr()),
 
+                ),
+              ],
             ),
-            Container(
-              height: 10, width: 1,
-              color: AppColors.lightBlack,
-            ),
-            GestureDetector(
-              onTap: (){
-                onDeleteAddress(address);
-                return;
-              },
-              child: Text((LocalKeys.DELETE_ADDRESS).tr()),
-
-            ),
-          ],
-        ),
-
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
