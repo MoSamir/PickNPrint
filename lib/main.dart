@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
+import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
@@ -30,7 +31,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   appBloc.add(LoadApplicationData());
-  authenticationBloc.add(AuthenticateUser());
+  authenticationBloc.mapEventToState(AuthenticateUser());
   Constants.CURRENT_LOCALE = "ar";
 
 
@@ -48,7 +49,7 @@ void main() async{
         supportedLocales: [Locale('en'), Locale('ar')],
         path: 'assets/locales',
         useOnlyLangCode: true,
-        saveLocale: false,
+        saveLocale: true,
         startLocale: Locale('ar'),
         fallbackLocale: Locale('ar'),
         child: AppEntrance(),

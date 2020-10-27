@@ -7,12 +7,11 @@ class OrderModel {
   AddressViewModel orderAddress;
   bool frameWithPath , isWhiteFrame ;
   DateTime orderTime ;
+  int orderNumber ;
+  OrderStatus statues ;
   List<String> userImages = List();
-  OrderModel({this.orderPackage , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
-
-
-
-
-
+  OrderModel({this.orderPackage , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
 }
+
+enum OrderStatus { PREPARING , SHIPPING, DELIVERED  , CANCELED }

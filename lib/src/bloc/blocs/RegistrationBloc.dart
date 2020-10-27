@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/events/RegistrationEvents.dart';
 import 'package:picknprint/src/bloc/states/RegistrationStates.dart';

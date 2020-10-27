@@ -1,7 +1,7 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:bloc/bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';

@@ -6,7 +6,7 @@ abstract class UserBlocEvents {}
 class AddItemsToCart extends UserBlocEvents{}
 class RemoveItemsFromCart extends UserBlocEvents {}
 class LoadUserInformation extends UserBlocEvents {}
-
+class LoadUserOrders extends UserBlocEvents{}
 
 class SaveAddress extends UserBlocEvents {
   final AddressViewModel address;

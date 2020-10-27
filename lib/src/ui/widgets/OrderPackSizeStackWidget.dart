@@ -12,7 +12,6 @@ class OrderPackSizeStackWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-//      color: AppColors.lightBlue,
       height: 50,
       width: 42 + (packageSize * 7.5),
       child: Stack(

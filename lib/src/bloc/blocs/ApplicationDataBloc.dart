@@ -1,4 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:bloc/bloc.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/events/ApplicationDataEvents.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
@@ -20,7 +21,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
   @override
   Stream<ApplicationDataStates> mapEventToState(ApplicationDataEvents event)async* {
 
-    bool isConnected = await NetworkUtilities.isConnected();
+    bool isConnected =  true ; //await NetworkUtilities.isConnected();
     if(isConnected == false){
       yield ApplicationDataLoadingFailureState(
         error: Constants.CONNECTION_TIMEOUT,
@@ -36,7 +37,11 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
 
   Stream<ApplicationDataStates> _handleApplicationDataLoading(LoadApplicationData event) async*{
     yield ApplicationDataLoadingState();
-    ResponseViewModel<List<PackageModel>> getSystemPackagesResponse = await Repository.getSystemPackages();
+    ResponseViewModel<List<PackageModel>> getSystemPackagesResponse =  await Repository.getSystemPackages();
+
+
+
+
     if(getSystemPackagesResponse.isSuccess){
       applicationPackages = getSystemPackagesResponse.responseData;
       maxPackageSize = applicationPackages.reversed.toList()[0].packageSize;

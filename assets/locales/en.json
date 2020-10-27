@@ -129,61 +129,17 @@
   "YOUR_ORDER_ADDED_TO_CART": "Your Order added to Cart Successfully",
   "YOU_CAN_PROCEED": "you can proceed to checkout any time by clicking the",
   "CART_LABEL": "Cart",
-  "ICON_LABEL": "icon"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "ICON_LABEL": "icon",
+  "ORDER_STATUES": "Status",
+  "CANCELED_STATUES": "Canceled",
+  "PREPARING_STATUES": "Preparing",
+  "SHIPPING_STATUES": "on shipping",
+  "DELIVERED_STATUES": "Delivered",
+  "MY_PREVIOUS_ORDERS" : "My Previous Orders",
+  "MY_SAVED_ORDERS" : "My Saved Un-Completed Orders",
+  "MY_ACTIVE_ORDERS" : "Current Orders",
+  "CREATE_NEW_ORDER": "Create a New Order New",
+  "APP_LANGUAGE": "العربيه"
 
 }
 

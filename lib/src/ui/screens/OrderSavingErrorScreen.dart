@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:picknprint/src/resources/Constants.dart';
+
 import 'package:picknprint/src/resources/LocalKeys.dart';
 
 

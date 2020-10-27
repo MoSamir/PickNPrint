@@ -1,4 +1,5 @@
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 
 class UserViewModel {
 

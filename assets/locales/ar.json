@@ -129,14 +129,17 @@
   "YOUR_ORDER_ADDED_TO_CART": "طلبك تم اضافته للسله بنجاح",
   "YOU_CAN_PROCEED": "يمكنك المتابعه في اي وقت عن طريق الضغط علي ",
   "CART_LABEL": "السله",
-  "ICON_LABEL": ""
-
-
-
-
-
-
-
+  "ICON_LABEL": "",
+  "ORDER_STATUES": "الحاله",
+  "CANCELED_STATUES": "ملغيه",
+  "PREPARING_STATUES": "في التحضير",
+  "SHIPPING_STATUES": "في التوصيل",
+  "DELIVERED_STATUES": "تم توصيله",
+  "MY_PREVIOUS_ORDERS": "طلباتي السابقه",
+  "MY_SAVED_ORDERS": "طلباتي المحفوظه",
+  "MY_ACTIVE_ORDERS": "طلباتي الحاليه",
+  "CREATE_NEW_ORDER": "اصنع طلب جديد",
+  "APP_LANGUAGE": "English"
 
 }
 

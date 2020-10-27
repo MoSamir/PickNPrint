@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
@@ -30,7 +29,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   YoutubePlayerController _controller;
-  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -44,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         showControls: false,
         enableCaption: false,
         showVideoAnnotations: false,
-
         showFullscreenButton: false,
       ),
     );
@@ -105,10 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         SizedBox(
                           height: MediaQuery.of(context).size.height * .5,
+                          width: MediaQuery.of(context).size.width,
                           child: Stack(
                             children: <Widget>[
                               SizedBox(
                                 height:MediaQuery.of(context).size.height * .5,
+                                width: MediaQuery.of(context).size.width,
                                 child:YoutubePlayerIFrame(
                                   controller: _controller,
                                   aspectRatio: 16 / 9,

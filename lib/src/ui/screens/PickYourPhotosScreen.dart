@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
@@ -14,10 +14,8 @@ import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
-import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
-
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
 import 'package:picknprint/src/ui/screens/OrderAddedToCartSuccessfullyScreen.dart';
@@ -25,14 +23,9 @@ import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
-import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 
-import 'CheckoutUserOrder.dart';
-import 'OrderSavingConfirmationScreen.dart';
-import 'SelectImageSourceScreen.dart';
 import 'AddNewShippingAddressScreen.dart';
+import 'SelectImageSourceScreen.dart';
 class PickYourPhotosScreen extends StatefulWidget {
 
   final PackageModel userSelectedPackage;
@@ -51,9 +44,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   @override
   void initState() {
     super.initState();
-
-
-
     createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
     List<String> imagesList = List();
     for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++)

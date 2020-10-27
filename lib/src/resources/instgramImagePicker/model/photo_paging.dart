@@ -7,7 +7,7 @@ class PhotoPaging {
 
   PhotoPaging.fromJson(Map json){
     data = <Photo>[];
-    var albums = json['data'] as List;
+    var albums = json['data'] as List ?? [];
     albums.forEach((album){
 
       try {

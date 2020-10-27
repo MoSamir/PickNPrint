@@ -175,6 +175,9 @@ class LocalKeys{
   static const String SAVED_UNCOMPLETED = "SAVED_UNCOMPLETED";
   static const String PREVIOUS_ORDERS = "PREVIOUS_ORDERS";
   static const String ACTIVE_ORDERS = "ACTIVE_ORDERS";
+  static const String APP_LANGUAGE = "APP_LANGUAGE";
+
+
 
   static const String HAVE_PROBLEM_DESCRIPTION = "HAVE_PROBLEM_DESCRIPTION";
   static const String HAVE_PROBLEM = "HAVE_PROBLEM";
@@ -200,6 +203,34 @@ class LocalKeys{
   static const String YOU_CAN_PROCEED = "YOU_CAN_PROCEED";
   static const String CART_LABEL = "CART_LABEL";
   static const String ICON_LABEL = "ICON_LABEL";
+
+
+  //------------------------------ ORDER CARD ----------------------------------
+
+
+  static const String ORDER_STATUES = "ORDER_STATUES";
+
+  static const String CANCELED_STATUES = "CANCELED_STATUES";
+  static const String PREPARING_STATUES = "PREPARING_STATUES";
+  static const String SHIPPING_STATUES = "SHIPPING_STATUES";
+  static const String DELIVERED_STATUES = "DELIVERED_STATUES";
+
+  //--------------------------- PREVIOUS ORDER SCREEN -------------------------
+  static const String MY_PREVIOUS_ORDERS = "MY_PREVIOUS_ORDERS";
+
+  //--------------------------- ACTIVE ORDER SCREEN -------------------------
+
+  static const String MY_ACTIVE_ORDERS = "MY_ACTIVE_ORDERS";
+  //--------------------------- SAVED ORDER SCREEN -------------------------
+
+  static const String MY_SAVED_ORDERS = "MY_SAVED_ORDERS";
+  static const String CREATE_NEW_ORDER = "CREATE_NEW_ORDER";
+
+
+
+
+
+
 
 
 

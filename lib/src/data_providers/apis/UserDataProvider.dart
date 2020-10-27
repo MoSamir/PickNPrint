@@ -250,4 +250,216 @@ class UserDataProvider{
   }
 
 
+  
+  static Future<ResponseViewModel<List<OrderModel>>> loadSavedOrders() async{
+
+    await Future.delayed(Duration(seconds: 2),(){});
+    return ResponseViewModel<List<OrderModel>>(
+      isSuccess: true,
+      responseData: [
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 123,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 500,
+            packageSaving: 20,
+            packageSize: 3,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: null,
+        ),
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 124,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 520,
+            packageSaving: 30,
+            packageSize: 4,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: null,
+        ),
+      ],
+    );
+
+
+  }
+  static Future<ResponseViewModel<List<OrderModel>>> loadClosedOrders() async{
+
+    await Future.delayed(Duration(seconds: 2),(){});
+    return ResponseViewModel<List<OrderModel>>(
+      isSuccess: true,
+      responseData: [
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 123,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 500,
+            packageSaving: 20,
+            packageSize: 3,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: OrderStatus.CANCELED,
+        ),
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 124,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 520,
+            packageSaving: 30,
+            packageSize: 4,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: OrderStatus.DELIVERED,
+        ),
+      ],
+    );
+
+
+  }
+  static Future<ResponseViewModel<List<OrderModel>>> loadActiveOrders() async{
+
+    await Future.delayed(Duration(seconds: 2),(){});
+    return ResponseViewModel<List<OrderModel>>(
+      isSuccess: true,
+      responseData: [
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 123,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 500,
+            packageSaving: 20,
+            packageSize: 3,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: OrderStatus.SHIPPING,
+        ),
+        OrderModel(
+          orderTime: DateTime.now(),
+          orderNumber: 124,
+          isWhiteFrame: true,
+          userImages: [],
+          frameWithPath: false,
+          orderPackage: PackageModel(
+            packagePrice: 520,
+            packageSaving: 30,
+            packageSize: 4,
+          ),
+          orderAddress: AddressViewModel(
+            buildingNumber: '1',
+            addressName: 'My Apartment',
+
+            additionalInformation: '',
+            area: LocationModel(
+              name: 'Ain shams',
+              id: 1,
+              childLocations: [],
+            ),
+            city: LocationModel(
+              name: 'Cairo',
+              id: 1,
+              childLocations: [],
+            ),
+          ),
+          statues: OrderStatus.PREPARING,
+        ),
+      ],
+    );
+
+
+  }
+
+
+
+
 }

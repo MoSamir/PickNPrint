@@ -1,9 +1,10 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 
@@ -13,7 +14,8 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     authenticationBloc.listen((authenticationState) {
       if(authenticationState is UserAuthenticated){
         currentLoggedInUser = authenticationState.currentUser;
-        add(MoveToState(targetUserState: UserDataLoadedState()));
+        //add(MoveToState(targetUserState: UserDataLoadedState()));
+        add(LoadUserOrders());
         return ;
       }
     });
@@ -21,12 +23,14 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
 
 
   UserViewModel currentLoggedInUser = UserViewModel.fromAnonymous();
+  List<OrderModel> userActiveOrders = List<OrderModel>() ,
+      userSavedOrders = List<OrderModel>(),
+      userCompletedOrders = List<OrderModel>() ;
 
 
 
   @override
   Stream<UserBlocStates> mapEventToState(UserBlocEvents event) async*{
-
 
     if(event is MoveToState){
       yield event.targetUserState;
@@ -34,14 +38,20 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     }
     else if(event is ReloadUser){
     _handleUserReloading(event);
+    return ;
     }
     else if(event is ForgetPassword){
     yield* _handleForgetPassword(event);
     return ;
     } else if(event is VerifyPhoneNumber){
     yield* _handleVerifyPhoneNumber(event);
+    return ;
     } else if(event is ResetPassword){
     yield* _handleResetPassword(event);
+    return ;
+    } else if(event is LoadUserOrders){
+     yield* _handleLoadingUserOrders(event);
+      return ;
     }
 
   }
@@ -105,6 +115,37 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     if(loginResponse != null) {
       this.currentLoggedInUser = loginResponse;
     }
+  }
+
+  Stream<UserBlocStates> _handleLoadingUserOrders(LoadUserOrders event) async*{
+    yield UserDataLoadingState();
+
+    List<ResponseViewModel<List<OrderModel>>> userOrders = await Future.wait([
+      Repository.loadActiveOrders(),
+      Repository.loadClosedOrders(),
+      Repository.loadSavedOrders(),
+    ]);
+
+    // active orders listing
+    if(userOrders[0].isSuccess){
+      userActiveOrders = List<OrderModel>();
+      userActiveOrders.addAll(userOrders[0].responseData);
+    }
+
+    // closed orders listing
+    if(userOrders[1].isSuccess){
+      userCompletedOrders = List<OrderModel>();
+      userCompletedOrders.addAll(userOrders[1].responseData);
+    }
+
+    // saved orders listing
+    if(userOrders[2].isSuccess){
+      userSavedOrders = List<OrderModel>();
+      userSavedOrders.addAll(userOrders[2].responseData);
+    }
+
+
+
   }
 
 }

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-
-import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:picknprint/src/resources/Constants.dart';
+import 'package:flutter/material.dart';
+import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+
+import 'RegisterScreen.dart';
 
 class OrderSavingConfirmationScreen extends StatelessWidget {
 
@@ -41,8 +41,8 @@ class OrderSavingConfirmationScreen extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-              print("Hello World");
-              //Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
+
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
             },
             child: Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(
               color: AppColors.white,

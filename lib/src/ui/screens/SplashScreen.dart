@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
+import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
 import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/events/UserCartEvents.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/resources/Constants.dart';
@@ -51,10 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
         if(state is UserAuthenticated){
           if(state.currentUser.isAnonymous() == false)
             BlocProvider.of<UserCartBloc>(context).add(LoadCartEvent());
-
-          navigateToHomePage();
-
-
+            BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+            navigateToHomePage();
         }
         else if (state is AuthenticationFailed) {
           if (state.error.errorCode == HttpStatus.requestTimeout) {
@@ -64,7 +64,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 builder: (context) {
                   return NetworkErrorView();
                 });
-          } else if (state.error.errorCode ==
+          }
+          else if (state.error.errorCode ==
               HttpStatus.serviceUnavailable) {
             Fluttertoast.showToast(
                 msg: (LocalKeys.SERVER_UNREACHABLE).tr(),

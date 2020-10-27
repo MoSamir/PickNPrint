@@ -79,7 +79,6 @@ class Repository {
     ResponseViewModel<List<PackageModel>> apiResponse = await ApplicationDataProvider.getSystemPackages();
     if(apiResponse.isSuccess && apiResponse.responseData != null)
       apiResponse.responseData.sort((a,b)=> a.packageSize > b.packageSize ? 1 : 0);
-
       return apiResponse;
   }
 
@@ -126,7 +125,7 @@ class Repository {
   }
 
 
-//
+
   static Future<ResponseViewModel<void>> loginWithFacebook() async {
 
     final facebookLogin = FacebookLogin();
@@ -148,6 +147,10 @@ class Repository {
       );
     }
   }
+
+  static Future<ResponseViewModel<List<OrderModel>>>loadActiveOrders() async => UserDataProvider.loadActiveOrders();
+  static Future<ResponseViewModel<List<OrderModel>>>loadClosedOrders() async => UserDataProvider.loadClosedOrders();
+  static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => UserDataProvider.loadSavedOrders();
 
 
 

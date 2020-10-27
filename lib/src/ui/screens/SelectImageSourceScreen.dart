@@ -193,75 +193,74 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
 
   pickUserPicture(BuildContext context) async{
-    _scaffoldKey.currentState.showBottomSheet((context){
-      
-      return Container(
-        decoration: BoxDecoration(
-          color:AppColors.black.withOpacity(.4),
-          backgroundBlendMode: BlendMode.darken,
+
+    showModalBottomSheet(context: context, builder: (context)=> Container(
+      decoration: BoxDecoration(
+        color:AppColors.black.withOpacity(.4),
+        backgroundBlendMode: BlendMode.darken,
       ),
 
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.lightBlue,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          ),
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                (LocalKeys.CAPTURE_IMAGE_USING).tr(),
-                textScaleFactor: 1,
-                style: TextStyle(
-                  fontSize: 18,
-                  // fontFamily: Constants.FONT_ARIAL,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ).tr(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Center(
-                      child: FlatButton.icon(
-                        onPressed: () {
-                          pickUserImage(ImageSource.gallery);
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.image,
-                          color: Colors.white,
-                        ),
-                        label: Text(''),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.lightBlue,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+        ),
+        height: 150,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              (LocalKeys.CAPTURE_IMAGE_USING).tr(),
+              textScaleFactor: 1,
+              style: TextStyle(
+                fontSize: 18,
+                // fontFamily: Constants.FONT_ARIAL,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ).tr(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Center(
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        pickUserImage(ImageSource.gallery);
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.image,
+                        color: Colors.white,
                       ),
+                      label: Text(''),
                     ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: FlatButton.icon(
-                        onPressed: () {
-                          pickUserImage(ImageSource.camera);
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                        ),
-                        label: Text(''),
+                ),
+                Expanded(
+                  child: Center(
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        pickUserImage(ImageSource.camera);
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
                       ),
+                      label: Text(''),
                     ),
-                  ), //getAppleLogin(),
-                ],
-              ),
-            ],
-          ),
+                  ),
+                ), //getAppleLogin(),
+              ],
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    ));
+
   }
 
   void pickUserImage(ImageSource source) async{
@@ -293,8 +292,8 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
             fbToken.responseData,
             onDone: (items) {
               Navigator.pop(context);
-                if(items != null && items.length > 0)
-                  Navigator.pop(context, items[0].source);
+              if(items != null && items.length > 0)
+                Navigator.pop(context, items[0].source);
             },
             onCancel: () => Navigator.pop(context),
           ),

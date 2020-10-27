@@ -2,6 +2,7 @@ import 'dart:io';
 
 
 import 'package:flutter/material.dart';
+import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
@@ -119,7 +120,7 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
   }
 
   Widget getUser(UserBlocStates state) {
-    if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false)
+    if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false) {
       return Container(
         color: AppColors.transparent,
         width: 30, height: 30, child: IconButton(
@@ -129,19 +130,19 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
       padding: EdgeInsets.all(0),
       icon: ImageIcon(AssetImage(Resources.USER_PLACEHOLDER_IMG ) ,color: AppColors.white ,size: 25,),
     ));
-    else
+    } else {
       return Container(
           color: AppColors.transparent,
            height: 30, child: FlatButton(
         onPressed: ()async{
           await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-          setState(() {});
         },
         padding: EdgeInsets.all(0),
         child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(
           color: AppColors.white,
         ),),
       ));
+    }
   }
 
 

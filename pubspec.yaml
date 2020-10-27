@@ -1,5 +1,5 @@
 name: picknprint
-description: PickNprint is application to help user memorize each moment of his life
+description: pick and print is application to help user memorize each moment of his life
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -13,7 +13,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  bloc: 6.1.0
   flutter_bloc: 6.0.6
+
   easy_localization: 2.3.3
   fluttertoast: 7.1.1
   http: 0.12.2
@@ -31,6 +33,9 @@ dependencies:
   intl: 0.16.1
   flutter_facebook_login: 3.0.0
   flutter_webview_plugin: 0.3.11
+
+
+
 
 
 

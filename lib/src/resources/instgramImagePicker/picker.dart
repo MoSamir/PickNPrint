@@ -193,7 +193,7 @@ class _InstagramImagePickerState extends State<InstagramImagePicker>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            width: (300),
+            width: 300,
             child: RaisedButton(
               color: Colors.indigo,
               child: Text(

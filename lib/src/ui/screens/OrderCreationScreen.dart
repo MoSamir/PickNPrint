@@ -1,10 +1,10 @@
 import 'dart:io';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/OrderCreationBloc.dart';
@@ -124,8 +124,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                       color: AppColors.lightBlue,
                       fontSize: 20,
                     ), textAlign: TextAlign.start,),
-
-
                     SizedBox(height: 5,),
                     Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
                     SizedBox(height: 5,),
@@ -166,7 +164,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                       width: MediaQuery.of(context).size.width,
                       color: AppColors.lightBlack,
                     ),
-
                     SizedBox(height: 5,),
                     Container(
                       height: 70,
@@ -187,9 +184,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                       width: MediaQuery.of(context).size.width,
                       color: AppColors.lightBlack,
                     ),
-
-
-
                     SizedBox(height: 5,),
                     Container(
                       height: 70,
@@ -210,8 +204,8 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                       width: MediaQuery.of(context).size.width,
                       color: AppColors.lightBlack,
                     ),
-
                     SizedBox(height: 10,),
+
                     Text((LocalKeys.PROMO_CODE).tr()),
                     buildTextField(
                       textController: promoCodeTextController,
@@ -241,7 +235,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                         ),
                       ),
                     ),
-
                     GestureDetector(
                       onTap: (){
                         orderBloc.add(CreateOrder(orderModel: widget.orderModel));
