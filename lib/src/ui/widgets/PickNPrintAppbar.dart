@@ -22,10 +22,9 @@ class PickNPrintAppbar extends StatefulWidget implements PreferredSizeWidget{
   final List<Widget> actions ;
   final String title ;
   final Color appbarColor ;
-  final hasDrawer ;
-  final Function onDrawerIconClick;
+
   final bool centerTitle , autoImplyLeading;
-  PickNPrintAppbar({this.actions, this.onDrawerIconClick ,this.hasDrawer , this.appbarColor, this.title , this.autoImplyLeading , this.centerTitle});
+  PickNPrintAppbar({this.actions, this.appbarColor, this.title , this.autoImplyLeading , this.centerTitle});
 
 
 
@@ -41,8 +40,6 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
   @override
   void initState() {
     super.initState();
-
-
   }
 
   @override
@@ -86,27 +83,15 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
           child: AppBar(
             brightness: Brightness.light,
             backgroundColor: widget.appbarColor ?? AppColors.lightBlack,
-//            leading: Wrap(
-//              children: <Widget>[
-//                Visibility(
-//                  visible: widget.hasDrawer ?? false,
-//                  child: IconButton(
-//                    padding: EdgeInsets.all(0),
-//                    icon: Icon(Icons.drag_handle , color: AppColors.white, size: 20,),
-//                    onPressed: widget.onDrawerIconClick ?? (){},
-//                  ),
-//                ),
-//              ],
-//            ),
-            flexibleSpace: Align(
+            flexibleSpace: widget.title == null || widget.title.length == 0 ? Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Image.asset(Resources.APPBAR_LOGO_IMG , width: MediaQuery.of(context).size.width * .25 , height: 40,),
               ),
-            ),
+            ) : Container(width: 0, height: 0,),
             title: Text(widget.title ?? ''),
-            actions: [
+            actions: widget.actions ?? [
               getCartSize(),
               getUser(state),
             ],

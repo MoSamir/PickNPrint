@@ -106,7 +106,7 @@ class _InstagramImagePickerState extends State<InstagramImagePicker>
 
   void _onDone() {
     widget.onDone(_selectedPhotos);
-    _reset();
+    return;
   }
 
   void _onLogout() async {

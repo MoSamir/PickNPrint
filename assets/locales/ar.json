@@ -139,7 +139,10 @@
   "MY_SAVED_ORDERS": "طلباتي المحفوظه",
   "MY_ACTIVE_ORDERS": "طلباتي الحاليه",
   "CREATE_NEW_ORDER": "اصنع طلب جديد",
-  "APP_LANGUAGE": "English"
+  "APP_LANGUAGE": "English",
+  "ABOUT_SCREEN_TITLE": "حول التطبيق",
+  "SELECT_AT_LEAST_ONE_IMAGE": "يرجي اختيار صوره واحده علي الاقل",
+  "ADD_MORE_IMAGES": "اضافه صوره اضافيه \n 35 جنيه"
 
 }
 

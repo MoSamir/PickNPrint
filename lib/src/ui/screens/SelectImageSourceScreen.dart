@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
-import 'package:picknprint/src/resources/Constants.dart';
+import 'package:picknprint/src/resources/instgramImagePicker/model/photo.dart' as instgramPhoto;
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 
@@ -25,7 +25,6 @@ class SelectImageSourceScreen extends StatefulWidget {
 class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -304,14 +303,16 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
   }
 
   void _pickImageFromInstgram() async{
-    var accessToken;
+    String accessToken ;
     accessToken = await InstagramAuth().accessToken;
     if (accessToken == null) {
-      accessToken = await Navigator.push(
+      List<String> loginInfo = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => InstagramWebViewLoginPage(),
           ));
+
+      accessToken = loginInfo[0];
 
       // if user canceled the operation
       if (accessToken == null) return;
@@ -324,8 +325,14 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
         builder: (context) => InstagramImagePicker(
           accessToken,
           showLogoutButton: true,
-          onDone: (items) {
+          onDone: (List<instgramPhoto.Photo> items) {
             Navigator.pop(context);
+            if(items != null && items.length > 0){
+              Navigator.pop(context , items[0].url);
+              return;
+            }
+            Navigator.pop(context);
+            return;
           },
           onCancel: () => Navigator.pop(context),
         ),

@@ -8,14 +8,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
+import 'package:picknprint/src/ui/screens/AboutScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/NumberedBoxWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../BaseScreen.dart';
@@ -59,31 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
         listener: (context , state){
           if (state is ApplicationDataLoadingFailureState) {
             if (state.error.errorCode == HttpStatus.requestTimeout) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return NetworkErrorView();
-                  });
-            } else if (state.error.errorCode ==
-                HttpStatus.serviceUnavailable) {
-              Fluttertoast.showToast(
-                  msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            } else {
-              Fluttertoast.showToast(
-                  msg: state.error.errorMessage ?? '',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              UIHelpers.showNetworkError(context);
+              return;
+            }
+            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              return;
+            }
+            else {
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+              return;
             }
           }
         },
@@ -175,7 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(height: 10,),
                         Center(
                           child: GestureDetector(
-                            onTap: (){},
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AboutScreen()));
+                            },
                             child: Container(
                               width: (200),
                               height: (40),

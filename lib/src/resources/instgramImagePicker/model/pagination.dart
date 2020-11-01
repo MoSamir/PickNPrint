@@ -7,5 +7,5 @@ class Pagination {
   );
 
   Pagination.fromJson(Map json)
-      :next = json != null ? json['next_url'] : '';
+      :next = json != null ? json['after'] : '';
 }

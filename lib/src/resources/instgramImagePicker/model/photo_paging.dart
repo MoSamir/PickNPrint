@@ -7,33 +7,18 @@ class PhotoPaging {
 
   PhotoPaging.fromJson(Map json){
     data = <Photo>[];
-    var albums = json['data'] as List ?? [];
-    albums.forEach((album){
 
-      try {
-        (album['carousel_media'] as List).forEach((value) {
-          try {
-            Photo newPhoto = Photo.fromJson(value['images']['low_resolution']);
-            data.add(newPhoto);
-          }
-          catch (e) {}
-        });
-      }
-      catch (e) {
-        // single photos
-        try {
-          Photo newPhoto = Photo.fromJson(album['images']['low_resolution']);
-          data.add(newPhoto);
-        }
-        catch (e) {}
-
-      }
-    });
-
+    try {
+      (json['data'] as List).forEach((element) {
+        data.add(Photo(100,100, element['media_url']));
+      });
+    } catch(exception){
+      print("Exception Parsing Images $exception");
+    }
 
 
     // if there are more than 20 photos
-    pagination = Pagination.fromJson(json['pagination']);
+    pagination = Pagination.fromJson(json['paging']);
   }
 //      : data = (json['data'][0]['images'] as Map)
 //      .map((key, value) => Photo.fromJson(value))

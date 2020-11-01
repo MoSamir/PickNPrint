@@ -11,10 +11,11 @@ import '../../main.dart';
 
 class BaseScreen extends StatelessWidget {
   final Widget child;
-  final bool hasDrawer;
+  final bool hasDrawer , hasAppbar;
+  final PickNPrintAppbar customAppbar;
+  final String screenTitle ;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  BaseScreen({this.child, this.hasDrawer});
+  BaseScreen({this.child, this.hasDrawer , this.customAppbar , this.hasAppbar, this.screenTitle});
 
 
   @override
@@ -28,11 +29,9 @@ class BaseScreen extends StatelessWidget {
         child: SafeArea(
           child: Scaffold(
             key: scaffoldKey,
-            drawer: NavigationDrawer(),
-            appBar: PickNPrintAppbar(
-              hasDrawer: hasDrawer,
-              appbarColor: AppColors.black,
-            ),
+            drawer: resolveDrawer(),
+
+            appBar: resolveAppbar(),
             body: CustomScrollView(
               shrinkWrap: true,
               anchor: 0.0,
@@ -63,5 +62,29 @@ class BaseScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget resolveAppbar() {
+    Widget appBar = PickNPrintAppbar(
+      autoImplyLeading: hasDrawer,
+      appbarColor: AppColors.black,
+      title: screenTitle ?? '',
+    ) ;
+    if((hasAppbar ?? true)) {
+      if(customAppbar != null) {
+        appBar = customAppbar;
+      }
+    }
+    else {
+      appBar = PreferredSize(
+        preferredSize: Size.zero,
+        child: Container(),
+      );
+    }
+    return appBar ;
+  }
+
+  Widget resolveDrawer() {
+    return hasDrawer ? NavigationDrawer() : null;
   }
 }

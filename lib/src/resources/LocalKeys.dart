@@ -11,6 +11,10 @@ class LocalKeys{
 
 
 
+
+
+
+
  //--------------------------------- HOME SCREEN ------------------------------
 
   static const String PICK_KEY = "PICK_KEY";
@@ -42,6 +46,11 @@ class LocalKeys{
   static const String PROCEED_TO_CHECKOUT = "PROCEED_TO_CHECKOUT";
   static const String ADD_TO_CART_AND_CONTINUE_SHOPPING = "ADD_TO_CART_AND_CONTINUE_SHOPPING";
   static const String CHOOSE_DIFFERENT_SET = "CHOOSE_DIFFERENT_SET";
+  static const String SELECT_AT_LEAST_ONE_IMAGE = "SELECT_AT_LEAST_ONE_IMAGE";
+  static const String ADD_MORE_IMAGES = "ADD_MORE_IMAGES";
+
+
+
 
 
   //------------------- SELECT IMAGE SOURCE SCREEN -----------------------------
@@ -225,6 +234,13 @@ class LocalKeys{
 
   static const String MY_SAVED_ORDERS = "MY_SAVED_ORDERS";
   static const String CREATE_NEW_ORDER = "CREATE_NEW_ORDER";
+
+  //-------------------------- ABOUT SCREEN ---------------------------------
+
+  static const String ABOUT_SCREEN_TITLE = "ABOUT_SCREEN_TITLE";
+
+
+
 
 
 

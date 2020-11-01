@@ -24,6 +24,7 @@ import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/UserAddressCard.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 import 'OrderCreationScreen.dart';
 class ShippingAddressScreen extends StatefulWidget {
@@ -127,31 +128,16 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
         listener: (context,  state){
           if (state is UserDataLoadingFailedState) {
             if (state.error.errorCode == HttpStatus.requestTimeout) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return NetworkErrorView();
-                  });
-            } else if (state.error.errorCode ==
-                HttpStatus.serviceUnavailable) {
-              Fluttertoast.showToast(
-                  msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            } else {
-              Fluttertoast.showToast(
-                  msg: state.error.errorMessage ?? '',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              UIHelpers.showNetworkError(context);
+              return;
+            }
+            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              return;
+            }
+            else {
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+              return;
             }
           }
         },

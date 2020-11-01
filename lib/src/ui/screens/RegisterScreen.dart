@@ -21,6 +21,7 @@ import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -75,32 +76,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: BlocConsumer(
         listener: (context, state){
           if (state is RegistrationFailedState) {
+
             if (state.error.errorCode == HttpStatus.requestTimeout) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return NetworkErrorView();
-                  });
-            } else if (state.error.errorCode ==
-                HttpStatus.serviceUnavailable) {
-              Fluttertoast.showToast(
-                  msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            } else {
-              Fluttertoast.showToast(
-                  msg: state.error.errorMessage ?? '',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              UIHelpers.showNetworkError(context);
+              return;
+            }
+            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              return;
+            }
+            else {
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+              return;
             }
           }
           else if(state is RegistrationSuccessState){

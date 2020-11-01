@@ -6,9 +6,8 @@ import 'InstagramAuth.dart';
 class InstagramWebViewLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String url =
-        "https://instagram.com?client_id=1677ed07ddd54db0a70f14f9b1435579&scope=user_profile,user_media&redirect_uri=http://instagram.pixelunion.net&response_type=code&hl=en";
-        InstagramAuth().signInWithInstagram(context);
+    String url = "https://api.instagram.com/oauth/authorize?client_id=343329190090671&scope=user_profile,user_media&redirect_uri=https://dawayerstudio.com/&response_type=code&hl=en";
+    InstagramAuth().signInWithInstagram(context);
 
     return WebviewScaffold(
       url: url,

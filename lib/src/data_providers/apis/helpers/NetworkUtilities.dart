@@ -10,9 +10,6 @@ import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 
-import 'ApiParseKeys.dart';
-import 'URL.dart';
-
 class NetworkUtilities {
   static Future<bool> isConnected() async {
     try {
@@ -34,7 +31,6 @@ class NetworkUtilities {
 
     try {
       var serverResponse = await http.get(methodURL, headers: requestHeaders);
-
       if (serverResponse.statusCode == 200) {
         getResponse = ResponseViewModel(
           isSuccess: true,
@@ -51,6 +47,12 @@ class NetworkUtilities {
         responseData: null,
       );
     } catch (exception) {
+
+      debugPrint("Exception in Get ==>");
+      print(exception);
+      debugPrint("********************");
+
+
       getResponse = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -79,7 +81,7 @@ class NetworkUtilities {
       http.Response serverResponse = await http.post(methodURL,
           headers: requestHeaders,
           body: acceptJson ? json.encode(requestBody) : requestBody);
-      if (serverResponse.statusCode == 200) {
+      if (serverResponse.statusCode == HttpStatus.ok) {
         postResponse = ResponseViewModel(
           isSuccess: true,
           errorViewModel: null,
@@ -95,6 +97,12 @@ class NetworkUtilities {
         responseData: null,
       );
     } catch (exception) {
+
+      debugPrint("Exception in Post ==>");
+      print(exception);
+      debugPrint("********************");
+
+
       postResponse = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -156,7 +164,7 @@ class NetworkUtilities {
           responseData: null,
         );
 
-        if (uploadResponse.errorViewModel.errorCode == 404) {
+        if (uploadResponse.errorViewModel.errorCode == HttpStatus.notFound) {
           uploadResponse = ResponseViewModel(
             isSuccess: false,
             errorViewModel: ErrorViewModel(
@@ -211,7 +219,7 @@ class NetworkUtilities {
 
   static ResponseViewModel handleError(http.Response serverResponse) {
     ResponseViewModel responseViewModel;
-    if (serverResponse.statusCode == 404 || serverResponse.statusCode == 500) {
+    if (serverResponse.statusCode != HttpStatus.notFound || serverResponse.statusCode == HttpStatus.internalServerError) {
       responseViewModel = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -263,7 +271,6 @@ class NetworkUtilities {
         responseData: null,
       );
     }
-
     return responseViewModel;
   }
 }

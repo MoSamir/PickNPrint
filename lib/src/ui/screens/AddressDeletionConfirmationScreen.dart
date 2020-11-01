@@ -12,6 +12,7 @@ import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:easy_localization/easy_localization.dart' as el;
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 class AddressDeletionConfirmationScreen extends StatefulWidget {
 
@@ -34,34 +35,19 @@ class _AddressDeletionConfirmationScreenState extends State<AddressDeletionConfi
       child: Scaffold(
         backgroundColor: AppColors.blackBg,
         body: BlocConsumer(
-          listener: (context, state){
-            if (state is UserDataLoadingFailedState) {
+          listener: (context, state) async{
+            if (state is UserDataLoadingFailedState)  {
               if (state.error.errorCode == HttpStatus.requestTimeout) {
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) {
-                      return NetworkErrorView();
-                    });
-              } else if (state.error.errorCode ==
-                  HttpStatus.serviceUnavailable) {
-                Fluttertoast.showToast(
-                    msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
-              } else {
-                Fluttertoast.showToast(
-                    msg: state.error.errorMessage ?? '',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
+                UIHelpers.showNetworkError(context);
+                return;
+              }
+              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+                return;
+              }
+              else {
+                UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+                return;
               }
             }
           },

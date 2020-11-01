@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as ll;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +11,10 @@ import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/OrderCreationBloc.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
@@ -23,6 +25,7 @@ import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 import 'AddNewShippingAddressScreen.dart';
 import 'SelectImageSourceScreen.dart';
@@ -63,32 +66,18 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
           child: BlocConsumer(
             listener: (context , state){
               if (state is OrderCreationLoadingFailureState) {
+
                 if (state.error.errorCode == HttpStatus.requestTimeout) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) {
-                        return NetworkErrorView();
-                      });
-                } else if (state.error.errorCode ==
-                    HttpStatus.serviceUnavailable) {
-                  Fluttertoast.showToast(
-                      msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                } else {
-                  Fluttertoast.showToast(
-                      msg: state.error.errorMessage ?? '',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
+                  UIHelpers.showNetworkError(context);
+                  return;
+                }
+                else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+                  UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+                  return;
+                }
+                else {
+                  UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+                  return;
                 }
               }
               else if(state is OrderSavingSuccessState){
@@ -265,9 +254,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             },
             title: Text((LocalKeys.WITH_PATH).tr()),
           ),
-
-
-
         ],
       ),
     );
@@ -279,37 +265,84 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     for(int i = 0 ; i < widget.userSelectedPackage.packageSize ; i++){
       pictures.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+        child: Stack(
+          children: [
+            AnimatedContainer(
+              duration: Duration(seconds: 2),
+              height: (150),
+              width: (150),
+              decoration: BoxDecoration(
+                color: userOrder.frameWithPath ? AppColors.black : AppColors.white,
+                border: Border.all(
+                  color: userOrder.isWhiteFrame ? AppColors.offWhite.withOpacity(.8) : AppColors.black,
+                  width: 5,
+                ),
+              ),
+              child: AnimatedContainer(
+                margin: EdgeInsets.all(8),
+                duration: Duration(seconds: 2),
+                child: userOrder.userImages[i].isEmpty ?  Center(
+                  child: IconButton(
+                    icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
+                    onPressed: ()async{
+                      String imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
+                      userOrder.userImages[i] = imagePath ?? '';
+                      setState(() {});
+                    },
+                  ),
+                ) :  getImageFromPath(userOrder.userImages[i]),
+              ),
+            ),
+            Visibility(
+              child: Positioned.directional(
+                textDirection: ll.EasyLocalization.of(context).locale.languageCode == "en" ? TextDirection.ltr : TextDirection.rtl,
+                top: 6,
+                start: 6,
+                child: GestureDetector(
+                  onTap : () => removeSelectionImage(i),
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: AppColors.red,
+                      shape: BoxShape.circle,
+
+                    ),
+
+                    child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                  ),
+                ),
+              ),
+              visible: userOrder.userImages[i] != null && userOrder.userImages[i].length > 0,
+              replacement: Container(width: 0, height: 0,),
+            ),
+          ],
+        ),
+      ),);
+    }
+
+
+    pictures.add(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+      child: GestureDetector(
+        onTap: _addExtraFrame,
         child: AnimatedContainer(
           duration: Duration(seconds: 2),
           height: (150),
           width: (150),
-          decoration: BoxDecoration(
-            color: userOrder.frameWithPath ? AppColors.black : AppColors.white,
-
-            border: Border.all(
-              color: userOrder.isWhiteFrame ? AppColors.offWhite.withOpacity(.8) : AppColors.black,
-              width: 5,
-            ),
-          ),
+          color: AppColors.lightBlue,
           child: AnimatedContainer(
             margin: EdgeInsets.all(8),
             duration: Duration(seconds: 2),
-
-            child: userOrder.userImages[i].isEmpty ?  Center(
-              child: IconButton(
-                icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
-                onPressed: ()async{
-                  String imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
-                  userOrder.userImages[i] = imagePath ?? '';
-                  setState(() {});
-                },
-              ),
-            ) :  getImageFromPath(userOrder.userImages[i]),
+            child: Center(
+              child: Text((LocalKeys.ADD_MORE_IMAGES).tr() , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
+            ),
           ),
         ),
       ),
-      );
-    }
+    ),);
+
+
     return ListView(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -317,20 +350,10 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     );
   }
 
-  getImageFromPath(String userImage) {
 
-
-    
-    
-    if(userImage.toLowerCase().contains('http') || userImage.toLowerCase().contains('https')){
-      return Image.network(userImage , fit: BoxFit.contain,);
-    } else {
-      return Image.file(File(userImage) , fit: BoxFit.contain,);
-    }
-  }
   void _saveOrderForLater() async{
     if(authenticationBloc.currentUser != null && authenticationBloc.currentUser.isAnonymous() == false) {
-      String errorMessageIfExist = await validaOrder();
+      String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
       if(errorMessageIfExist != null){
        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: errorMessageIfExist,)));
       }
@@ -341,26 +364,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
 
-
-
-  Future<String> validaOrder() async{
-    for(int i = 0 ; i < userOrder.userImages.length ; i++){
-      String imagePath = userOrder.userImages[i];
-      if(imagePath == null || imagePath.isEmpty){
-        return (LocalKeys.SOME_IMAGES_IS_MISSING).tr();
-      }
-      File imageFile = File(imagePath);
-      var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
-      if(decodedImage.width < 50  || decodedImage.height < 50){
-        return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
-      }
-    }
-    return null;
-  }
-
   void _saveOrderAndContinueShopping() async{
     if(authenticationBloc.currentUser != null && authenticationBloc.currentUser.isAnonymous() == false) {
-      String errorMessageIfExist = await validaOrder();
+      String errorMessageIfExist = await await createOrderBloc.validateOrder(userOrder);
       if(errorMessageIfExist != null){
         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: errorMessageIfExist,)));
       }
@@ -370,21 +376,60 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginScreen()));
   }
 
-  void _proceedToCheckout() {
-    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-    } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
-        comingFromRegistration: false,
-      )));
+  void _proceedToCheckout() async {
+
+
+    String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
+
+    if(errorMessageIfExist != null){
+      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
+      return;
     } else {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+      if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+      } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
+          comingFromRegistration: false,
+        )));
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+      }
     }
   }
 
-
   void _addToCartAndContinueShopping() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderAddedToCartSuccessfullyScreen()));
+  }
+
+  Widget getImageFromPath(String userImage) {
+
+    if(userImage.toLowerCase().contains('http') || userImage.toLowerCase().contains('https')){
+      return Image.network(userImage , fit: BoxFit.contain,);
+    } else {
+      return Image.file(File(userImage) , fit: BoxFit.contain,);
+    }
+  }
+
+  Future<void> _addExtraFrame() async{
+
+    String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
+    if(errorMessageIfExist != null){
+      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
+      return;
+    }
+
+    setState(() {
+      userOrder.orderPackage.packageSize++;
+      userOrder.userImages.add('');
+    });
+  }
+
+  void removeSelectionImage(int index) {
+
+  setState(() {
+    userOrder.userImages[index] = '';
+  });
+
   }
 }
 

@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
-import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
+import 'package:picknprint/src/resources/LocalKeys.dart';
 
 class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
   OrderCreationBloc(CreateOrderStates initialState) : super(initialState);
@@ -66,4 +70,36 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       return ;
     }
   }
+
+
+
+
+  Future<String> validateOrder(OrderModel userOrder) async{
+    for(int i = 0 ; i < userOrder.userImages.length ; i++){
+      String imagePath = userOrder.userImages[i];
+
+      if(imagePath == null || imagePath.isEmpty){
+        return (LocalKeys.SOME_IMAGES_IS_MISSING).tr();
+      }
+
+      try{
+        File imageFile = File(imagePath);
+        var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
+        if(decodedImage.width < 50  || decodedImage.height < 50){
+          return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
+        }
+      } catch(exception){
+
+        ResponseViewModel isValidImage = await NetworkUtilities.handleGetRequest(
+          methodURL: imagePath,
+          parserFunction: (json){},
+        );
+        if(isValidImage.isSuccess == false && isValidImage.errorViewModel.errorCode == 404){
+          return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
+        }
+      }
+    }
+    return null;
+  }
+
 }

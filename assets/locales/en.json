@@ -139,7 +139,11 @@
   "MY_SAVED_ORDERS" : "My Saved Un-Completed Orders",
   "MY_ACTIVE_ORDERS" : "Current Orders",
   "CREATE_NEW_ORDER": "Create a New Order New",
-  "APP_LANGUAGE": "العربيه"
+  "APP_LANGUAGE": "العربيه",
+  "ABOUT_SCREEN_TITLE": "About us",
+  "SELECT_AT_LEAST_ONE_IMAGE": "Please select at least one image",
+  "ADD_MORE_IMAGES": "Add Extra ONE FRAME \n 35 LE"
+
 
 }
 
