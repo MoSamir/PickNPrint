@@ -41,7 +41,6 @@ class OrderSavingConfirmationScreen extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
             },
             child: Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(

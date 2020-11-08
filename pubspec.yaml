@@ -34,6 +34,9 @@ dependencies:
   flutter_facebook_login: 3.0.0
   flutter_webview_plugin: 0.3.11
   flutter_launcher_icons: 0.8.1
+  flutter_staggered_animations: 0.1.2
+
+
 
 
 

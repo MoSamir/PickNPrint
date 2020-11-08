@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/RegistrationBloc.dart';
+import 'package:picknprint/src/bloc/events/RegistrationEvents.dart';
 import 'package:picknprint/src/bloc/states/RegistrationStates.dart';
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -71,89 +72,92 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      hasDrawer: true,
-      child: BlocConsumer(
-        listener: (context, state){
-          if (state is RegistrationFailedState) {
-
-            if (state.error.errorCode == HttpStatus.requestTimeout) {
-              UIHelpers.showNetworkError(context);
-              return;
-            }
-            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-              return;
-            }
-            else {
-              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-              return;
-            }
+    return BlocConsumer(
+      listener: (context, state){
+        if (state is RegistrationFailedState) {
+          if (state.error.errorCode == HttpStatus.requestTimeout) {
+            UIHelpers.showNetworkError(context);
+            return;
           }
-          else if(state is RegistrationSuccessState){
-            Navigator.pop(context);
+          else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+            UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+            return;
           }
-        },
-        builder:  (context, state){
-          return ModalProgressHUD(
-            inAsyncCall: state is RegistrationLoadingState,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(height: 5,),
-                    Text((LocalKeys.REGISTER_NEW_ACCOUNT).tr(), style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ), textAlign: TextAlign.start,),
-                    SizedBox(height: 5,),
-                    Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                    Form(
-                      key: _registrationFormKey,
-                      child: Column(
-                        children: <Widget>[
-                          buildTextField(validator: Validator.requiredField, textController: usernameTextController , focusNode: usernameFocusNode , nextNode: userMailFocusNode , hint : (LocalKeys.USER_NAME_LABEL).tr() , secured : false , autoValidate: false),
-                          buildTextField(validator: Validator.mailValidator, textController: userEmailTextController , focusNode: userMailFocusNode , nextNode: userPhoneNumberFocusNode , hint : (LocalKeys.USER_EMAIL_LABEL).tr() , secured : false , autoValidate: false),
-                          buildTextField(validator: Validator.requiredField, textController: userPhoneNumberTextController , focusNode: userPhoneNumberFocusNode , nextNode: passwordFocusNode , hint : (LocalKeys.PHONE_NUMBER_LABEL).tr() , secured : false , autoValidate: false),
-                          buildTextField(validator: Validator.requiredField, textController: passwordTextController , focusNode: passwordFocusNode , nextNode: confirmPasswordFocusNode , hint : (LocalKeys.PASSWORD_LABEL).tr() , secured : true , autoValidate: false),
-                          buildTextField(validator: (String confirmPasswordText){
-                            if(confirmPasswordText == passwordTextController.text){
-                              return null ;
-                            } else {
-                              return (LocalKeys.PASSWORDS_NOT_MATCH).tr();
-                            }
-                          }, textController: confirmPasswordTextController , focusNode: confirmPasswordFocusNode  , hint : (LocalKeys.CONFIRM_PASSWORD_LABEL).tr() , secured : true),
-                        ],
-                      ),
+          else {
+            UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+            return;
+          }
+        }
+        else if(state is RegistrationSuccessState){
+          Navigator.pop(context , [userEmailTextController.text , userPhoneNumberTextController.text]);
+        }
+      },
+      builder:  (context, state){
+        return ModalProgressHUD(
+          inAsyncCall: state is RegistrationLoadingState,
+          child: BaseScreen(
+            hasDrawer: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(height: 5,),
+                  Text((LocalKeys.REGISTER_NEW_ACCOUNT).tr(), style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ), textAlign: TextAlign.start,),
+                  SizedBox(height: 5,),
+                  Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
+                  Form(
+                    key: _registrationFormKey,
+                    child: Column(
+                      children: <Widget>[
+                        buildTextField(validator: Validator.requiredField, textController: usernameTextController , focusNode: usernameFocusNode , nextNode: userMailFocusNode , hint : (LocalKeys.USER_NAME_LABEL).tr() , secured : false , autoValidate: false),
+                        buildTextField(validator: Validator.mailValidator, textController: userEmailTextController , focusNode: userMailFocusNode , nextNode: userPhoneNumberFocusNode , hint : (LocalKeys.USER_EMAIL_LABEL).tr() , secured : false , autoValidate: false),
+                        buildTextField(validator: Validator.requiredField, textController: userPhoneNumberTextController , focusNode: userPhoneNumberFocusNode , nextNode: passwordFocusNode , hint : (LocalKeys.PHONE_NUMBER_LABEL).tr() , secured : false , autoValidate: false),
+                        buildTextField(validator: Validator.requiredField, textController: passwordTextController , focusNode: passwordFocusNode , nextNode: confirmPasswordFocusNode , hint : (LocalKeys.PASSWORD_LABEL).tr() , secured : true , autoValidate: false),
+                        buildTextField(validator: (String confirmPasswordText){
+                          if(confirmPasswordText == passwordTextController.text){
+                            return null ;
+                          } else {
+                            return (LocalKeys.PASSWORDS_NOT_MATCH).tr();
+                          }
+                        }, textController: confirmPasswordTextController , focusNode: confirmPasswordFocusNode  , hint : (LocalKeys.CONFIRM_PASSWORD_LABEL).tr() , secured : true),
+                      ],
                     ),
-                    SizedBox(height: 10,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
-                          comingFromRegistration: true,
-                        )));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: (50),
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
+                  ),
+                  SizedBox(height: 10,),
+                  GestureDetector(
+                    onTap: (){
+                      if(_registrationFormKey.currentState.validate()) {
+                        UserViewModel userModel = UserViewModel(
+                          userName: usernameTextController.text,
+                          userSavedAddresses: List<AddressViewModel>(),
+                          userMail: userEmailTextController.text,
+                          userPhoneNumber: userPhoneNumberTextController.text,
+                        );
+                        _registrationBloc.add(RegisterUser(userModel: userModel , password: passwordTextController.text));
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: (50),
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
+                      child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
                     ),
-                    SizedBox(height: 20,),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 20,),
+                ],
               ),
             ),
-          );
-        },
-        cubit: _registrationBloc,
-      ),
+          ),
+        );
+      },
+      cubit: _registrationBloc,
     );
   }
 

@@ -1,3 +1,5 @@
+/// extending from state is dangerous operation and needs to be handled carefully
+
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 
@@ -14,20 +16,23 @@ class UserDataLoadingFailedState extends UserBlocStates{
 
 
 }
-
-
 class WaitingNewPassword extends UserBlocStates {
   final String phoneNumber;
 
   WaitingNewPassword({this.phoneNumber});
 }
-
 class PhoneVerificationSuccess extends UserBlocStates {
   final String verificationCode;
 
   PhoneVerificationSuccess({this.verificationCode});
 }
-
 class ResetPasswordSuccess extends UserBlocStates {}
 
 
+/// states to handle saving new address after user loading
+class UserAddressSavedSuccessfully extends UserDataLoadedState{}
+class UserAddressSavingFailedState extends UserDataLoadedState{
+  final UserBlocEvents failedEvent ;
+  final ErrorViewModel error ;
+  UserAddressSavingFailedState({this.failedEvent , this.error});
+}

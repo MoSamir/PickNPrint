@@ -4,6 +4,7 @@ import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
@@ -14,7 +15,6 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     authenticationBloc.listen((authenticationState) {
       if(authenticationState is UserAuthenticated){
         currentLoggedInUser = authenticationState.currentUser;
-        //add(MoveToState(targetUserState: UserDataLoadedState()));
         add(LoadUserOrders());
         return ;
       }
@@ -51,6 +51,9 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     return ;
     } else if(event is LoadUserOrders){
      yield* _handleLoadingUserOrders(event);
+      return ;
+    } else if(event is SaveAddress){
+      yield* _handleAddressAdditionEvent(event);
       return ;
     }
 
@@ -143,8 +146,25 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
       userSavedOrders = List<OrderModel>();
       userSavedOrders.addAll(userOrders[2].responseData);
     }
+  }
+
+  Stream<UserBlocStates> _handleAddressAdditionEvent(SaveAddress event) async*{
+    yield UserDataLoadingState();
+    ResponseViewModel<AddressViewModel> saveAddressResponse = await Repository.saveNewAddress(newAddress : event.address);
+    if(saveAddressResponse.isSuccess){
+      currentLoggedInUser.userSavedAddresses.add(saveAddressResponse.responseData);
+      yield UserAddressSavedSuccessfully();
+      return;
+    } else {
+      yield UserAddressSavingFailedState(failedEvent: event , error: saveAddressResponse.errorViewModel);
+      return;
+    }
 
 
+
+
+
+    return ;
 
   }
 

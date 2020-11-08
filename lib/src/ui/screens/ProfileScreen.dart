@@ -15,6 +15,7 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 
 import 'package:picknprint/src/resources/Validators.dart';
+import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -45,97 +46,95 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage);
+
     return BaseScreen(
-      child: SingleChildScrollView(
-        child: BlocConsumer(
-          listener: (context , state){
-            if (state is UserDataLoadingFailedState) {
-              if (state.error.errorCode == HttpStatus.requestTimeout) {
-                UIHelpers.showNetworkError(context);
-                return;
-              }
-              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-                return;
-              }
-              else {
-                UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-                return;
-              }
+      child: BlocConsumer(
+        listener: (context , state){
+          if (state is UserDataLoadingFailedState) {
+            if (state.error.errorCode == HttpStatus.requestTimeout) {
+              UIHelpers.showNetworkError(context);
+              return;
             }
-          },
-          cubit: BlocProvider.of<UserBloc>(context),
-          builder: (context , state){
-            return ModalProgressHUD(
-              inAsyncCall: state is UserDataLoadingState,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(height: 15,),
-                    Center(
-                      child: Container(
-                        width: (100),
-                        height: (100),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: .5,
-                            color: AppColors.lightBlack,
-                          ),
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage != null  &&
-                                BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage.length > 0
-                                ? NetworkImage(BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage)
-                                : AssetImage(Resources.USER_PLACEHOLDER_IMG),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              return;
+            }
+            else {
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+              return;
+            }
+          }
+        },
+        cubit: BlocProvider.of<UserBloc>(context),
+        builder: (context , state){
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                SizedBox(height: 15,),
+                Center(
+                  child: Container(
+                    width: (100),
+                    height: (100),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: .5,
+                        color: AppColors.lightBlack,
+                      ),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage != null  &&
+                            BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage.length > 0
+                            ? NetworkImage(BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage)
+                            : AssetImage(Resources.USER_PLACEHOLDER_IMG),
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    SizedBox(height: 5,),
-                    Center(
-                      child: Text(
-                        '${(LocalKeys.HELLO_LABEL).tr()} ${BlocProvider.of<UserBloc>(context).currentLoggedInUser.userName}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: GestureDetector(
-                        onTap: (){},
-                        child: Text(
-                          (LocalKeys.EDIT_PROFILE_IMAGE).tr(),
-                          style: TextStyle(
-                            color: AppColors.lightBlue,
-                          ),
-                        ),
-                      ),
-                    ),
-                    getBasicInformationUpdateSection(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text((LocalKeys.MY_SAVED_ADDRESSES).tr() ,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),),
-                    ),
-                    getAddressBookSection(),
-                    SizedBox(height: 5,),
-                    getUpdateMyPasswordSection(),
-                    SizedBox(height: 5,),
-                    getLogoutSection(),
-                    SizedBox(height: 5,),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
+                SizedBox(height: 5,),
+                Center(
+                  child: Text(
+                    '${(LocalKeys.HELLO_LABEL).tr()} ${BlocProvider.of<UserBloc>(context).currentLoggedInUser.userName}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: GestureDetector(
+                    onTap: (){},
+                    child: Text(
+                      (LocalKeys.EDIT_PROFILE_IMAGE).tr(),
+                      style: TextStyle(
+                        color: AppColors.lightBlue,
+                      ),
+                    ),
+                  ),
+                ),
+                getBasicInformationUpdateSection(),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text((LocalKeys.MY_SAVED_ADDRESSES).tr() ,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),),
+                ),
+                getAddressBookSection(),
+                SizedBox(height: 5,),
+                getUpdateMyPasswordSection(),
+                SizedBox(height: 5,),
+                getLogoutSection(),
+                SizedBox(height: 5,),
+              ],
+            ),
+          );
+        },
       ),
       hasDrawer: true,
     );
@@ -206,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Expanded(
                 flex: 3,
                 child: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0 , vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.offWhite,
                     borderRadius: BorderRadius.only(
@@ -413,7 +412,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       return Container(
         child: GestureDetector(
-          onTap: (){},
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false, )));
+          },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             width: 200,

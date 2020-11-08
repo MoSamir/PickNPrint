@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
@@ -8,7 +11,113 @@ import 'package:picknprint/src/resources/Constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xxtea/xxtea.dart';
 
+import 'helpers/URL.dart';
+
 class UserDataProvider{
+
+  static Future<ResponseViewModel<UserViewModel>> registerNewUser(UserViewModel userModel, String userPassword) async{
+
+    Map<String,dynamic> requestBody = {
+      'name': userModel.userName ?? '',
+      'phone': userModel.userPhoneNumber,
+      'email': userModel.userMail,
+      'password': userPassword,
+      'password_confirmation': userPassword,
+    };
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders();
+    String apiURL = URL.getURL(apiPath: URL.POST_REGISTER);
+    ResponseViewModel registerUserResponse = await NetworkUtilities.handlePostRequest(
+      requestBody: requestBody,
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (registerUserRawResponse){
+        return UserViewModel.fromJson(registerUserRawResponse[ApiParseKeys.RESPONSE_SUCCESS_ROOT]);
+      },
+    );
+    return ResponseViewModel<UserViewModel>(
+      responseData: registerUserResponse.responseData,
+      isSuccess: registerUserResponse.isSuccess,
+      errorViewModel: registerUserResponse.errorViewModel,
+    );
+
+  }
+  static Future<ResponseViewModel<UserViewModel>> signIn(String userMail, String userPassword) async {
+
+    Map<String,dynamic> requestBody = {
+      'email': userMail,
+      'password': userPassword,
+    };
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders();
+    String apiURL = URL.getURL(apiPath: URL.POST_LOGIN);
+    ResponseViewModel signInResponse = await NetworkUtilities.handlePostRequest(
+      requestBody: requestBody,
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (signInRawResponse){
+        return UserViewModel.fromJson(signInRawResponse[ApiParseKeys.RESPONSE_SUCCESS_ROOT]);
+      },
+    );
+    return ResponseViewModel<UserViewModel>(
+      responseData: signInResponse.responseData,
+      isSuccess: signInResponse.isSuccess,
+      errorViewModel: signInResponse.errorViewModel,
+    );
+
+  }
+  static signOut() async {
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: URL.GET_LOGOUT);
+    ResponseViewModel signOutResponse = await NetworkUtilities.handleGetRequest(
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (signOutResponse){
+        return true ;
+      },
+    );
+    return ResponseViewModel<UserViewModel>(
+      responseData: signOutResponse.responseData,
+      isSuccess: signOutResponse.isSuccess ||
+      (signOutResponse.errorViewModel != null && signOutResponse.errorViewModel.errorCode == 401),
+      errorViewModel: signOutResponse.errorViewModel,
+    );
+  }
+
+  static saveUserAddress(AddressViewModel newAddress) async{
+    Map<String,dynamic> requestBody = {
+      'buildingNumber': newAddress.buildingNumber ?? 0,
+      'streetName': newAddress.addressName ?? '',
+      'city_id': newAddress.city.id ?? 0,
+      'area_id': newAddress.area.id ?? 0,
+    };
+    if(newAddress.additionalInformation != null && newAddress.additionalInformation.length > 0){
+      requestBody.putIfAbsent('remarks', () => newAddress.additionalInformation);
+    }
+
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: URL.POST_SAVE_NEW_ADDRESS);
+    ResponseViewModel signInResponse = await NetworkUtilities.handlePostRequest(
+      requestBody: requestBody,
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (signInRawResponse){
+        return UserViewModel.fromJson(signInRawResponse[ApiParseKeys.RESPONSE_SUCCESS_ROOT]);
+      },
+    );
+    return ResponseViewModel<UserViewModel>(
+      responseData: signInResponse.responseData,
+      isSuccess: signInResponse.isSuccess,
+      errorViewModel: signInResponse.errorViewModel,
+    );
+
+  }
+
+
 
   static getUserToken() async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
@@ -16,31 +125,6 @@ class UserDataProvider{
         .getString(Constants.SHARED_PREFERENCE_USER_TOKEN_KEY);
   }
 
-  static signOut() async {
-    String token = await getUserToken();
-
-//    ResponseViewModel responseViewModel =
-//    await NetworkUtilities.handleGetRequest(
-//        methodURL: URL.getURL(functionName: URL.GET_LOGOUT),
-//        requestHeaders: NetworkUtilities.getHeaders(
-//            customHeaders: {'Authorization': 'Bearer $token'}),
-//        parserFunction: (responseJson) => true);
-//
-//    // special handling for logout
-//    // if logout returned 401 it means that the user is forced logged out , so logout is assumed to be called and returned success
-//    if (!responseViewModel.isSuccess &&
-//        responseViewModel.errorViewModel.errorCode == 401) {
-//      responseViewModel = ResponseViewModel<bool>(
-//        responseData: true,
-//        isSuccess: true,
-//        errorViewModel: null,
-//      );
-//    }
-    return ResponseViewModel<bool>(
-        errorViewModel: null,
-        isSuccess: true,
-        responseData: true);
-  }
 
   static saveUserToken(String userToken) async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
@@ -55,66 +139,8 @@ class UserDataProvider{
     await saveUserToken(userViewModel.userToken);
   }
 
-  static Future<ResponseViewModel<UserViewModel>> signIn(
-      String userPhoneNumber, String userPassword) async {
 
-//    ResponseViewModel login = await NetworkUtilities.handlePostRequest(
-//        methodURL: '${URL.getURL(functionName: URL.POST_LOGIN)}?token=true',
-//        requestHeaders: NetworkUtilities.getHeaders(),
-//        requestBody: {
-//          "phone": userPhoneNumber,
-//          "password": userPassword,
-//          "notification_token": pushNotificationsToken
-//        },
-//        parserFunction: UserViewModel.fromJson);
-    ResponseViewModel<UserViewModel> userResponse =
-    ResponseViewModel<UserViewModel>(
-      errorViewModel: null,
-      isSuccess: true,
-      responseData: UserViewModel(
-        userId: 1,
-        userSavedAddresses: [
-          AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
 
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          AddressViewModel(
-            buildingNumber: '27',
-            addressName: 'Work',
-            additionalInformation: 'Sakalia Street',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-
-        ],
-        userMail: 'mohamedsamir731@gmai.com',
-        userToken: '',
-        userName: 'Mohamed Samir',
-        userPhoneNumber: '+201013615170'
-      ),
-    );
-    return userResponse;
-  }
 
   static getPassword() async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
@@ -156,21 +182,6 @@ class UserDataProvider{
     }
   }
 
-  static Future<ResponseViewModel<UserViewModel>> registerNewUser(UserViewModel userModel, String userPassword) async{
-    
-    await Future.delayed(Duration(seconds: 2),(){});
-    return ResponseViewModel<UserViewModel>(
-      isSuccess: true,
-      responseData: UserViewModel(
-        userToken: '',
-        userId: 1,
-        userName: 'Username',
-        userPhoneNumber: '+201013615170',
-        userMail: 'mohamedsamir731@gmail.com'
-      ),
-    );
-    
-  }
 
   static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
 
@@ -455,9 +466,8 @@ class UserDataProvider{
         ),
       ],
     );
-
-
   }
+
 
 
 

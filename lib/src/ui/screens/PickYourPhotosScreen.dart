@@ -57,36 +57,36 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
-      child: Scaffold(
-        key: _scaffoldKey,
-        body: BaseScreen(
-          hasDrawer: true,
-          child: BlocConsumer(
-            listener: (context , state){
-              if (state is OrderCreationLoadingFailureState) {
+    return ModalProgressHUD(
+      inAsyncCall: createOrderBloc is OrderCreationLoadingState,
+      child: WillPopScope(
+        onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
+        child: Scaffold(
+          key: _scaffoldKey,
+          body: BaseScreen(
+            hasDrawer: true,
+            child: BlocConsumer(
+              listener: (context , state){
+                if (state is OrderCreationLoadingFailureState) {
 
-                if (state.error.errorCode == HttpStatus.requestTimeout) {
-                  UIHelpers.showNetworkError(context);
-                  return;
+                  if (state.error.errorCode == HttpStatus.requestTimeout) {
+                    UIHelpers.showNetworkError(context);
+                    return;
+                  }
+                  else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+                    UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+                    return;
+                  }
+                  else {
+                    UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+                    return;
+                  }
                 }
-                else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-                  UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-                  return;
+                else if(state is OrderSavingSuccessState){
                 }
-                else {
-                  UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-                  return;
-                }
-              }
-              else if(state is OrderSavingSuccessState){
-              }
-            },
-            builder: (context , state){
-              return ModalProgressHUD(
-                inAsyncCall: state is OrderCreationLoadingState,
-                child: Column(
+              },
+              builder: (context , state){
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
@@ -143,10 +143,10 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     SizedBox(height: 10,),
 
                   ],
-                ),
-              );
-            },
-            cubit: createOrderBloc,
+                );
+              },
+              cubit: createOrderBloc,
+            ),
           ),
         ),
       ),

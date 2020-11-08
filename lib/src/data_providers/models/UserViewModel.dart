@@ -1,3 +1,4 @@
+import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 
@@ -25,24 +26,34 @@ class UserViewModel {
   }
 
   Map<String,dynamic> toJson() {
-    return {
-    "userId": userId,
-    "userName": userName ,
-    "userMail" : userMail  ,
-    "userPhoneNumber": userPhoneNumber ,
-    "userToken": userToken ,
-    "userProfileImage": userProfileImage,
-    };
+
+
+    Map<String,dynamic> userJson = Map<String,dynamic>();
+    Map<String,dynamic> userDataMap = Map<String,dynamic>();
+
+    userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_ID, () => userId);
+    userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_NAME, () => userName);
+    userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_PHONE_NUMBER, () => userPhoneNumber);
+    userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_EMAIL, () => userMail);
+    userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_IMAGE, () => userProfileImage);
+    userJson.putIfAbsent(ApiParseKeys.REGISTER_USER_DATA, () => userDataMap);
+    userJson.putIfAbsent(ApiParseKeys.REGISTER_USER_TOKEN, () => userToken);
+
+    return userJson;
+
   }
 
   static UserViewModel fromJson(userJson) {
+
+    String userTokenInformation = userJson[ApiParseKeys.REGISTER_USER_TOKEN];
+    Map<String,dynamic> userDataInformation = userJson[ApiParseKeys.REGISTER_USER_DATA];
     return UserViewModel(
-      userId: userJson['userId'],
-      userName: userJson['userName'],
-      userPhoneNumber: userJson['userPhoneNumber'],
-      userMail: userJson['userMail'],
-      userToken: userJson['userToken'],
-      userProfileImage: userJson['userProfileImage'],
+      userId: userDataInformation[ApiParseKeys.REGISTER_USER_ID] ?? '',
+      userName:userDataInformation[ApiParseKeys.REGISTER_USER_NAME] ,
+      userPhoneNumber: userDataInformation[ApiParseKeys.REGISTER_USER_PHONE_NUMBER] ?? '',
+      userMail: userDataInformation[ApiParseKeys.REGISTER_USER_EMAIL] ?? '',
+      userToken: userTokenInformation ?? '',
+      userProfileImage: userDataInformation[ApiParseKeys.REGISTER_USER_IMAGE] ?? '',
       userSavedAddresses: List<AddressViewModel>(),
     );
   }

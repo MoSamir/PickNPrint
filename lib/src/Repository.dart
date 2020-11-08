@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -81,6 +82,8 @@ class Repository {
       apiResponse.responseData.sort((a,b)=> a.packageSize > b.packageSize ? 1 : 0);
       return apiResponse;
   }
+  static Future<ResponseViewModel<List<LocationModel>>> getSystemSupportedAreas() async => await ApplicationDataProvider.getSystemSupportedAreas();
+
 
   static Future<UserViewModel> makeSilentLogin() async {
     bool tokenRefreshed = await refreshToken();
@@ -125,6 +128,10 @@ class Repository {
   }
 
 
+  static Future<ResponseViewModel<AddressViewModel>> saveNewAddress({AddressViewModel newAddress}) async
+  => await UserDataProvider.saveUserAddress(newAddress);
+
+
 
   static Future<ResponseViewModel<void>> loginWithFacebook() async {
 
@@ -151,6 +158,9 @@ class Repository {
   static Future<ResponseViewModel<List<OrderModel>>>loadActiveOrders() async => UserDataProvider.loadActiveOrders();
   static Future<ResponseViewModel<List<OrderModel>>>loadClosedOrders() async => UserDataProvider.loadClosedOrders();
   static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => UserDataProvider.loadSavedOrders();
+
+
+
 
 
 

@@ -219,7 +219,7 @@ class NetworkUtilities {
 
   static ResponseViewModel handleError(http.Response serverResponse) {
     ResponseViewModel responseViewModel;
-    if (serverResponse.statusCode != HttpStatus.notFound || serverResponse.statusCode == HttpStatus.internalServerError) {
+    if (serverResponse.statusCode == HttpStatus.notFound || serverResponse.statusCode == HttpStatus.internalServerError) {
       responseViewModel = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -228,13 +228,12 @@ class NetworkUtilities {
         ),
         responseData: null,
       );
-    } else if (serverResponse.statusCode == 422) {
+    }
+    else if (serverResponse.statusCode == 422) {
       List<String> errors = List();
       try {
-        (json.decode(serverResponse.body)['errors'] as Map<String, dynamic>)
-            .forEach((key, value) {
-          if (value is List<String>)
-            errors.addAll(value);
+        (json.decode(serverResponse.body)['errors'] as Map<String, dynamic>).forEach((key, value) {
+          if (value is List<String>) errors.addAll(value);
           else if (value is List<dynamic>) {
             for (int i = 0; i < value.length; i++)
               errors.add(value[i].toString());
