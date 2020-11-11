@@ -23,6 +23,20 @@ class ApiParseKeys {
   static const String LOCATION_NAME = "name";
 
 
+ //------------------------- SAVE ADDRESS -------------------------------------
+  static const String ADDRESS_ROOT_KEY = "address";
+  static const String ADDRESS_CITY = "city";
+  static const String ADDRESS_AREA = "area";
+  static const String ADDRESS_ID = "id";
+  static const String ADDRESS_NAME = "streetName";
+  static const String ADDRESS_REMARKS = "remarks";
+  static const String ADDRESS_BUILDING_NO = "buildingNumber";
+
+
+  // ---------------------- GET USER ADDRESSES ----------------------------------
+  static const String ADDRESSES_LIST_ROOT = "addresses";
+
+
 
 
 

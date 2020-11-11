@@ -11,7 +11,6 @@ import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 
 class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
   UserBloc(UserBlocStates initialState , AuthenticationBloc authenticationBloc) : super(initialState){
-
     authenticationBloc.listen((authenticationState) {
       if(authenticationState is UserAuthenticated){
         currentLoggedInUser = authenticationState.currentUser;
@@ -43,18 +42,26 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     else if(event is ForgetPassword){
     yield* _handleForgetPassword(event);
     return ;
-    } else if(event is VerifyPhoneNumber){
+    }
+    else if(event is VerifyPhoneNumber){
     yield* _handleVerifyPhoneNumber(event);
     return ;
-    } else if(event is ResetPassword){
+    }
+    else if(event is ResetPassword){
     yield* _handleResetPassword(event);
     return ;
-    } else if(event is LoadUserOrders){
+    }
+    else if(event is LoadUserOrders){
      yield* _handleLoadingUserOrders(event);
       return ;
-    } else if(event is SaveAddress){
+    }
+    else if(event is SaveAddress){
       yield* _handleAddressAdditionEvent(event);
       return ;
+    }
+    else if(event is UpdateUserProfile){
+      yield* _handleProfileImageUpdate(event);
+      return;
     }
 
   }
@@ -165,6 +172,18 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
 
 
     return ;
+
+  }
+
+  Stream<UserBlocStates> _handleProfileImageUpdate(UpdateUserProfile event) async*{
+    yield UserDataLoadingState();
+    ResponseViewModel<String> uploadImageResponse = await Repository.uploadImage(imageLink: event.imageLink);
+    if(uploadImageResponse.isSuccess){
+      currentLoggedInUser.userProfileImage = uploadImageResponse.responseData;
+      yield UserDataLoadedState();
+    } else {
+      print("Updating Failed => ${uploadImageResponse.errorViewModel.toString()}");
+    }
 
   }
 

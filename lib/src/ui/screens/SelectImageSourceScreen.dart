@@ -192,7 +192,6 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
 
   pickUserPicture(BuildContext context) async{
-
     showModalBottomSheet(context: context, builder: (context)=> Container(
       decoration: BoxDecoration(
         color:AppColors.black.withOpacity(.4),

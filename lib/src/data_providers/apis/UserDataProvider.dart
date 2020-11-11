@@ -77,7 +77,7 @@ class UserDataProvider{
         return true ;
       },
     );
-    return ResponseViewModel<UserViewModel>(
+    return ResponseViewModel<bool>(
       responseData: signOutResponse.responseData,
       isSuccess: signOutResponse.isSuccess ||
       (signOutResponse.errorViewModel != null && signOutResponse.errorViewModel.errorCode == 401),
@@ -87,10 +87,10 @@ class UserDataProvider{
 
   static saveUserAddress(AddressViewModel newAddress) async{
     Map<String,dynamic> requestBody = {
-      'buildingNumber': newAddress.buildingNumber ?? 0,
+      'buildingNumber': (newAddress.buildingNumber ?? 0).toString(),
       'streetName': newAddress.addressName ?? '',
-      'city_id': newAddress.city.id ?? 0,
-      'area_id': newAddress.area.id ?? 0,
+      'city_id': (newAddress.city.id ?? 0).toString(),
+      'area_id': (newAddress.area.id ?? 0).toString(),
     };
     if(newAddress.additionalInformation != null && newAddress.additionalInformation.length > 0){
       requestBody.putIfAbsent('remarks', () => newAddress.additionalInformation);
@@ -105,17 +105,40 @@ class UserDataProvider{
       requestBody: requestBody,
       requestHeaders: requestHeader,
       methodURL: apiURL,
-      parserFunction: (signInRawResponse){
-        return UserViewModel.fromJson(signInRawResponse[ApiParseKeys.RESPONSE_SUCCESS_ROOT]);
+      parserFunction: (saveAddressRawResponse){
+        print("********************************************************");
+        print("********************************************************");
+        return AddressViewModel.fromJson(saveAddressRawResponse[ApiParseKeys.ADDRESS_ROOT_KEY]);
       },
     );
-    return ResponseViewModel<UserViewModel>(
+    return ResponseViewModel<AddressViewModel>(
       responseData: signInResponse.responseData,
       isSuccess: signInResponse.isSuccess,
       errorViewModel: signInResponse.errorViewModel,
     );
-
   }
+
+
+  static Future<ResponseViewModel<List<AddressViewModel>>> getUserAddresses() async {
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: URL.GET_RETRIEVE_USER_ADDRESSES);
+    ResponseViewModel getAddressesResponse = await NetworkUtilities.handleGetRequest(
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (signOutResponse){
+        return AddressViewModel.fromListJson(signOutResponse[ApiParseKeys.ADDRESSES_LIST_ROOT]);
+      },
+    );
+    return ResponseViewModel<List<AddressViewModel>>(
+      responseData: getAddressesResponse.responseData,
+      isSuccess: getAddressesResponse.isSuccess,
+      errorViewModel: getAddressesResponse.errorViewModel,
+    );
+  }
+
 
 
 
@@ -468,8 +491,33 @@ class UserDataProvider{
     );
   }
 
+  static uploadUserImage(String imageLink) async{
+
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: URL.UPLOAD_UPDATE_PROFILE_IMAGE);
+
+    ResponseViewModel uploadResponse = await NetworkUtilities.handleUploadSingleFile(
+      requestHeaders: requestHeaders,
+      methodURL: apiURL,
+      fileURL: imageLink,
+      uploadKey: 'image',
+      parserFunction: (uploadFileRawResponse){
+        print("****************************************");
+        print(uploadFileRawResponse);
+        print("****************************************");
+        return uploadFileRawResponse.toString();
+      }
+    );
 
 
-
+    return ResponseViewModel<String>(
+      errorViewModel: uploadResponse.errorViewModel,
+      isSuccess: uploadResponse.isSuccess,
+      responseData: uploadResponse.responseData,
+    );
+  }
 
 }

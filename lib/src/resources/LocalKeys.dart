@@ -167,6 +167,7 @@ class LocalKeys{
   static const String MY_SAVED_ADDRESSES = "MY_SAVED_ADDRESSES";
   static const String LOGOUT = "LOGOUT";
   static const String UPDATE_MY_PASSWORD = "UPDATE_MY_PASSWORD";
+  static const String SUCCESSFULLY_UPDATED = "SUCCESSFULLY_UPDATED";
 
 
 //--------------------------- DRAWER NAVIGATOR ---------------------------------
@@ -238,6 +239,8 @@ class LocalKeys{
   //-------------------------- ABOUT SCREEN ---------------------------------
 
   static const String ABOUT_SCREEN_TITLE = "ABOUT_SCREEN_TITLE";
+
+
 
 
 

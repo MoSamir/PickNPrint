@@ -1,14 +1,40 @@
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
-import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 
 class AddressViewModel {
+  String id ;
   LocationModel city , area ;
   String addressName , buildingNumber , additionalInformation;
-  AddressViewModel({this.city , this.additionalInformation , this.addressName , this.area , this.buildingNumber});
+  AddressViewModel({this.city , this.id ,this.additionalInformation , this.addressName , this.area , this.buildingNumber});
 
   @override
   String toString() {
     return '${city.name} , ${area.name} , $buildingNumber $addressName';
+  }
+
+  static fromJson(Map<String,dynamic> newAddressResponse) {
+    return AddressViewModel(
+      city: LocationModel.fromJson(newAddressResponse[ApiParseKeys.ADDRESS_CITY]),
+      area: LocationModel.fromJson(newAddressResponse[ApiParseKeys.ADDRESS_AREA]),
+      id:  (newAddressResponse[ApiParseKeys.ADDRESS_ID] ?? '').toString(),
+      addressName: (newAddressResponse[ApiParseKeys.ADDRESS_NAME] ?? '').toString(),
+      additionalInformation: (newAddressResponse[ApiParseKeys.ADDRESS_REMARKS] ?? '').toString(),
+      buildingNumber: (newAddressResponse[ApiParseKeys.ADDRESS_BUILDING_NO] ?? '').toString(),
+    );
+  }
+
+  static List<AddressViewModel> fromListJson(List<dynamic> addressesJson) {
+
+    print("******************************");
+    print(addressesJson);
+    print("*******************************");
+
+    List<AddressViewModel> userAddresses = List<AddressViewModel>();
+    if(addressesJson != null && addressesJson is List){
+      for(int i = 0 ; i  < addressesJson.length ; i ++){
+        userAddresses.add(fromJson(addressesJson[i]));
+      }
+    }
+    return userAddresses;
   }
 
 

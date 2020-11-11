@@ -8,6 +8,8 @@ class URL{
   static const String GET_LOGOUT = "auth/logout?locale=";
   static const String POST_SAVE_NEW_ADDRESS = "saveAddress";
   static const String GET_RETRIEVE_SUPPORTED_CITIES = "cities?locale=";
+  static const String GET_RETRIEVE_USER_ADDRESSES = "getAllUserAddresses?locale=";
+  static const String UPLOAD_UPDATE_PROFILE_IMAGE = "user/uploadUserImage?locale=";
 
   static String getURL({String apiPath}) {
     if(apiPath.endsWith('locale=')){

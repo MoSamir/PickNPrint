@@ -4,6 +4,7 @@ import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/data_providers/apis/UserDataProvider.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
+import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
@@ -49,7 +50,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
 
     UserViewModel loggedInUser = await Repository.getUser();
     currentUser = loggedInUser;
-    yield UserAuthenticated(currentUser: loggedInUser);
+    if(loggedInUser.isAnonymous() == false){
+      ResponseViewModel<List<AddressViewModel>> userAddresses = await Repository.getUserAddresses();
+      if(userAddresses.isSuccess){
+        currentUser.userSavedAddresses.clear();
+        currentUser.userSavedAddresses.addAll(userAddresses.responseData);
+      }
+    }
+
+    yield UserAuthenticated(currentUser: currentUser);
     return ;
   }
   Stream<AuthenticationStates> _loginUser(String userPhoneNumber, String userPassword ,LoginUser event) async*{
@@ -59,9 +68,21 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
     }
     ResponseViewModel<UserViewModel> apiResponse = await Repository.signIn(userPhoneNumber:userPhoneNumber , userPassword:userPassword);
     if(apiResponse.isSuccess){
-      await Repository.saveUser(apiResponse.responseData);
-      await Repository.saveEncryptedPassword(userPassword);
+
+      List<ResponseViewModel> userInformationData = await Future.wait([
+      Repository.saveUser(apiResponse.responseData),
+      Repository.saveEncryptedPassword(userPassword),
+      ]);
+
       currentUser = apiResponse.responseData ;
+      ResponseViewModel<List<AddressViewModel>> userAddresses = await Repository.getUserAddresses();
+      if(userAddresses.isSuccess){
+        currentUser.userSavedAddresses.clear();
+        currentUser.userSavedAddresses.addAll(userAddresses.responseData);
+      }
+
+
+
       yield UserAuthenticated(currentUser: currentUser);
       return;
     } else {

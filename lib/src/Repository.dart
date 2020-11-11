@@ -68,7 +68,7 @@ class Repository {
       await UserDataProvider.clearUserCache();
 
 
-  static Future<void> saveEncryptedPassword(String userPassword) async =>
+  static Future<ResponseViewModel<void>> saveEncryptedPassword(String userPassword) async =>
       await UserDataProvider.saveEncryptedPassword(userPassword);
 
 
@@ -107,7 +107,7 @@ class Repository {
     }
   }
 
-  static Future<void> saveUser(UserViewModel userViewModel) async =>
+  static Future<ResponseViewModel<void>> saveUser(UserViewModel userViewModel) async =>
       await UserDataProvider.saveUser(userViewModel);
   static signIn({String userPhoneNumber, String userPassword}) async =>
       await UserDataProvider.signIn(userPhoneNumber, userPassword);
@@ -160,6 +160,9 @@ class Repository {
   static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => UserDataProvider.loadSavedOrders();
 
 
+  static Future<ResponseViewModel<List<AddressViewModel>>> getUserAddresses() async => await UserDataProvider.getUserAddresses();
+
+  static Future<ResponseViewModel<String>> uploadImage({String imageLink}) async => await UserDataProvider.uploadUserImage(imageLink);
 
 
 

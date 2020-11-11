@@ -380,7 +380,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
 
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-
     if(errorMessageIfExist != null){
       UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
       return;
@@ -388,13 +387,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
       } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
           comingFromRegistration: false,
         )));
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
       }
     }
+    setState(() {});
   }
 
   void _addToCartAndContinueShopping() {

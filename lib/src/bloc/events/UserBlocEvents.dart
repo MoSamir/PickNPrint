@@ -1,5 +1,6 @@
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 
 abstract class UserBlocEvents {}
 
@@ -21,6 +22,16 @@ class DeleteAddress extends UserBlocEvents {
 class UpdateAddress extends UserBlocEvents {
   final AddressViewModel address;
   UpdateAddress({this.address});
+}
+
+class UpdateUserInformation extends UserBlocEvents {
+
+  final UserViewModel userViewModel ;
+  final  String oldPassword, newPassword ;
+  UpdateUserInformation({this.userViewModel , this.oldPassword , this.newPassword});
+
+
+
 }
 
 
@@ -58,4 +69,11 @@ class VerifyPhoneNumber extends UserBlocEvents {
   final String authenticationCode ;
   final String phoneNumber ;
   VerifyPhoneNumber({this.authenticationCode,this.phoneNumber});
+}
+
+class UpdateUserProfile extends UserBlocEvents {
+  final String imageLink;
+  UpdateUserProfile({this.imageLink});
+
+
 }

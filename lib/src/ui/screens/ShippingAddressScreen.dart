@@ -107,8 +107,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
+                      onTap: () async{
+                        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
+                        setState(() {});
                       },
                       child: Text((LocalKeys.ADD_NEW_ADDRESS).tr() , style: TextStyle(
                         color: AppColors.lightBlue,

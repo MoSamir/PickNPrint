@@ -19,7 +19,7 @@ class Resources{
   static const String INFORMATION_ICON_IMG = "assets/images/information_icon.png";
   static const String INFORMATION_BANNER_IMG = "assets/images/order_information_banner.png";
   static const String LOGOUT_ICON = "assets/images/logout_icon.png";
-
+  static const String USER_PROFILE_PLACEHOLDER_IMG = "assets/images/user_profile_image_placeholder.png";
 
 
 
@@ -28,6 +28,8 @@ class Resources{
 
   static const String arabic_font_family = "Araboto";
   static const String english_font_family = "Nunito";
+
+
 
 
 }
