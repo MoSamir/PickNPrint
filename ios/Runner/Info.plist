@@ -52,7 +52,6 @@
     <key>NSMicrophoneUsageDescription </key>
     <string>PickNPrint request access to your audio to capture your video</string>
 
-
     <key>CFBundleURLTypes</key>
     <array>
         <dict>

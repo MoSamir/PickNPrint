@@ -133,10 +133,4 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
       cubit: orderBloc,
     );
   }
-
-
-
-
-
-
 }

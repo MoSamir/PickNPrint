@@ -23,7 +23,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
   @override
   Stream<ApplicationDataStates> mapEventToState(ApplicationDataEvents event)async* {
 
-    bool isConnected =  await NetworkUtilities.isConnected();
+    bool isConnected =  true ; //await NetworkUtilities.isConnected();
     if(isConnected == false){
       yield ApplicationDataLoadingFailureState(
         error: Constants.CONNECTION_TIMEOUT,
