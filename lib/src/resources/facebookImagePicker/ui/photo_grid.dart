@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../Resources.dart';
 import '../debounce.dart';
 import '../flutter_facebook_image_picker.dart';
 
@@ -66,8 +67,7 @@ class PhotoGridState extends State<PhotoGrid> {
             child: FadeInImage(
               image: NetworkImage(photo.source),
               placeholder: AssetImage(
-                'assets/loading.gif',
-                package: 'flutter_facebook_image_picker',
+                Resources.APPBAR_LOGO_IMG,
               ),
               fit: BoxFit.cover,
             ),

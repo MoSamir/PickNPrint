@@ -18,7 +18,8 @@ import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 
 import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
-import 'package:picknprint/src/ui/screens/AddressDeletionConfirmationScreen.dart';
+import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/AddressDeletionConfirmationScreen.dart';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
@@ -44,8 +45,6 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
   @override
   void initState() {
     super.initState();
-
-
     order = widget.userOrder;
     if(order.orderAddress == null &&  BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses != null && BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses.length > 0)
         order.orderAddress = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses[0];
@@ -54,14 +53,13 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     UserViewModel currentUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
-
     return BaseScreen(
       hasDrawer: true,
       child: BlocConsumer(
         builder: (context , state){
           return ModalProgressHUD(
+            progressIndicator: LoadingWidget(),
             inAsyncCall: state is UserDataLoadingState,
             child: SingleChildScrollView(
               child: Padding(

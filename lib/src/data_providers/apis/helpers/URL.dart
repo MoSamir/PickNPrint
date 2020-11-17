@@ -10,6 +10,24 @@ class URL{
   static const String GET_RETRIEVE_SUPPORTED_CITIES = "cities?locale=";
   static const String GET_RETRIEVE_USER_ADDRESSES = "getAllUserAddresses?locale=";
   static const String UPLOAD_UPDATE_PROFILE_IMAGE = "user/uploadUserImage?locale=";
+  static const String PUT_UPDATE_USER_PROFILE = "user/edit?locale=";
+  static const String GET_RETRIEVE_SYSTEM_PACKAGES = "getAllFramePackages";
+  static const String POST_ADD_ORDER_TO_CART = "cart/addItemToCart";
+  static const String GET_RETRIEVE_USER_CART = "cart/getCart";
+
+  static const String POST_SAVE_ORDER_FOR_LATER = "order/createOrder";
+  static const String POST_CREATE_ORDER = "order/createOrder";
+
+
+  static const String GET_RETRIEVE_ACTIVE_ORDERS = "order/getCurrentOrders";
+  static const String GET_RETRIEVE_SAVED_ORDERS = "order/getUnCompletedOrders";
+  static const String GET_RETRIEVE_PAST_ORDERS = "order/getPreviousOrders";
+
+  static const String GET_DELETE_ADDRESS_BY_ID = "deleteAddressById/";
+  static const String PUT_EDIT_USER_ADDRESS = "editAddress?locale=";
+
+
+
 
   static String getURL({String apiPath}) {
     if(apiPath.endsWith('locale=')){

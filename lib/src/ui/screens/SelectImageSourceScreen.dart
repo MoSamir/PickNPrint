@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/instgramImagePicker/model/photo.dart' as instgramPhoto;
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -17,6 +18,7 @@ import 'package:picknprint/src/resources/instgramImagePicker/screens.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 class SelectImageSourceScreen extends StatefulWidget {
   @override
   _SelectImageSourceScreenState createState() => _SelectImageSourceScreenState();
@@ -36,8 +38,15 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      hasDrawer: false,
+      customAppbar: PickNPrintAppbar(
+        appbarColor: AppColors.black,
+        actions: [],
+        centerTitle: true,
+        //title: (LocalKeys.ABOUT_SCREEN_TITLE).tr(),
+      ),
       child: Container(
-        height: MediaQuery.of(context).size.height - 225,
+        height: MediaQuery.of(context).size.height - 220,
         color: Colors.blue,
         child: Container(
           color: AppColors.blackBg,
@@ -142,7 +151,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
                 child: Center(
                   child: GestureDetector(
-                    onTap: _pickImageFromInstgram,
+                    onTap: _pickImageFromInstagram,
                     child: Container(
                       width: MediaQuery.of(context).size.width - 32,
                       height: (55),
@@ -182,7 +191,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
           ),
         ),
       ),
-      hasDrawer: true,
+
     );
   }
 
@@ -280,14 +289,12 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
   }
 
   void _pickImageFromFacebook() async{
-
-
-    ResponseViewModel<String> fbToken = await Repository.loginWithFacebook();
-    if(fbToken.isSuccess){
+    ResponseViewModel<UserViewModel> facebookUser = await Repository.signInWithFacebook();
+    if(facebookUser.isSuccess){
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => FacebookImagePicker(
-            fbToken.responseData,
+            facebookUser.responseData.userToken,
             onDone: (items) {
               Navigator.pop(context);
               if(items != null && items.length > 0)
@@ -298,28 +305,20 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
         ),
       );
     }
-
   }
 
-  void _pickImageFromInstgram() async{
+  void _pickImageFromInstagram() async{
     String accessToken ;
     accessToken = await InstagramAuth().accessToken;
     if (accessToken == null) {
-      List<String> loginInfo = await Navigator.push(
-          context,
-          MaterialPageRoute(
+      List<String> loginInfo = await Navigator.push(context, MaterialPageRoute(
             builder: (_) => InstagramWebViewLoginPage(),
           ));
-
       accessToken = loginInfo[0];
-
-      // if user canceled the operation
       if (accessToken == null) return;
     }
 
-    // after got access token, can go to picker screen
-    Navigator.push(
-      context,
+    Navigator.push(context,
       MaterialPageRoute(
         builder: (context) => InstagramImagePicker(
           accessToken,

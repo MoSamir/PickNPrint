@@ -97,12 +97,9 @@ class NetworkUtilities {
         responseData: null,
       );
     } catch (exception) {
-
       debugPrint("Exception in Post ==>");
       print(exception);
       debugPrint("********************");
-
-
       postResponse = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -130,18 +127,19 @@ class NetworkUtilities {
     ResponseViewModel uploadResponse;
     try {
       List<MultipartFile> imageFiles = List();
-      for (int i = 0; i < files.length; i++)
-        imageFiles.add(await MultipartFile.fromFile(files[i]));
+      for (int i = 0; i < files.length; i++) {
+        try{
+          imageFiles.add(await MultipartFile.fromFile(files[i]));
+        } catch(exception){}
+      }
       Map<String, dynamic> requestMap = requestBody ?? Map<String, dynamic>() ;
-
-
+      if(imageFiles != null && imageFiles.length > 0)
       requestMap.putIfAbsent("images", () => imageFiles);
+
       FormData formData = FormData.fromMap(requestMap);
       Response serverResponse = await Dio().post(methodURL,
           data: formData,
-          options: Options(
-            headers: requestHeaders,
-          ));
+          options: Options(headers: requestHeaders,));
 
       if (serverResponse.statusCode == 200) {
         uploadResponse = ResponseViewModel(
@@ -184,6 +182,10 @@ class NetworkUtilities {
         responseData: null,
       );
     } catch (exception) {
+      print("*************************************");
+      print("Exception in upload => $exception");
+
+      print("*************************************");
       uploadResponse = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(
@@ -195,7 +197,6 @@ class NetworkUtilities {
     }
     return uploadResponse;
   }
-
 
 
   static Future<ResponseViewModel> handleUploadSingleFile(
@@ -277,12 +278,60 @@ class NetworkUtilities {
   }
 
 
+  static Future<ResponseViewModel> handlePutRequest(
+      {bool acceptJson = false,
+        String methodURL,
+        Map<String, String> requestHeaders,
+        Map<String, dynamic> requestBody,
+        Function parserFunction}) async {
+    ResponseViewModel postResponse;
+    try {
+      http.Response serverResponse = await http.put(methodURL,
+          headers: requestHeaders,
+          body: acceptJson ? json.encode(requestBody) : requestBody);
+      if (serverResponse.statusCode == HttpStatus.ok) {
+        postResponse = ResponseViewModel(
+          isSuccess: true,
+          errorViewModel: null,
+          responseData: parserFunction(json.decode(serverResponse.body)),
+        );
+      } else {
+        postResponse = handleError(serverResponse);
+      }
+    } on SocketException {
+      postResponse = ResponseViewModel(
+        isSuccess: false,
+        errorViewModel: Constants.CONNECTION_TIMEOUT,
+        responseData: null,
+      );
+    } catch (exception) {
+      debugPrint("Exception in Put ==>");
+      print(exception);
+      debugPrint("********************");
+      postResponse = ResponseViewModel(
+        isSuccess: false,
+        errorViewModel: ErrorViewModel(
+          errorMessage: '',
+          errorCode: HttpStatus.serviceUnavailable,
+        ),
+        responseData: null,
+      );
+    }
+    networkLogger(
+        url: methodURL,
+        body: requestBody,
+        headers: requestHeaders,
+        response: postResponse);
+    return postResponse;
+  }
+
 
   static Map<String, String> getHeaders({Map<String, String> customHeaders}) {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
     };
+
     if (customHeaders != null) {
       for (int i = 0; i < customHeaders.length; i++) {
         headers.putIfAbsent(customHeaders.keys.toList()[i],

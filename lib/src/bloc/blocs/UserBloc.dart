@@ -24,7 +24,9 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
   UserViewModel currentLoggedInUser = UserViewModel.fromAnonymous();
   List<OrderModel> userActiveOrders = List<OrderModel>() ,
       userSavedOrders = List<OrderModel>(),
-      userCompletedOrders = List<OrderModel>() ;
+      userCompletedOrders = List<OrderModel>()  ,
+      userCart = List<OrderModel>();
+
 
 
 
@@ -63,7 +65,18 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
       yield* _handleProfileImageUpdate(event);
       return;
     }
-
+    else if(event is UpdateUserInformation){
+      yield* _handleUserInformationUpdate(event);
+      return ;
+    }
+    else if(event is DeleteAddress){
+      yield* _handleAddressDeletionEvent(event);
+      return;
+    }
+    else if(event is UpdateAddress){
+      yield* _handleAddressUpdate(event);
+      return ;
+    }
   }
 
 
@@ -134,6 +147,7 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
       Repository.loadActiveOrders(),
       Repository.loadClosedOrders(),
       Repository.loadSavedOrders(),
+      Repository.getUserCart(),
     ]);
 
     // active orders listing
@@ -153,6 +167,15 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
       userSavedOrders = List<OrderModel>();
       userSavedOrders.addAll(userOrders[2].responseData);
     }
+
+    // User Cart listing
+    if(userOrders[3].isSuccess){
+      userCart = List<OrderModel>();
+      userCart.addAll(userOrders[3].responseData);
+    }
+
+    yield UserDataLoadedState();
+    return ;
   }
 
   Stream<UserBlocStates> _handleAddressAdditionEvent(SaveAddress event) async*{
@@ -166,25 +189,66 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
       yield UserAddressSavingFailedState(failedEvent: event , error: saveAddressResponse.errorViewModel);
       return;
     }
-
-
-
-
-
-    return ;
-
   }
 
   Stream<UserBlocStates> _handleProfileImageUpdate(UpdateUserProfile event) async*{
     yield UserDataLoadingState();
-    ResponseViewModel<String> uploadImageResponse = await Repository.uploadImage(imageLink: event.imageLink);
+    ResponseViewModel<UserViewModel> uploadImageResponse = await Repository.updateProfileImage(imageLink: event.imageLink);
     if(uploadImageResponse.isSuccess){
-      currentLoggedInUser.userProfileImage = uploadImageResponse.responseData;
+      await Repository.saveUser(uploadImageResponse.responseData);
+      currentLoggedInUser = uploadImageResponse.responseData;
       yield UserDataLoadedState();
+      return ;
     } else {
-      print("Updating Failed => ${uploadImageResponse.errorViewModel.toString()}");
+      yield UserProfileImageUpdatingFailed(error: uploadImageResponse.errorViewModel , failedEvent: event);
+
+      return ;
     }
 
+  }
+
+  Stream<UserBlocStates> _handleUserInformationUpdate(UpdateUserInformation event) async*{
+    yield UserDataLoadingState();
+    ResponseViewModel<UserViewModel> updateUserInformationResponse = await Repository.updateUserProfile(updatedUser: event.userViewModel , oldPassword: event.oldPassword , newPassword : event.newPassword);
+    if(updateUserInformationResponse.isSuccess){
+      currentLoggedInUser = updateUserInformationResponse.responseData;
+      await Repository.saveUser(currentLoggedInUser);
+      if(event.newPassword != null) await Repository.saveEncryptedPassword(event.newPassword);
+      yield UserDataLoadedState();
+      return;
+    } else {
+      yield UserInformationUpdateFailedState(failedEvent: event , error: updateUserInformationResponse.errorViewModel);
+      return;
+    }
+  }
+
+  Stream<UserBlocStates> _handleAddressDeletionEvent(DeleteAddress event) async*{
+    yield UserDataLoadingState();
+    ResponseViewModel<bool> saveAddressResponse = await Repository.deleteAddress(address : event.address);
+    if(saveAddressResponse.isSuccess){
+      currentLoggedInUser.userSavedAddresses.remove(event.address);
+      yield UserAddressSavedSuccessfully();
+      return;
+    } else {
+      yield UserAddressSavingFailedState(failedEvent: event , error: saveAddressResponse.errorViewModel);
+      return;
+    }
+
+  }
+
+  Stream<UserBlocStates> _handleAddressUpdate(UpdateAddress event) async* {
+    yield UserDataLoadingState();
+    ResponseViewModel<AddressViewModel> saveAddressResponse = await Repository.updateUserAddress(newAddress : event.address);
+    if(saveAddressResponse.isSuccess){
+      currentLoggedInUser.userSavedAddresses.remove(saveAddressResponse.responseData);
+      currentLoggedInUser.userSavedAddresses.add(saveAddressResponse.responseData);
+
+      yield UserAddressSavedSuccessfully();
+      return;
+    } else {
+      yield UserAddressSavingFailedState(failedEvent: event , error: saveAddressResponse.errorViewModel);
+      return;
+    }
   }
 
 }

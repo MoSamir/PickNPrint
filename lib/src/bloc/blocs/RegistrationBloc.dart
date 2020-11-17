@@ -36,7 +36,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents , RegistrationStates>{
 
   Stream<RegistrationStates> _handleUserRegistration(RegisterUser event) async*{
     yield RegistrationLoadingState();
-    ResponseViewModel<UserViewModel> responseViewModel = await Repository.registerNewUser(userModel: event.userModel , userPassword:event.password);
+    ResponseViewModel<UserViewModel> responseViewModel = await Repository.registerNewUser(withSocialMedia: false , userModel: event.userModel , userPassword:event.password);
     if(responseViewModel.isSuccess){
 
       Repository.saveUser(responseViewModel.responseData);

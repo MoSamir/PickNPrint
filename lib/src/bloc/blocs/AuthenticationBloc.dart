@@ -18,6 +18,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
 
   @override
   Stream<AuthenticationStates> mapEventToState(AuthenticationEvents event) async*{
+    print("User => $event");
     bool isUserConnected = await NetworkUtilities.isConnected();
 
     if(isUserConnected == false){
@@ -28,17 +29,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
       return ;
     }
     if(event is AuthenticateUser){
-      yield AuthenticationLoading();
       yield* _checkIfUserLoggedIn();
       return;
     }
     else if(event is LoginUser){
-      yield AuthenticationLoading();
       yield* _loginUser(event.userEmail , event.userPassword , event);
       return ;
     }
     else if(event is Logout){
-      yield AuthenticationLoading();
       yield* _logoutUser(event);
       return;
     }
@@ -57,21 +55,30 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
         currentUser.userSavedAddresses.addAll(userAddresses.responseData);
       }
     }
-
     yield UserAuthenticated(currentUser: currentUser);
     return ;
   }
+
+
   Stream<AuthenticationStates> _loginUser(String userPhoneNumber, String userPassword ,LoginUser event) async*{
     yield AuthenticationLoading();
     if(currentUser != null ){
       await Repository.signOut();
     }
-    ResponseViewModel<UserViewModel> apiResponse = await Repository.signIn(userPhoneNumber:userPhoneNumber , userPassword:userPassword);
-    if(apiResponse.isSuccess){
 
+    ResponseViewModel<UserViewModel> apiResponse;
+
+
+    if(event.loginMethod == LoginMethod.FACEBOOK){
+      apiResponse = await handleFacebookLogin(event);
+    } else if(event.loginMethod == LoginMethod.MAIL){
+       apiResponse = await handleServerLogin(event);
+    }
+
+    if(apiResponse.isSuccess){
       List<ResponseViewModel> userInformationData = await Future.wait([
       Repository.saveUser(apiResponse.responseData),
-      Repository.saveEncryptedPassword(userPassword),
+      Repository.saveEncryptedPassword(userPassword ?? ''),
       ]);
 
       currentUser = apiResponse.responseData ;
@@ -80,8 +87,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
         currentUser.userSavedAddresses.clear();
         currentUser.userSavedAddresses.addAll(userAddresses.responseData);
       }
-
-
 
       yield UserAuthenticated(currentUser: currentUser);
       return;
@@ -101,6 +106,30 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
     } else {
       yield AuthenticationFailed(failedEvent: event , error: responseViewModel.errorViewModel);
     }
+  }
+
+  Future<ResponseViewModel> handleServerLogin(LoginUser event) async{
+    return await Repository.signIn(userMail: event.userEmail , userPassword: event.userPassword);
+  }
+
+  Future<ResponseViewModel> handleFacebookLogin(LoginUser event) async {
+    ResponseViewModel<UserViewModel> facebookUserResult = await UserDataProvider.signInWithFacebook();
+    if(facebookUserResult.isSuccess){
+      ResponseViewModel<UserViewModel> userLoginTryResponse = await Repository.signIn(userMail: facebookUserResult.responseData.userMail , userPassword: facebookUserResult.responseData.userId);
+      if(userLoginTryResponse.isSuccess){
+        return userLoginTryResponse;
+      } else {
+        ResponseViewModel<UserViewModel> userRegisterResponse = await UserDataProvider.registerNewUser(facebookUserResult.responseData, facebookUserResult.responseData.userId , true);
+        return userRegisterResponse;
+      }
+    }
+    else {
+      return facebookUserResult;
+    }
+
+
+
+
   }
 
 }

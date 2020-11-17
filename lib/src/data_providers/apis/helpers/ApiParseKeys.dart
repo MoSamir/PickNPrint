@@ -35,7 +35,43 @@ class ApiParseKeys {
 
   // ---------------------- GET USER ADDRESSES ----------------------------------
   static const String ADDRESSES_LIST_ROOT = "addresses";
+  static const String ADDRESSES_SHIPPING_FEES = "shippingFees";
 
+
+
+// ---------------------------- GET PACKAGES SIZE -----------------------------
+
+  static const String PACKAGE_SIZE_KEY = "quantity";
+  static const String PACKAGE_PRICE = "price";
+  static const String PACKAGE_DISCOUNT_PERCENTAGE = "discountPercentage";
+  static const String PACKAGE_ID = "id";
+  static const String PACKAGE_FRAME_ROOT = "frame";
+  static const String PACKAGE_LIST_ROOT = "framePackages";
+  static const String PACKAGE_ICON = "icon";
+
+  static const String PACKAGE_IMAGE = "image";
+
+//---------------------------- GET CART ITEMS ---------------------------------
+
+  static const String ORDER_ID = "id";
+  static const String ORDER_KEY = "order";
+  static const String ORDERS_KEY = "orders";
+  static const String ORDER_PACKAGE_SIZE = "packageQuantity";
+  static const String ORDER_PACKAGE_PRICE = "packagePrice";
+  static const String ORDER_TOTAL_PRICE = "totalPrice";
+  static const String ORDER_SUBTOTAL = "subTotal";
+  static const String ORDER_PACKAGE_DISCOUNT = "packageDiscountPercentage";
+  static const String ORDER_PACKAGE_IMAGE = "packageImage";
+  static const String ORDER_PACKAGE_ICON = "packageIcon";
+  static const String ORDER_ADDITIONAL = "additionalFramesQty";
+  static const String ORDER_EXTRA_FRAME_PRICE = "framePrice";
+  static const String ORDER_WHITE_FRAME = "color";
+  static const String ORDER_WITH_FRAME = "selection";
+  static const String ORDER_USER_IMAGES = "images";
+  static const String ORDER_SOCIAL_IMAGES = "imagesViaSocialMedia";
+  static const String ORDER_CREATED_AT = "created_at";
+  static const String ORDER_ITEMS_LIST_KEY = "items";
+  static const String ORDER_CART_ROOT_KEY = "cart";
 
 
 

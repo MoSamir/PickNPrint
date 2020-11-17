@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math' as Math;
 import 'package:easy_localization/easy_localization.dart' as ll;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,22 +9,24 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/OrderCreationBloc.dart';
+import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
+
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
-import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
-import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
-import 'package:picknprint/src/ui/screens/OrderAddedToCartSuccessfullyScreen.dart';
+import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
 import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
-import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
+import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 import 'AddNewShippingAddressScreen.dart';
@@ -44,6 +46,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   OrderCreationBloc createOrderBloc ;
 
+  double padding = 7.0;
+
   @override
   void initState() {
     super.initState();
@@ -57,36 +61,65 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: createOrderBloc is OrderCreationLoadingState,
-      child: WillPopScope(
-        onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
-        child: Scaffold(
-          key: _scaffoldKey,
-          body: BaseScreen(
-            hasDrawer: true,
-            child: BlocConsumer(
-              listener: (context , state){
-                if (state is OrderCreationLoadingFailureState) {
+    return WillPopScope(
+      onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: BlocConsumer(
+          listener: (context , state){
 
-                  if (state.error.errorCode == HttpStatus.requestTimeout) {
-                    UIHelpers.showNetworkError(context);
-                    return;
-                  }
-                  else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-                    UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-                    return;
-                  }
-                  else {
-                    UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-                    return;
-                  }
-                }
-                else if(state is OrderSavingSuccessState){
-                }
-              },
-              builder: (context , state){
-                return Column(
+
+
+            if (state is OrderCreationLoadingFailureState) {
+              if (state.error.errorCode == HttpStatus.requestTimeout) {
+                UIHelpers.showNetworkError(context);
+                return;
+              }
+              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+                return;
+              }
+              else {
+                UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+                return;
+              }
+            }
+            else if (state is OrderSavingFailedState) {
+              if (state.error.errorCode == HttpStatus.requestTimeout) {
+                UIHelpers.showNetworkError(context);
+                return;
+              }
+              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+                return;
+              }
+              else {
+                UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+                return;
+              }
+            } else if(state is OrderAddedToCartSuccessState){
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => OrderAddedToCartSuccessfullyScreen(),
+              ));
+              return;
+            }
+            else if(state is OrderSavingSuccessState){
+              BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+
+            }
+          },
+          builder: (context , state){
+            return ModalProgressHUD(
+              inAsyncCall: state is OrderCreationLoadingState,
+              progressIndicator: LoadingWidget(),
+              child: BaseScreen(
+                customAppbar: PickNPrintAppbar(
+                  appbarColor: AppColors.black,
+                  centerTitle: true,
+                  title: (LocalKeys.PICK_PHOTOS_KEY).tr(),
+                ),
+                hasDrawer: false,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
@@ -115,7 +148,10 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                         child: getFramesList(),),
                     ),
                     SizedBox(height: 10,),
-                    GestureDetector(child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ) , onTap: _saveOrderForLater,),
+                    GestureDetector(child: Padding(
+                      padding:  EdgeInsets.symmetric(vertical: padding),
+                      child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ),
+                    ) , onTap: _saveOrderForLater,),
                     SizedBox(height: 5,),
                     Center(
                       child: GestureDetector(
@@ -133,21 +169,27 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                       // i love you
                     ),
                     SizedBox(height: 5,),
-                    GestureDetector(child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ) , onTap: _addToCartAndContinueShopping,),
+                    GestureDetector(child: Padding(
+                      padding:  EdgeInsets.symmetric(vertical: padding),
+                      child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ),
+                    ) , onTap: _addToCartAndContinueShopping,),
                     SizedBox(height: 5,),
-                    GestureDetector(child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
-                      decoration: TextDecoration.underline,
-                    ), ) , onTap: (){
+                    GestureDetector(child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: padding),
+                      child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ), ),
+                    ) , onTap: (){
                       Navigator.of(context).pop();
                     },),
                     SizedBox(height: 10,),
 
                   ],
-                );
-              },
-              cubit: createOrderBloc,
-            ),
-          ),
+                ),
+              ),
+            );
+          },
+          cubit: createOrderBloc,
         ),
       ),
     );
@@ -262,7 +304,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
   getFramesList() {
     List<Widget> pictures = List();
-    for(int i = 0 ; i < widget.userSelectedPackage.packageSize ; i++){
+    for(int i = 0 ; i < Math.max(widget.userSelectedPackage.packageSize , userOrder.userImages.length) ; i++){
       pictures.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
         child: Stack(
@@ -397,8 +439,19 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     setState(() {});
   }
 
-  void _addToCartAndContinueShopping() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderAddedToCartSuccessfullyScreen()));
+  void _addToCartAndContinueShopping() async{
+//    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderAddedToCartSuccessfullyScreen()));
+
+    String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
+    if(errorMessageIfExist == null || errorMessageIfExist.isEmpty){
+      createOrderBloc.add(AddOrderToCart(order: userOrder));
+    } else {
+      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
+      return;
+    }
+
+
+
   }
 
   Widget getImageFromPath(String userImage) {
@@ -419,7 +472,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     }
 
     setState(() {
-      userOrder.orderPackage.packageSize++;
       userOrder.userImages.add('');
     });
   }

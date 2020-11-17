@@ -5,12 +5,20 @@ abstract class CreateOrderEvents {}
 
 class CreateOrder extends CreateOrderEvents{
   final OrderModel orderModel ;
-  CreateOrder({this.orderModel});
+  final bool isCartItem ;
+  CreateOrder( {this.isCartItem ,this.orderModel});
 }
 
 
 class SaveOrder extends CreateOrderEvents{
   final OrderModel order ;
   SaveOrder({this.order});
+
+}
+
+
+class AddOrderToCart extends CreateOrderEvents{
+  final OrderModel order ;
+  AddOrderToCart({this.order});
 
 }

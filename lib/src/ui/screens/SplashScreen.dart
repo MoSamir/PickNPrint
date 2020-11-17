@@ -6,10 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
-import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
+
 import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
-import 'package:picknprint/src/bloc/events/UserCartEvents.dart';
+
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -51,9 +51,6 @@ class _SplashScreenState extends State<SplashScreen> {
       },
       listener: (context, state){
         if(state is UserAuthenticated){
-          if(state.currentUser.isAnonymous() == false)
-            BlocProvider.of<UserCartBloc>(context).add(LoadCartEvent());
-            BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
             navigateToHomePage();
         }
         else if (state is AuthenticationFailed) {

@@ -1,10 +1,22 @@
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
+import 'package:picknprint/src/utilities/ParserHelpers.dart';
 
 class AddressViewModel {
   String id ;
   LocationModel city , area ;
   String addressName , buildingNumber , additionalInformation;
-  AddressViewModel({this.city , this.id ,this.additionalInformation , this.addressName , this.area , this.buildingNumber});
+  double deliveryFees ;
+  AddressViewModel({this.city , this.id ,this.additionalInformation , this.addressName , this.area , this.buildingNumber , this.deliveryFees});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AddressViewModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 
   @override
   String toString() {
@@ -12,7 +24,8 @@ class AddressViewModel {
   }
 
   static fromJson(Map<String,dynamic> newAddressResponse) {
-    return AddressViewModel(
+    AddressViewModel  address = AddressViewModel(
+      deliveryFees: ParserHelper.parseDouble(newAddressResponse[ApiParseKeys.ADDRESSES_SHIPPING_FEES].toString()),
       city: LocationModel.fromJson(newAddressResponse[ApiParseKeys.ADDRESS_CITY]),
       area: LocationModel.fromJson(newAddressResponse[ApiParseKeys.ADDRESS_AREA]),
       id:  (newAddressResponse[ApiParseKeys.ADDRESS_ID] ?? '').toString(),
@@ -20,14 +33,10 @@ class AddressViewModel {
       additionalInformation: (newAddressResponse[ApiParseKeys.ADDRESS_REMARKS] ?? '').toString(),
       buildingNumber: (newAddressResponse[ApiParseKeys.ADDRESS_BUILDING_NO] ?? '').toString(),
     );
+    return address;
   }
 
   static List<AddressViewModel> fromListJson(List<dynamic> addressesJson) {
-
-    print("******************************");
-    print(addressesJson);
-    print("*******************************");
-
     List<AddressViewModel> userAddresses = List<AddressViewModel>();
     if(addressesJson != null && addressesJson is List){
       for(int i = 0 ; i  < addressesJson.length ; i ++){

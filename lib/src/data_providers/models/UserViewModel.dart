@@ -57,4 +57,9 @@ class UserViewModel {
       userSavedAddresses: List<AddressViewModel>(),
     );
   }
+
+  @override
+  String toString() {
+    return 'UserViewModel{userId: $userId, userName: $userName, userMail: $userMail, userPhoneNumber: $userPhoneNumber, userProfileImage: $userProfileImage}';
+  }
 }

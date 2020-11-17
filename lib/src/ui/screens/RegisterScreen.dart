@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -94,6 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       builder:  (context, state){
         return ModalProgressHUD(
+          progressIndicator: LoadingWidget(),
           inAsyncCall: state is RegistrationLoadingState,
           child: BaseScreen(
             hasDrawer: true,

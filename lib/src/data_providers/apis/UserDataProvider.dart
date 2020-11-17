@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
@@ -15,15 +16,23 @@ import 'helpers/URL.dart';
 
 class UserDataProvider{
 
-  static Future<ResponseViewModel<UserViewModel>> registerNewUser(UserViewModel userModel, String userPassword) async{
+  static Future<ResponseViewModel<UserViewModel>> registerNewUser(UserViewModel userModel, String userPassword , bool withSocialMedia) async{
 
     Map<String,dynamic> requestBody = {
       'name': userModel.userName ?? '',
-      'phone': userModel.userPhoneNumber,
       'email': userModel.userMail,
       'password': userPassword,
       'password_confirmation': userPassword,
+      'viaSocialMedia' : withSocialMedia ?? false ? 1.toString() : 0.toString()
     };
+
+    if(userModel.userPhoneNumber != null){
+      requestBody.putIfAbsent('phone', () =>  userModel.userPhoneNumber);
+    }
+    if(userModel.userProfileImage != null){
+      requestBody.putIfAbsent('image', () => userModel.userProfileImage);
+    }
+
     Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders();
     String apiURL = URL.getURL(apiPath: URL.POST_REGISTER);
     ResponseViewModel registerUserResponse = await NetworkUtilities.handlePostRequest(
@@ -118,7 +127,6 @@ class UserDataProvider{
     );
   }
 
-
   static Future<ResponseViewModel<List<AddressViewModel>>> getUserAddresses() async {
     String token = await getUserToken();
     Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
@@ -139,15 +147,11 @@ class UserDataProvider{
     );
   }
 
-
-
-
   static getUserToken() async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
     return mSharedPreference
         .getString(Constants.SHARED_PREFERENCE_USER_TOKEN_KEY);
   }
-
 
   static saveUserToken(String userToken) async {
     SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
@@ -161,8 +165,6 @@ class UserDataProvider{
         json.encode(userViewModel.toJson()));
     await saveUserToken(userViewModel.userToken);
   }
-
-
 
 
   static getPassword() async {
@@ -193,18 +195,21 @@ class UserDataProvider{
   }
 
   static Future<UserViewModel> getUser() async {
-    SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
-    var userJson =
-    mSharedPreference.getString(Constants.SHARED_PREFERENCE_USER_KEY);
-    if (userJson == null) {
+    try {
+      SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
+      var userJson = mSharedPreference.getString(Constants.SHARED_PREFERENCE_USER_KEY);
+      if (userJson == null) {
+        return UserViewModel.fromAnonymous();
+      } else {
+        UserViewModel userViewModel =
+        UserViewModel.fromJson(json.decode(userJson));
+        return userViewModel;
+      }
+    } catch(exception){
+      print("Exception while reading Empty Preference => $exception");
       return UserViewModel.fromAnonymous();
-    } else {
-      UserViewModel userViewModel =
-      UserViewModel.fromJson(json.decode(userJson));
-      return userViewModel;
     }
   }
-
 
   static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
 
@@ -275,224 +280,16 @@ class UserDataProvider{
     );
   }
 
-  static Future<ResponseViewModel<String>> saveOrder(OrderModel order) async{
+  static Future<ResponseViewModel<List<OrderModel>>> saveOrder(OrderModel order) async{
     await Future.delayed(Duration(seconds:2),(){});
-    return ResponseViewModel<String>(
-      responseData: "501233",
-      isSuccess: true,
-    );
-  }
-
-
-  
-  static Future<ResponseViewModel<List<OrderModel>>> loadSavedOrders() async{
-
-    await Future.delayed(Duration(seconds: 2),(){});
     return ResponseViewModel<List<OrderModel>>(
+      responseData: List<OrderModel>(),
       isSuccess: true,
-      responseData: [
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 123,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 500,
-            packageSaving: 20,
-            packageSize: 3,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: null,
-        ),
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 124,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 520,
-            packageSaving: 30,
-            packageSize: 4,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: null,
-        ),
-      ],
-    );
-
-
-  }
-  static Future<ResponseViewModel<List<OrderModel>>> loadClosedOrders() async{
-
-    await Future.delayed(Duration(seconds: 2),(){});
-    return ResponseViewModel<List<OrderModel>>(
-      isSuccess: true,
-      responseData: [
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 123,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 500,
-            packageSaving: 20,
-            packageSize: 3,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: OrderStatus.CANCELED,
-        ),
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 124,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 520,
-            packageSaving: 30,
-            packageSize: 4,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: OrderStatus.DELIVERED,
-        ),
-      ],
-    );
-
-
-  }
-  static Future<ResponseViewModel<List<OrderModel>>> loadActiveOrders() async{
-
-    await Future.delayed(Duration(seconds: 2),(){});
-    return ResponseViewModel<List<OrderModel>>(
-      isSuccess: true,
-      responseData: [
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 123,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 500,
-            packageSaving: 20,
-            packageSize: 3,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: OrderStatus.SHIPPING,
-        ),
-        OrderModel(
-          orderTime: DateTime.now(),
-          orderNumber: 124,
-          isWhiteFrame: true,
-          userImages: [],
-          frameWithPath: false,
-          orderPackage: PackageModel(
-            packagePrice: 520,
-            packageSaving: 30,
-            packageSize: 4,
-          ),
-          orderAddress: AddressViewModel(
-            buildingNumber: '1',
-            addressName: 'My Apartment',
-
-            additionalInformation: '',
-            area: LocationModel(
-              name: 'Ain shams',
-              id: 1,
-              childLocations: [],
-            ),
-            city: LocationModel(
-              name: 'Cairo',
-              id: 1,
-              childLocations: [],
-            ),
-          ),
-          statues: OrderStatus.PREPARING,
-        ),
-      ],
     );
   }
 
-  static uploadUserImage(String imageLink) async{
 
+  static Future<ResponseViewModel<UserViewModel>> updateUserProfile(String imageLink) async{
     String token = await getUserToken();
     Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token',
@@ -505,19 +302,144 @@ class UserDataProvider{
       fileURL: imageLink,
       uploadKey: 'image',
       parserFunction: (uploadFileRawResponse){
-        print("****************************************");
-        print(uploadFileRawResponse);
-        print("****************************************");
-        return uploadFileRawResponse.toString();
+        Map<String,dynamic> response = uploadFileRawResponse;
+        response.putIfAbsent(ApiParseKeys.REGISTER_USER_TOKEN, () => token);
+        return UserViewModel.fromJson(response);
       }
     );
-
-
-    return ResponseViewModel<String>(
+    return ResponseViewModel<UserViewModel>(
       errorViewModel: uploadResponse.errorViewModel,
       isSuccess: uploadResponse.isSuccess,
       responseData: uploadResponse.responseData,
     );
   }
+
+  static Future<ResponseViewModel<UserViewModel>> updateUser(UserViewModel updatedUser, String oldPassword, String newPassword) async{
+
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {HttpHeaders.authorizationHeader : 'Bearer $token',});
+    String apiURL = URL.getURL(apiPath: URL.PUT_UPDATE_USER_PROFILE);
+
+    Map<String,dynamic> requestBody = {};
+    if(updatedUser.userName != null){
+      requestBody.putIfAbsent( 'name', () => updatedUser.userName);
+    }
+    if(updatedUser.userMail != null){
+      requestBody.putIfAbsent( 'email', () => updatedUser.userMail);
+    }
+    if(updatedUser.userPhoneNumber != null){
+      requestBody.putIfAbsent( 'phone', () => updatedUser.userPhoneNumber);
+    }
+    if(oldPassword != null && newPassword != null){
+      requestBody.putIfAbsent( 'old_password', () => oldPassword);
+      requestBody.putIfAbsent( 'new_password', () => newPassword);
+      requestBody.putIfAbsent( 'new_password_confirmation', () => newPassword);
+    }
+
+    ResponseViewModel updateUserProfile = await NetworkUtilities.handlePutRequest(
+      parserFunction: (updateProfileRawResponse){
+        Map<String,dynamic> response = updateProfileRawResponse;
+        response.putIfAbsent(ApiParseKeys.REGISTER_USER_TOKEN, () => token);
+        return UserViewModel.fromJson(response);
+      },
+      methodURL: apiURL,
+      requestHeaders: requestHeader,
+      requestBody: requestBody,
+    );
+    return ResponseViewModel<UserViewModel>(
+      responseData: updateUserProfile.responseData,
+      isSuccess: updateUserProfile.isSuccess,
+      errorViewModel: updateUserProfile.errorViewModel
+    );
+  }
+
+  static Future<ResponseViewModel<UserViewModel>> signInWithFacebook() async{
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email']);
+    final token = result.accessToken.token;
+    ResponseViewModel facebookGraphResponse = await NetworkUtilities.handleGetRequest(
+      parserFunction: (graphResponse){
+        return UserViewModel(
+          userName: graphResponse['name'],
+          userMail: graphResponse['email'],
+          userId: graphResponse['id'],
+          userProfileImage: graphResponse['picture']['data']['url'],
+          userToken: token,
+        );
+      },
+      methodURL: 'https://graph.facebook.com/v9.0/me?fields=name,first_name,last_name,email,picture&access_token=$token',
+    );
+
+    return ResponseViewModel<UserViewModel>(
+      errorViewModel: facebookGraphResponse.errorViewModel,
+      isSuccess: facebookGraphResponse.isSuccess,
+      responseData: facebookGraphResponse.responseData,
+    );
+
+  }
+
+  static Future<ResponseViewModel<bool>> deleteUserAddress(AddressViewModel address) async {
+
+
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: '${URL.GET_DELETE_ADDRESS_BY_ID}${address.id}?locale=${Constants.CURRENT_LOCALE}');
+    ResponseViewModel getAddressesResponse = await NetworkUtilities.handleGetRequest(
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (removeAddress){
+        return true;
+      },
+    );
+    return ResponseViewModel<bool>(
+      responseData: getAddressesResponse.isSuccess,
+      isSuccess: getAddressesResponse.isSuccess,
+      errorViewModel: getAddressesResponse.errorViewModel,
+    );
+  }
+
+  static Future<ResponseViewModel<AddressViewModel>> updateUserAddress(AddressViewModel newAddress) async{
+
+
+    print("********************** UPDATE ADDRESS ************************");
+    print(newAddress.id);
+    print("********************** UPDATE ADDRESS ************************");
+
+    Map<String,dynamic> requestBody = {
+      'address_id': newAddress.id ?? '',
+      'buildingNumber': (newAddress.buildingNumber ?? 0).toString(),
+      'streetName': newAddress.addressName ?? '',
+      'city_id': (newAddress.city.id ?? 0).toString(),
+      'area_id': (newAddress.area.id ?? 0).toString(),
+    };
+    if(newAddress.additionalInformation != null && newAddress.additionalInformation.length > 0){
+      requestBody.putIfAbsent('remarks', () => newAddress.additionalInformation);
+    }
+
+    String token = await getUserToken();
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+    String apiURL = URL.getURL(apiPath: URL.PUT_EDIT_USER_ADDRESS);
+    ResponseViewModel signInResponse = await NetworkUtilities.handlePutRequest(
+      requestBody: requestBody,
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (saveAddressRawResponse){
+        return AddressViewModel.fromJson(saveAddressRawResponse[ApiParseKeys.ADDRESS_ROOT_KEY]);
+      },
+    );
+    return ResponseViewModel<AddressViewModel>(
+      responseData: signInResponse.responseData,
+      isSuccess: signInResponse.isSuccess,
+      errorViewModel: signInResponse.errorViewModel,
+    );
+  }
+
+
+
+
 
 }

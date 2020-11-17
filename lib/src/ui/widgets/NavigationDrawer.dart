@@ -1,22 +1,27 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
+import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
+import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
+import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
-import 'package:picknprint/src/ui/BaseScreen.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
+import 'package:picknprint/src/ui/screens/ProfileScreen.dart';
 import 'package:picknprint/src/ui/screens/UpdatePasswordScreen.dart';
 import 'package:picknprint/src/ui/screens/orders_screens/ActiveOrdersScreen.dart';
 import 'package:picknprint/src/ui/screens/orders_screens/ClosedOrdersScreen.dart';
 import 'package:picknprint/src/ui/screens/orders_screens/SavedOrdersScreen.dart';
 
+import 'LoadingWidget.dart';
 import 'PackListTile.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -25,93 +30,105 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+  double padding = 6.0;
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-      builder: (context, state) {
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          color: AppColors.blackBg,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  bottom: 70,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: getPackagesSection(),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: getProfileSection(),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Visibility(
-                            visible: BlocProvider.of<UserBloc>(context)
-                                    .currentLoggedInUser
-                                    .isAnonymous() ==
-                                false,
-                            replacement: Container(
-                              width: 0,
-                              height: 0,
-                            ),
-                            child: getCartSection()),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Visibility(
-                          visible: BlocProvider.of<UserBloc>(context)
-                                  .currentLoggedInUser
-                                  .isAnonymous() ==
-                              false,
-                          replacement: Container(
-                            width: 0,
-                            height: 0,
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: getMyOrderSection(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: getLanguageSection(),
-                        ),
-
-
-                      ],
-                    ),
-                  ),
-                ),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: getHaveIssueSection()),
-              ],
-            ),
-          ),
-        );
+    return BlocListener(
+      cubit: BlocProvider.of<AuthenticationBloc>(context),
+      listener: (context , authenticationBlocState){
+        if(authenticationBlocState is UserAuthenticated && authenticationBlocState.currentUser.isAnonymous()){
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()), (route) => false);
+          return;
+        }
       },
-      listener: (context, state) {},
-      cubit: BlocProvider.of<UserBloc>(context),
+      child: ModalProgressHUD(
+        progressIndicator: LoadingWidget(),
+        inAsyncCall: BlocProvider.of<AuthenticationBloc>(context).state is AuthenticationLoading,
+        child: BlocConsumer(
+          builder: (context, state) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: AppColors.blackBg,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      left: 0,
+                      bottom: 70,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: getPackagesSection(),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: getProfileSection(),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Visibility(
+                                visible: BlocProvider.of<UserBloc>(context)
+                                        .currentLoggedInUser
+                                        .isAnonymous() ==
+                                    false,
+                                replacement: Container(
+                                  width: 0,
+                                  height: 0,
+                                ),
+                                child: getCartSection()),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Visibility(
+                              visible: BlocProvider.of<UserBloc>(context)
+                                      .currentLoggedInUser
+                                      .isAnonymous() ==
+                                  false,
+                              replacement: Container(
+                                width: 0,
+                                height: 0,
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: getMyOrderSection(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: getLanguageSection(),
+                            ),
+                            SizedBox(height: 10,),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: getHaveIssueSection()),
+                  ],
+                ),
+              ),
+            );
+          },
+          listener: (context, state) {},
+          cubit: BlocProvider.of<UserBloc>(context),
+        ),
+      ),
     );
   }
 
@@ -195,11 +212,14 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                     fontSize: 16,
                   ),
                 ),
-                Text(
-                  (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.lightBlue,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: padding),
+                  child: Text(
+                    (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.lightBlue,
+                    ),
                   ),
                 ),
               ],
@@ -228,43 +248,59 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: _gotoShippingAddresses,
-                child: Text(
-                  (LocalKeys.MY_SHIPPING_ADDRESSES).tr(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 14,
+              Visibility(
+                replacement: Container(width: 0, height: 0,),
+                visible: false ,
+                child: GestureDetector(
+                  onTap: _gotoShippingAddresses,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: padding),
+                    child: Text(
+                      (LocalKeys.MY_SHIPPING_ADDRESSES).tr(),
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: _gotoBasicData,
-                child: Text(
-                  (LocalKeys.MY_BASIC_DATA).tr(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 14,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: padding),
+                  child: Text(
+                    (LocalKeys.MY_BASIC_DATA).tr(),
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: _gotoUpdatePassword,
-                child: Text(
-                  (LocalKeys.UPDATE_MY_PASSWORD).tr(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 14,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: padding),
+                  child: Text(
+                    (LocalKeys.UPDATE_MY_PASSWORD).tr(),
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: _performLogout,
-                child: Text(
-                  (LocalKeys.LOGOUT).tr(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 14,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: padding),
+                  child: Text(
+                    (LocalKeys.LOGOUT).tr(),
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
@@ -396,31 +432,111 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           children: [
             GestureDetector(
               onTap: _gotoSavedUncompletedPage,
-              child: Text(
-                (LocalKeys.SAVED_UNCOMPLETED).tr(),
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 14,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: padding),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      (LocalKeys.SAVED_UNCOMPLETED).tr(),
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(width: 5,),
+                    Visibility(
+                      visible: BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0,
+                      replacement: Container(width: 0, height: 0,),
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: AppColors.lightBlue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userSavedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 12,
+                        ),)),
+                      ),
+
+                    ),
+                  ],
                 ),
               ),
             ),
             GestureDetector(
               onTap: _gotoPreviousOrders,
-              child: Text(
-                (LocalKeys.PREVIOUS_ORDERS).tr(),
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 14,
+              child: Padding(
+                padding:  EdgeInsets.symmetric(vertical: padding),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      (LocalKeys.PREVIOUS_ORDERS).tr(),
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(width: 5,),
+                    Visibility(
+                      visible: BlocProvider.of<UserBloc>(context).userCompletedOrders.length > 0,
+                      replacement: Container(width: 0, height: 0,),
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: AppColors.lightBlue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userCompletedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 12,
+                        ),)),
+                      ),
+
+                    ),
+                  ],
                 ),
               ),
             ),
             GestureDetector(
               onTap: _gotoCurrentOrders,
-              child: Text(
-                (LocalKeys.ACTIVE_ORDERS).tr(),
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 14,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: padding),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      (LocalKeys.ACTIVE_ORDERS).tr(),
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(width: 5,),
+                    Visibility(
+                      visible: BlocProvider.of<UserBloc>(context).userActiveOrders.length > 0,
+                      replacement: Container(width: 0, height: 0,),
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: AppColors.lightBlue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userActiveOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 12,
+                        ),)),
+                      ),
+
+                    ),
+
+
+                  ],
                 ),
               ),
             ),
@@ -496,7 +612,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     );
   }
 
-  void _performLogout() {}
+  void _performLogout() {
+    BlocProvider.of<AuthenticationBloc>(context).add(Logout());
+    return ;
+  }
 
   void _gotoUpdatePassword() {
     Navigator.pop(context);
@@ -504,7 +623,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         .push(MaterialPageRoute(builder: (context) => UpdatePasswordScreen()));
   }
 
-  void _gotoBasicData() {}
+  void _gotoBasicData() {
+    Navigator.pop(context);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ProfileScreen()));
+  }
 
   void _gotoShippingAddresses() {}
 
@@ -521,14 +643,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
 
   void _gotoSavedUncompletedPage() {
     Navigator.pop(context);
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => SavedOrdersScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SavedOrdersScreen()));
   }
 
   void _gotoPreviousOrders() {
     Navigator.pop(context);
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ClosedOrderScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ClosedOrderScreen()));
   }
 
   void _gotoCurrentOrders() {
@@ -555,10 +675,15 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         setState(() {});
         Navigator.pop(context);
       },
-      child: Text((LocalKeys.APP_LANGUAGE).tr(), style: TextStyle(
-        color: AppColors.white,
-      ),),
+      child: Padding(
+        padding:  EdgeInsets.symmetric(vertical: padding),
+        child: Text((LocalKeys.APP_LANGUAGE).tr(), style: TextStyle(
+          color: AppColors.white,
+        ),),
+      ),
     );
 
   }
+
+
 }

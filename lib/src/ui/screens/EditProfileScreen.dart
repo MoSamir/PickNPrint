@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,20 +17,17 @@ import 'package:picknprint/src/utilities/UIHelpers.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import '../BaseScreen.dart';
 
-class UpdateProfileScreen extends StatefulWidget {
+class EditProfileScreen extends StatefulWidget {
   @override
-  _UpdateProfileScreenState createState() => _UpdateProfileScreenState();
+  _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
 
 
   GlobalKey<FormState> _updateProfileFormKey = GlobalKey<FormState>();
-  TextEditingController usernameTextController , passwordTextController  , userPhoneNumberTextController,
-      confirmPasswordTextController, userEmailTextController , userPasswordTextController;
-
-  FocusNode usernameFocusNode , userMailFocusNode ,passwordFocusNode  ,
-      confirmPasswordFocusNode , userPhoneNumberFocusNode;
+  TextEditingController usernameTextController , userPhoneNumberTextController, userEmailTextController ;
+  FocusNode usernameFocusNode , userMailFocusNode , userPhoneNumberFocusNode;
 
   @override
   void initState() {
@@ -52,7 +51,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer(
       listener: (context, state){
-        if (state is UserDataLoadingFailedState) {
+        if (state is UserInformationUpdateFailedState) {
           if (state.error.errorCode == HttpStatus.requestTimeout) {
             UIHelpers.showNetworkError(context);
             return;
@@ -67,13 +66,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           }
         }
         else if(state is UserDataLoadedState){
-          UIHelpers.showToast( (LocalKeys.SUCCESSFULLY_UPDATED).tr(), false, true);
+          UIHelpers.showToast((LocalKeys.SUCCESSFULLY_UPDATED).tr(), false, true);
           Navigator.pop(context);
-
         }
       },
       builder:  (context, state){
         return ModalProgressHUD(
+          progressIndicator: LoadingWidget(),
           inAsyncCall: state is UserDataLoadingState,
           child: BaseScreen(
             hasDrawer: false,
@@ -83,7 +82,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(height: 5,),
-                  Text((LocalKeys.REGISTER_NEW_ACCOUNT).tr(), style: TextStyle(
+                  Text((LocalKeys.UPDATE_PROFILE_HEADER).tr(), style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ), textAlign: TextAlign.start,),
@@ -95,15 +94,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       children: <Widget>[
                         buildTextField(validator: Validator.requiredField, textController: usernameTextController , focusNode: usernameFocusNode , nextNode: userMailFocusNode , hint : (LocalKeys.USER_NAME_LABEL).tr() , secured : false , autoValidate: false),
                         buildTextField(validator: Validator.mailValidator, textController: userEmailTextController , focusNode: userMailFocusNode , nextNode: userPhoneNumberFocusNode , hint : (LocalKeys.USER_EMAIL_LABEL).tr() , secured : false , autoValidate: false),
-                        buildTextField(validator: Validator.requiredField, textController: userPhoneNumberTextController , focusNode: userPhoneNumberFocusNode , nextNode: passwordFocusNode , hint : (LocalKeys.PHONE_NUMBER_LABEL).tr() , secured : false , autoValidate: false),
-                        buildTextField(validator: Validator.requiredField, textController: passwordTextController , focusNode: passwordFocusNode , nextNode: confirmPasswordFocusNode , hint : (LocalKeys.PASSWORD_LABEL).tr() , secured : true , autoValidate: false),
-                        buildTextField(validator: (String confirmPasswordText){
-                          if(confirmPasswordText == passwordTextController.text){
-                            return null ;
-                          } else {
-                            return (LocalKeys.PASSWORDS_NOT_MATCH).tr();
-                          }
-                        }, textController: confirmPasswordTextController , focusNode: confirmPasswordFocusNode  , hint : (LocalKeys.CONFIRM_PASSWORD_LABEL).tr() , secured : true),
+                        buildTextField(validator: Validator.requiredField, textController: userPhoneNumberTextController , focusNode: userPhoneNumberFocusNode , hint : (LocalKeys.PHONE_NUMBER_LABEL).tr() , secured : false , autoValidate: false),
                       ],
                     ),
                   ),
@@ -117,7 +108,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           userMail: userEmailTextController.text,
                           userPhoneNumber: userPhoneNumberTextController.text,
                         );
-                        BlocProvider.of<UserBloc>(context).add(UpdateUserInformation(userViewModel: userModel , oldPassword: passwordTextController.text ,newPassword: passwordTextController.text));
+                        BlocProvider.of<UserBloc>(context).add(UpdateUserInformation(userViewModel: userModel));
                       }
                     },
                     child: Container(
@@ -127,7 +118,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         color: AppColors.lightBlue,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
+                      child: Center(child: Text((LocalKeys.UPDATE_PROFILE_LABEL).tr(), style: TextStyle(color: AppColors.white),)),
                     ),
                   ),
                   SizedBox(height: 20,),

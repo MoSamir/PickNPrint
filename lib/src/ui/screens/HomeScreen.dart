@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +20,7 @@ import 'package:picknprint/src/ui/screens/AboutScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/NumberedBoxWidget.dart';
+import 'package:picknprint/src/ui/widgets/PackageHomeScreenListing.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -78,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         builder: (context , state){
           return ModalProgressHUD(
+            progressIndicator: LoadingWidget(),
             inAsyncCall: state is ApplicationDataLoadingState,
             child: BaseScreen(
               hasDrawer: true,
@@ -285,71 +289,9 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.all(6),
       physics: NeverScrollableScrollPhysics(),
       children: systemPackages.map((PackageModel package){
-        return Container(
-          color: AppColors.white,
-          padding: EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 8,),
-              Center(
-                child: Text((LocalKeys.PACKAGE_SIZE).tr(args:([package.packageSize.toString()])) , textAlign: TextAlign.center, style: TextStyle(
-                  fontSize: 20, color: AppColors.lightBlue, fontWeight: FontWeight.bold,
-                ),),
-              ),
-              SizedBox(height: 8,),
-              GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: List.generate(package.packageSize, (index) => Center(
-                  child: Container(
-                    width: (70), height: (70), padding: EdgeInsets.all(2),decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      border: Border.all(
-                        width: 2,
-                        color: AppColors.lightBlack.withOpacity(.8),
-                      )
-                  ),
-                  ),
-                )),
-              ),
-              SizedBox(height: 8,),
-              Center(
-                child: Text((LocalKeys.PRICE_TEXT).tr(args:([package.packagePrice.toString()])) , textAlign: TextAlign.center, style: TextStyle(
-                  fontSize: 18, color: AppColors.black,
-                ),),
-              ),
-              SizedBox(height: 2,),
-              Center(
-                child: Text((LocalKeys.SAVE_TEXT).tr(args:([package.packageSaving.toString()])) , textAlign: TextAlign.center, style: TextStyle(
-                  fontSize: 18, color: AppColors.lightBlue,
-                ),),
-              ),
-              SizedBox(height: 8,),
-              Center(
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
-                  },
-                  child: Container(
-                    width: (200),
-                    height: (40),
-//                        padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.lightBlue,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Center(child: Text((LocalKeys.GO_LABEL).tr(), style: TextStyle(color: AppColors.white),)),
-                  ),
-                ),
-              ),
-              SizedBox(height: 8,),
-
-            ],
-
-          ),
-        );
+       return PackageHomeScreenListing(package: package , onPackageTap: (){
+         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
+       },);
       }).toList(),);
 
   }

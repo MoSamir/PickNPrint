@@ -9,28 +9,25 @@ import 'helpers/URL.dart';
 class ApplicationDataProvider {
 
   static Future<ResponseViewModel<List<PackageModel>>> getSystemPackages() async{
-    await Future.delayed(Duration(seconds:2),(){});
-    return ResponseViewModel<List<PackageModel>>(
-      isSuccess:true,
-      responseData: [
-        PackageModel(
-          packagePrice: 120,
-          packageSaving: 30,
-          packageSize: 3,
-        ),
-        PackageModel(
-          packagePrice: 120,
-          packageSaving: 30,
-          packageSize: 4,
-        ),
-        PackageModel(
-          packagePrice: 120,
-          packageSaving: 30,
-          packageSize: 6,
-        ),
-      ],
-      errorViewModel: null,
+
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders();
+    String apiURL = URL.getURL(apiPath: URL.GET_RETRIEVE_SYSTEM_PACKAGES);
+    ResponseViewModel systemSupportedLocationResponse = await NetworkUtilities.handleGetRequest(
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (systemSupportedLocationRawResponse){
+        return PackageModel.fromListJson(systemSupportedLocationRawResponse[ApiParseKeys.PACKAGE_LIST_ROOT]);
+      },
     );
+
+    return ResponseViewModel<List<PackageModel>>(
+      responseData: systemSupportedLocationResponse.responseData,
+      isSuccess: systemSupportedLocationResponse.isSuccess,
+      errorViewModel: systemSupportedLocationResponse.errorViewModel,
+    );
+
+
+
   }
 
   static Future<ResponseViewModel<List<LocationModel>>> getSystemSupportedAreas() async {

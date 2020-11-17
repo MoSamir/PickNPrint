@@ -186,6 +186,10 @@ class LocalKeys{
   static const String PREVIOUS_ORDERS = "PREVIOUS_ORDERS";
   static const String ACTIVE_ORDERS = "ACTIVE_ORDERS";
   static const String APP_LANGUAGE = "APP_LANGUAGE";
+  static const String NO_ORDERS_YET = "NO_ORDERS_YET";
+
+
+
 
 
 
@@ -239,6 +243,14 @@ class LocalKeys{
   //-------------------------- ABOUT SCREEN ---------------------------------
 
   static const String ABOUT_SCREEN_TITLE = "ABOUT_SCREEN_TITLE";
+
+  // ---------------------- EDIT PROFILE -------------------------------------
+
+
+  static const String UPDATE_PROFILE_LABEL = "UPDATE_PROFILE_LABEL";
+  static const String UPDATE_PROFILE_HEADER = "UPDATE_PROFILE_HEADER";
+
+
 
 
 

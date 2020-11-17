@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:picknprint/src/data_providers/apis/CartDataProvider.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
@@ -14,26 +15,7 @@ import 'data_providers/models/UserViewModel.dart';
 class Repository {
 
 
-  static Future<ResponseViewModel<List<PackageModel>>>
-  getUserCart() async {
-    return ResponseViewModel<List<PackageModel>>(responseData: [
-      PackageModel(
-          packagePrice: 150,
-          packageSaving: 20,
-          packageSize: 3
-      ),
-      PackageModel(
-          packagePrice: 150,
-          packageSaving: 20,
-          packageSize: 6
-      ),
-      PackageModel(
-          packagePrice: 150,
-          packageSaving: 20,
-          packageSize: 4
-      )
-    ],isSuccess: true ,errorViewModel: null);
-  }
+
 
 
 
@@ -109,61 +91,50 @@ class Repository {
 
   static Future<ResponseViewModel<void>> saveUser(UserViewModel userViewModel) async =>
       await UserDataProvider.saveUser(userViewModel);
-  static signIn({String userPhoneNumber, String userPassword}) async =>
-      await UserDataProvider.signIn(userPhoneNumber, userPassword);
+  static signIn({String userMail, String userPassword}) async =>
+      await UserDataProvider.signIn(userMail, userPassword);
   static signOut() async => await UserDataProvider.signOut();
   static addToCart({PackageModel advertisementViewModel}) {}
   static removeFromCart({PackageModel advertisementViewModel}) {}
 
-  static Future<ResponseViewModel<UserViewModel>>registerNewUser({UserViewModel userModel, String userPassword}) async{
-    return UserDataProvider.registerNewUser(userModel,  userPassword);
+  static Future<ResponseViewModel<UserViewModel>>registerNewUser({UserViewModel userModel, String userPassword , bool withSocialMedia} ) async{
+    return UserDataProvider.registerNewUser(userModel,  userPassword , withSocialMedia);
   }
 
-  static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
-    return UserDataProvider.createOrder(orderModel);
-  }
 
-  static Future<ResponseViewModel<String>> saveOrderToLater(OrderModel order) async{
-    return UserDataProvider.saveOrder(order);
-  }
 
 
   static Future<ResponseViewModel<AddressViewModel>> saveNewAddress({AddressViewModel newAddress}) async
   => await UserDataProvider.saveUserAddress(newAddress);
 
-
-
-  static Future<ResponseViewModel<void>> loginWithFacebook() async {
-
-    final facebookLogin = FacebookLogin();
-    await facebookLogin.logOut();
-    final result = await facebookLogin.logIn(['email','user_photos']);
-    String token = result.accessToken.token;
-    if(token != null){
-      return ResponseViewModel<String>(
-        isSuccess: true,
-        responseData: token,
-      );
-    } else {
-      return ResponseViewModel<String>(
-        isSuccess: false,
-        errorViewModel: ErrorViewModel(
-          errorCode: 404,
-          errorMessage: result.errorMessage,
-        ),
-      );
-    }
-  }
-
-  static Future<ResponseViewModel<List<OrderModel>>>loadActiveOrders() async => UserDataProvider.loadActiveOrders();
-  static Future<ResponseViewModel<List<OrderModel>>>loadClosedOrders() async => UserDataProvider.loadClosedOrders();
-  static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => UserDataProvider.loadSavedOrders();
-
-
   static Future<ResponseViewModel<List<AddressViewModel>>> getUserAddresses() async => await UserDataProvider.getUserAddresses();
 
-  static Future<ResponseViewModel<String>> uploadImage({String imageLink}) async => await UserDataProvider.uploadUserImage(imageLink);
+  static Future<ResponseViewModel<UserViewModel>> updateProfileImage({String imageLink}) async => await UserDataProvider.updateUserProfile(imageLink);
 
+  static Future<ResponseViewModel<UserViewModel>> updateUserProfile({UserViewModel updatedUser, String oldPassword, String newPassword})
+  async => await UserDataProvider.updateUser(updatedUser , oldPassword , newPassword);
+
+  static Future<ResponseViewModel<UserViewModel>> signInWithFacebook() async => await UserDataProvider.signInWithFacebook();
+
+  static Future<ResponseViewModel> saveOrderToCart({OrderModel orderModel}) async => await CartDataProvider.saveOrderToCart(orderModel);
+  static Future<ResponseViewModel<List<OrderModel>>> saveUserCartForLater() async{
+    return CartDataProvider.saveUserCartForLater();
+  }
+  static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async{
+    return CartDataProvider.getUserCart();
+  }
+
+  static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel orderModel) async{
+    return CartDataProvider.createOrder(orderModel);
+  }
+
+  static Future<ResponseViewModel<List<OrderModel>>>loadActiveOrders() async => CartDataProvider.loadActiveOrders();
+  static Future<ResponseViewModel<List<OrderModel>>>loadClosedOrders() async => CartDataProvider.loadClosedOrders();
+  static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => CartDataProvider.loadSavedOrders();
+
+  static Future<ResponseViewModel<bool>> deleteAddress({AddressViewModel address}) async => UserDataProvider.deleteUserAddress(address);
+
+  static Future<ResponseViewModel<AddressViewModel>> updateUserAddress({AddressViewModel newAddress}) async => UserDataProvider.updateUserAddress(newAddress);
 
 
 

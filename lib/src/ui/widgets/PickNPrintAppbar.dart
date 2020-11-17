@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
-import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
+
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
@@ -15,6 +16,8 @@ import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
 import 'package:picknprint/src/ui/screens/ProfileScreen.dart';
 import 'package:easy_localization/easy_localization.dart' as ll;
+import 'package:picknprint/src/ui/screens/UserCartScreen.dart';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'NetworkErrorView.dart';
 
@@ -105,6 +108,13 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
   }
 
   Widget getUser(UserBlocStates state) {
+
+    if(BlocProvider.of<UserBloc>(context).state is UserDataLoadingState){
+      return LoadingWidget(
+        size : 20.0,
+      );
+    }
+
     if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false) {
       return Container(
         color: AppColors.transparent,
@@ -133,52 +143,50 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
 
   Widget getCartSize() {
     if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false)
-      return StreamBuilder<int>(
-      stream: BlocProvider.of<UserCartBloc>(context).cartItemsStream,
-      initialData: 0,
-      builder: (context, cartLength){
-        return  Container(
-            color: AppColors.transparent,
-            width: 30, height: 30, child: FlatButton(
-          onPressed: (){},
-          padding: EdgeInsets.all(0),
-          child: Center(
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: Icon(Icons.shopping_cart , color: AppColors.white ,size: 25,),
-                ),
-                Visibility(
-                  visible: cartLength.data > 0,
-                  replacement: Container(width: 0, height: 0,),
-                  child: Positioned(
-                      top: 3,
-                      right: 0,
+      return Container(
+          color: AppColors.transparent,
+          width: 30, height: 30, child: FlatButton(
+        onPressed: goToCartScreen,
+        padding: EdgeInsets.all(0),
+        child: Center(
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Icon(Icons.shopping_cart , color: AppColors.white ,size: 25,),
+              ),
+              Visibility(
+                visible: BlocProvider.of<UserBloc>(context).userCart.length > 0,
+                replacement: Container(width: 0, height: 0,),
+                child: Positioned(
+                    top: 3,
+                    right: 0,
+                    width: 18,
+                    height: 18,
+                    //alignment: Alignment.topRight,
+                    child: Container(
                       width: 18,
                       height: 18,
-                      //alignment: Alignment.topRight,
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AppColors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(child: Text(cartLength.data.toString() , textScaleFactor: 1 ,style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                        ),)),
-                      )
-                  ),
+                      decoration: BoxDecoration(
+                        color: AppColors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(child: Text(BlocProvider.of<UserBloc>(context).userCart.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                      ),)),
+                    )
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
-      },
-    );
+        ),
+      ));
     else
       return Container(width: 0, height: 0,);
+  }
+
+  void goToCartScreen() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> UserCartScreen()));
   }
 }

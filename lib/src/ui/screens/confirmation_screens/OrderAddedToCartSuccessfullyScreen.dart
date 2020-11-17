@@ -8,7 +8,8 @@ import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'PickYourPhotosScreen.dart';
+import '../HomeScreen.dart';
+import '../PickYourPhotosScreen.dart';
 class OrderAddedToCartSuccessfullyScreen extends StatefulWidget {
   @override
   _OrderAddedToCartSuccessfullyScreenState createState() => _OrderAddedToCartSuccessfullyScreenState();
@@ -63,14 +64,16 @@ class _OrderAddedToCartSuccessfullyScreenState extends State<OrderAddedToCartSuc
                     ),
                     Text((LocalKeys.ICON_LABEL).tr(),),
                   ]
-
               ),
-              Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(
-                color: AppColors.black,
-                decoration: TextDecoration.underline,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ), ),
+              GestureDetector(
+                onTap: _continueShopping,
+                child: Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(
+                  color: AppColors.black,
+                  decoration: TextDecoration.underline,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ), ),
+              ),
               SizedBox(height: 20,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -96,5 +99,13 @@ class _OrderAddedToCartSuccessfullyScreenState extends State<OrderAddedToCartSuc
     );
   }
 
-  _gotoCartScreen() {}
+  void _gotoCartScreen() {
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
+    return;
+  }
+
+  void _continueShopping() {
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
+    return;
+  }
 }

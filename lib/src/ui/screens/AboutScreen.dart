@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
@@ -16,6 +17,9 @@ class _AboutScreenState extends State<AboutScreen> {
       hasDrawer: false,
       hasAppbar: true,
       customAppbar: PickNPrintAppbar(
+        appbarColor: AppColors.black,
+        actions: [],
+        centerTitle: true,
         title: (LocalKeys.ABOUT_SCREEN_TITLE).tr(),
       ),
 

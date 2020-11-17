@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 
-import 'RegisterScreen.dart';
+import '../RegisterScreen.dart';
 
 class OrderSavingConfirmationScreen extends StatelessWidget {
 

@@ -23,7 +23,6 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       yield OrderCreationLoadingFailureState(error: Constants.CONNECTION_TIMEOUT, failureEvent: event);
       return ;
     }
-
     if(event is CreateOrder){
       yield* _handleOrderCreation(event);
       return ;
@@ -32,56 +31,69 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       yield* _handleSaveOrder(event);
       return ;
     }
+    if(event is AddOrderToCart){
+      yield* _handleAddOrderToCart(event);
+      return;
+    }
 
 
   }
 
   Stream<CreateOrderStates> _handleOrderCreation(CreateOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<String>> orderCreationResult = await Repository.createOrder(event.orderModel);
-
-    if(orderCreationResult.isSuccess){
-      yield OrderCreationLoadedSuccessState(orderNumber: orderCreationResult.responseData[0].toString(),
-        shippingDuration: orderCreationResult.responseData[1].toString(),
-      );
-      return ;
+    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
+    if(saveOrderResponse.isSuccess){
+      ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
+      if(orderCreationResult.isSuccess){
+        yield OrderCreationLoadedSuccessState(
+          orderNumber: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].orderNumber.toString() : '',
+          shippingDuration: "5",
+        );
+        return ;
+      }
+      else {
+        yield OrderCreationLoadingFailureState(
+          error: orderCreationResult.errorViewModel,
+          failureEvent: event,
+        );
+        return ;
+      }
     } else {
-      yield OrderCreationLoadingFailureState(
-        error: orderCreationResult.errorViewModel,
-        failureEvent: event,
-      );
+      yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
       return ;
     }
   }
 
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<String> saveOrderResponse = await Repository.saveOrderToLater(event.order);
-    if(saveOrderResponse.isSuccess){
+    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.order);
+    // if(saveOrderResponse.isSuccess){
+    //
+    // } else {
+    //   yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
+    //   return ;
+    // }
+
+    ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveUserCartForLater();
+    if(saveUserCart.isSuccess){
       yield OrderSavingSuccessState(
-        orderNumber: saveOrderResponse.responseData,
+        cartOrders : saveOrderResponse.responseData,
       );
       return;
-    } else {
-      OrderSavingFailedState(
-        failedEvent: event,
-        error: saveOrderResponse.errorViewModel,
-      );
+    }
+    else {
+      yield OrderSavingFailedState(failedEvent: event, error: saveUserCart.errorViewModel,);
       return ;
     }
+
   }
-
-
-
 
   Future<String> validateOrder(OrderModel userOrder) async{
     for(int i = 0 ; i < userOrder.userImages.length ; i++){
       String imagePath = userOrder.userImages[i];
-
       if(imagePath == null || imagePath.isEmpty){
         return (LocalKeys.SOME_IMAGES_IS_MISSING).tr();
       }
-
       try{
         File imageFile = File(imagePath);
         var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
@@ -89,7 +101,6 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
           return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
         }
       } catch(exception){
-
         ResponseViewModel isValidImage = await NetworkUtilities.handleGetRequest(
           methodURL: imagePath,
           parserFunction: (json){},
@@ -100,6 +111,20 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       }
     }
     return null;
+  }
+
+  Stream<CreateOrderStates> _handleAddOrderToCart(AddOrderToCart event) async*{
+    yield OrderCreationLoadingState();
+    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.order);
+    if(saveOrderResponse.isSuccess){
+      yield OrderAddedToCartSuccessState(
+        cartOrders : saveOrderResponse.responseData,
+      );
+      return;
+    } else {
+     yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
+      return ;
+    }
   }
 
 }

@@ -15,7 +15,7 @@
   "WHAT_WE_OFFER": "نحن نقدم مجموعة واسعة من الإطارات الجاهزة\nحدد مجموعة واحدة لك",
   "PACKAGE_SIZE": "{} صور",
   "PRICE_TEXT": "{} جنيه",
-  "SAVE_TEXT": "وفر {} جنيه",
+  "SAVE_TEXT": "وفر {} %",
   "GO_LABEL": "انطلق",
   "REQUEST_EXTRA_PACKAGES_THAN": "اكثر من {} قطع ؟",
   "CHECKOUT_EXTRA_RATE": " مشاهده عروضنا الخاصه",
@@ -143,7 +143,11 @@
   "ABOUT_SCREEN_TITLE": "حول التطبيق",
   "SELECT_AT_LEAST_ONE_IMAGE": "يرجي اختيار صوره واحده علي الاقل",
   "ADD_MORE_IMAGES": "اضافه صوره اضافيه \n 35 جنيه",
-  "SUCCESSFULLY_UPDATED": "تم تعديل بياناتك بنجاح"
+  "SUCCESSFULLY_UPDATED": "تم تعديل بياناتك بنجاح",
+  "UPDATE_PROFILE_LABEL": "تعديل",
+  "UPDATE_PROFILE_HEADER": "عدل بياناتك",
+  "NO_ORDERS_YET": "لا يوجد طلبات بعد"
+
 
 }
 

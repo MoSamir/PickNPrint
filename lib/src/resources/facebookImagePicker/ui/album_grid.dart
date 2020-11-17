@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picknprint/src/resources/facebookImagePicker/model/album.dart';
 
+import '../../Resources.dart';
 import '../debounce.dart';
 
 class AlbumGrid extends StatefulWidget {
@@ -65,8 +66,7 @@ class AlbumGridState extends State<AlbumGrid> {
               child: FadeInImage(
                 image: NetworkImage(album.coverPhoto),
                 placeholder: AssetImage(
-                  'assets/loading.gif',
-                  package: 'flutter_facebook_image_picker',
+                  Resources.APPBAR_LOGO_IMG
                 ),
                 fit: BoxFit.cover,
                 height: 180.00,

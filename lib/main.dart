@@ -8,29 +8,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
-import 'package:picknprint/src/bloc/blocs/UserCartBloc.dart';
+
 import 'package:picknprint/src/bloc/events/ApplicationDataEvents.dart';
 import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
-import 'package:picknprint/src/bloc/states/UserCartStates.dart';
+
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
+import 'package:picknprint/src/utilities/BlocObserver.dart';
+
 
 
 ApplicationDataBloc appBloc = ApplicationDataBloc(ApplicationDataLoadingState());
 AuthenticationBloc authenticationBloc = AuthenticationBloc(AuthenticationInitiated());
-UserCartBloc cartBloc = UserCartBloc(UserCartLoading());
-UserBloc userBloc = UserBloc(UserDataLoadingState() , authenticationBloc);
-
+UserBloc userBloc ;
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
-
+  Bloc.observer = BlocLogObserver();
+  userBloc = UserBloc(UserDataLoadingState() , authenticationBloc);
   appBloc.add(LoadApplicationData());
-  authenticationBloc.mapEventToState(AuthenticateUser());
+  authenticationBloc.add(AuthenticateUser());
   Constants.CURRENT_LOCALE = "ar";
 
 
@@ -78,7 +79,7 @@ class _AppEntranceState extends State<AppEntrance> {
       providers: [
         BlocProvider.value(value: appBloc),
         BlocProvider.value(value: authenticationBloc),
-        BlocProvider.value(value: cartBloc),
+
         BlocProvider.value(value: userBloc),
       ],
       child: MaterialApp(

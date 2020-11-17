@@ -1,5 +1,6 @@
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 
 abstract class CreateOrderStates {}
 
@@ -20,9 +21,16 @@ class OrderCreationLoadingFailureState extends CreateOrderStates{
 }
 
 class OrderSavingSuccessState extends CreateOrderStates{
-  final String orderNumber ;
-  OrderSavingSuccessState({this.orderNumber});
+  final List<OrderModel> cartOrders ;
+  OrderSavingSuccessState({this.cartOrders});
 }
+
+
+class OrderAddedToCartSuccessState extends CreateOrderStates{
+  final List<OrderModel> cartOrders ;
+  OrderAddedToCartSuccessState({this.cartOrders});
+}
+
 
 class OrderSavingFailedState extends CreateOrderStates{
   final ErrorViewModel error ;
