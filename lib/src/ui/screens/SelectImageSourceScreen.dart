@@ -107,7 +107,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                     onTap: _pickImageFromFacebook,
                     child: Container(
                       width: MediaQuery.of(context).size.width - 32,
-                      height: (55),
+                      height: 50,
                       decoration: BoxDecoration(
                         color: AppColors.lightBlack,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -154,7 +154,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                     onTap: _pickImageFromInstagram,
                     child: Container(
                       width: MediaQuery.of(context).size.width - 32,
-                      height: (55),
+                      height: 50,
                       decoration: BoxDecoration(
                         color: AppColors.lightBlack,
                         borderRadius: BorderRadius.all(Radius.circular(10)),

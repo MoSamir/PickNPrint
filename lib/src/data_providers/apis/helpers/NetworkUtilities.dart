@@ -184,7 +184,6 @@ class NetworkUtilities {
     } catch (exception) {
       print("*************************************");
       print("Exception in upload => $exception");
-
       print("*************************************");
       uploadResponse = ResponseViewModel(
         isSuccess: false,

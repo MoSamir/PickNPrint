@@ -24,8 +24,15 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       return ;
     }
     if(event is CreateOrder){
-      yield* _handleOrderCreation(event);
-      return ;
+      if(event.orderModel.statues == OrderStatus.SAVED){
+        yield* _handleSavedOrderCreation(event);
+        return ;
+      }
+      else {
+        yield* _handleOrderCreation(event);
+        return ;
+      }
+
     }
     if(event is SaveOrder){
       yield* _handleSaveOrder(event);
@@ -66,18 +73,10 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.order);
-    // if(saveOrderResponse.isSuccess){
-    //
-    // } else {
-    //   yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
-    //   return ;
-    // }
-
-    ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveUserCartForLater();
+    ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveOrderForLater(event.order);
     if(saveUserCart.isSuccess){
       yield OrderSavingSuccessState(
-        cartOrders : saveOrderResponse.responseData,
+        cartOrders : saveUserCart.responseData,
       );
       return;
     }
@@ -85,7 +84,6 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       yield OrderSavingFailedState(failedEvent: event, error: saveUserCart.errorViewModel,);
       return ;
     }
-
   }
 
   Future<String> validateOrder(OrderModel userOrder) async{
@@ -125,6 +123,30 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
      yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
       return ;
     }
+  }
+
+  Stream<CreateOrderStates> _handleSavedOrderCreation(CreateOrder event) async*{
+    yield OrderCreationLoadingState();
+
+    ResponseViewModel<List<OrderModel>> savedOrderCreationResult = await Repository.createSavedOrder(event.orderModel);
+    if(savedOrderCreationResult.isSuccess){
+      yield OrderCreationLoadedSuccessState(
+        orderNumber: savedOrderCreationResult.responseData.length > 0 ? savedOrderCreationResult.responseData[0].orderNumber.toString() : '',
+        shippingDuration: "5",
+      );
+      return ;
+    }
+    else {
+      yield OrderCreationLoadingFailureState(
+        error: savedOrderCreationResult.errorViewModel,
+        failureEvent: event,
+      );
+      return ;
+    }
+
+
+
+
   }
 
 }

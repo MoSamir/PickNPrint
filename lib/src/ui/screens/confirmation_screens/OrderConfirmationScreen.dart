@@ -25,10 +25,12 @@ class OrderConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: ()async => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()) ,(route) => false),
+      onWillPop: () async => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()) ,(route) => false),
       child: BaseScreen(
         hasAppbar: true,
         customAppbar: PickNPrintAppbar(
+          actions: [],
+          autoImplyLeading: false,
         ),
         child: SingleChildScrollView(
           child: Column(

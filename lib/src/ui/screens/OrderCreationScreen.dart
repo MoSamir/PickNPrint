@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_svg/svg.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -81,7 +82,7 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
           }
         }
         else if(state is OrderCreationLoadedSuccessState){
-
+          BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderConfirmationScreen(
             orderNumber: state.orderNumber,
             orderShippingDuration: state.shippingDuration,
@@ -116,9 +117,7 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                     OrderStatisticWidget(
                       orderModel: widget.orderModel,
                       onCreateOrder: (OrderModel order){
-                        orderBloc.add(CreateOrder(
-                            isCartItem : BlocProvider.of<UserBloc>(context).userCart.contains(widget.orderModel),
-                            orderModel : widget.orderModel));
+                        orderBloc.add(CreateOrder(orderModel : widget.orderModel));
                         return;
                       },
                     ),

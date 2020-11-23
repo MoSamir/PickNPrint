@@ -115,6 +115,10 @@ class LocalKeys{
   static const String PLACE_ORDER = "PLACE_ORDER";
   static const String ORDER_DETAILS = "ORDER_DETAILS";
   static const String PLEASE_CHECK_ORDER = "PLEASE_CHECK_ORDER";
+  static const String PLEASE_ADD_ADDRESS_FIRST = "PLEASE_ADD_ADDRESS_FIRST";
+
+
+
 
 //------------------------- THANKS FOR ORDERING SCREEN -------------------------
 
@@ -228,6 +232,10 @@ class LocalKeys{
   static const String PREPARING_STATUES = "PREPARING_STATUES";
   static const String SHIPPING_STATUES = "SHIPPING_STATUES";
   static const String DELIVERED_STATUES = "DELIVERED_STATUES";
+  static const String PENDING_STATUES = "PENDING_STATUES";
+
+
+
 
   //--------------------------- PREVIOUS ORDER SCREEN -------------------------
   static const String MY_PREVIOUS_ORDERS = "MY_PREVIOUS_ORDERS";
@@ -249,6 +257,8 @@ class LocalKeys{
 
   static const String UPDATE_PROFILE_LABEL = "UPDATE_PROFILE_LABEL";
   static const String UPDATE_PROFILE_HEADER = "UPDATE_PROFILE_HEADER";
+
+
 
 
 

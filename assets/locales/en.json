@@ -135,6 +135,7 @@
   "PREPARING_STATUES": "Preparing",
   "SHIPPING_STATUES": "on shipping",
   "DELIVERED_STATUES": "Delivered",
+  "PENDING_STATUES": "Pending",
   "MY_PREVIOUS_ORDERS" : "My Previous Orders",
   "MY_SAVED_ORDERS" : "My Saved Un-Completed Orders",
   "MY_ACTIVE_ORDERS" : "Current Orders",
@@ -146,7 +147,7 @@
   "SUCCESSFULLY_UPDATED": "Your Information updated successfully",
   "UPDATE_PROFILE_LABEL": "Update",
   "UPDATE_PROFILE_HEADER": "Update Your Information",
+  "PLEASE_ADD_ADDRESS_FIRST": "Please Add address first before saving orders",
   "NO_ORDERS_YET": "No Orders Yet"
-
 }
 

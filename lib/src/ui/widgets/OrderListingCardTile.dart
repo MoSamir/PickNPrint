@@ -156,8 +156,12 @@ class OrderListingCardTile extends StatelessWidget {
       color: AppColors.green,
     );
 
+    print("Active Order Status => $statues");
 
-    if(statues == OrderStatus.CANCELED){
+     if(statues == OrderStatus.PENDING){
+    return Text((LocalKeys.PENDING_STATUES).tr(), style: greenStyle,);
+    }
+    else if(statues == OrderStatus.CANCELED){
       return Text((LocalKeys.CANCELED_STATUES).tr(), style: redStyle,);
     }
     else if(statues == OrderStatus.PREPARING){

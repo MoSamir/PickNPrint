@@ -34,7 +34,8 @@ import 'SelectImageSourceScreen.dart';
 class PickYourPhotosScreen extends StatefulWidget {
 
   final PackageModel userSelectedPackage;
-  PickYourPhotosScreen({this.userSelectedPackage});
+  final OrderModel userOrder;
+  PickYourPhotosScreen({this.userSelectedPackage,  this.userOrder});
 
   @override
   _PickYourPhotosScreenState createState() => _PickYourPhotosScreenState();
@@ -52,10 +53,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   void initState() {
     super.initState();
     createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
-    List<String> imagesList = List();
-    for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++)
-      imagesList.add('');
-    userOrder = OrderModel(orderPackage: widget.userSelectedPackage , isWhiteFrame: true , frameWithPath: false, userImages: imagesList , orderTime: DateTime.now());
+    if(widget.userOrder == null){
+      List<String> imagesList = List();
+      for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++)
+        imagesList.add('');
+      userOrder = OrderModel(orderPackage: widget.userSelectedPackage , isWhiteFrame: true , frameWithPath: false, userImages: imagesList , orderTime: DateTime.now());
+    } else {
+      userOrder = widget.userOrder;
+    }
   }
 
 
@@ -67,9 +72,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         key: _scaffoldKey,
         body: BlocConsumer(
           listener: (context , state){
-
-
-
             if (state is OrderCreationLoadingFailureState) {
               if (state.error.errorCode == HttpStatus.requestTimeout) {
                 UIHelpers.showNetworkError(context);
@@ -97,7 +99,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                 UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
                 return;
               }
-            } else if(state is OrderAddedToCartSuccessState){
+            }
+            else if(state is OrderAddedToCartSuccessState){
+              BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => OrderAddedToCartSuccessfullyScreen(),
               ));
@@ -105,7 +109,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             }
             else if(state is OrderSavingSuccessState){
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
-
             }
           },
           builder: (context , state){
@@ -148,10 +151,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                         child: getFramesList(),),
                     ),
                     SizedBox(height: 10,),
-                    GestureDetector(child: Padding(
-                      padding:  EdgeInsets.symmetric(vertical: padding),
-                      child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ),
-                    ) , onTap: _saveOrderForLater,),
+                    Visibility(
+                      replacement: Container(width: 0, height: 0,),
+                      visible: (widget.userOrder != null) && (widget.userOrder.statues != OrderStatus.SAVED),
+                      child: GestureDetector(child: Padding(
+                        padding:  EdgeInsets.symmetric(vertical: padding),
+                        child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ),
+                      ) , onTap: _saveOrderAndContinueShopping,),
+                    ),
                     SizedBox(height: 5,),
                     Center(
                       child: GestureDetector(
@@ -169,10 +176,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                       // i love you
                     ),
                     SizedBox(height: 5,),
-                    GestureDetector(child: Padding(
-                      padding:  EdgeInsets.symmetric(vertical: padding),
-                      child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ),
-                    ) , onTap: _addToCartAndContinueShopping,),
+                    Visibility(
+                      replacement: Container(width: 0, height: 0,),
+                      visible: (widget.userOrder != null) && (widget.userOrder.statues != OrderStatus.SAVED),
+                      child: GestureDetector(child: Padding(
+                        padding:  EdgeInsets.symmetric(vertical: padding),
+                        child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ),
+                      ) , onTap: _addToCartAndContinueShopping,),
+                    ),
                     SizedBox(height: 5,),
                     GestureDetector(child: Padding(
                       padding: EdgeInsets.symmetric(vertical: padding),
@@ -393,24 +404,21 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
 
-  void _saveOrderForLater() async{
+  void _saveOrderAndContinueShopping() async{
     if(authenticationBloc.currentUser != null && authenticationBloc.currentUser.isAnonymous() == false) {
       String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
       if(errorMessageIfExist != null){
        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: errorMessageIfExist,)));
+       return;
       }
-      createOrderBloc.add(SaveOrder(order: userOrder));
-    }
-    else
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginScreen()));
-  }
 
-
-  void _saveOrderAndContinueShopping() async{
-    if(authenticationBloc.currentUser != null && authenticationBloc.currentUser.isAnonymous() == false) {
-      String errorMessageIfExist = await await createOrderBloc.validateOrder(userOrder);
-      if(errorMessageIfExist != null){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: errorMessageIfExist,)));
+      if(authenticationBloc.currentUser.userSavedAddresses != null &&
+          authenticationBloc.currentUser.userSavedAddresses.length >0 &&
+          userOrder.orderAddress == null){
+        userOrder.orderAddress = authenticationBloc.currentUser.userSavedAddresses[0];
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: (LocalKeys.PLEASE_ADD_ADDRESS_FIRST).tr(),)));
+        return;
       }
       createOrderBloc.add(SaveOrder(order: userOrder));
     }

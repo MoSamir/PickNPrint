@@ -5,8 +5,7 @@ abstract class CreateOrderEvents {}
 
 class CreateOrder extends CreateOrderEvents{
   final OrderModel orderModel ;
-  final bool isCartItem ;
-  CreateOrder( {this.isCartItem ,this.orderModel});
+  CreateOrder( {this.orderModel});
 }
 
 

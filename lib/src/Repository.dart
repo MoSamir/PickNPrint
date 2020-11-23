@@ -117,9 +117,7 @@ class Repository {
   static Future<ResponseViewModel<UserViewModel>> signInWithFacebook() async => await UserDataProvider.signInWithFacebook();
 
   static Future<ResponseViewModel> saveOrderToCart({OrderModel orderModel}) async => await CartDataProvider.saveOrderToCart(orderModel);
-  static Future<ResponseViewModel<List<OrderModel>>> saveUserCartForLater() async{
-    return CartDataProvider.saveUserCartForLater();
-  }
+
   static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async{
     return CartDataProvider.getUserCart();
   }
@@ -128,6 +126,14 @@ class Repository {
     return CartDataProvider.createOrder(orderModel);
   }
 
+
+
+
+  static Future<ResponseViewModel<List<OrderModel>>> createSavedOrder(OrderModel orderModel) async{
+    return CartDataProvider.createSavedOrder(orderModel);
+  }
+
+
   static Future<ResponseViewModel<List<OrderModel>>>loadActiveOrders() async => CartDataProvider.loadActiveOrders();
   static Future<ResponseViewModel<List<OrderModel>>>loadClosedOrders() async => CartDataProvider.loadClosedOrders();
   static Future<ResponseViewModel<List<OrderModel>>>loadSavedOrders() async => CartDataProvider.loadSavedOrders();
@@ -135,6 +141,9 @@ class Repository {
   static Future<ResponseViewModel<bool>> deleteAddress({AddressViewModel address}) async => UserDataProvider.deleteUserAddress(address);
 
   static Future<ResponseViewModel<AddressViewModel>> updateUserAddress({AddressViewModel newAddress}) async => UserDataProvider.updateUserAddress(newAddress);
+
+  static saveOrderForLater(OrderModel order) async => CartDataProvider.saveOrderToLater(order);
+
 
 
 

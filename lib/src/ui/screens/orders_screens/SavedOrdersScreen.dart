@@ -38,7 +38,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
         visible: BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0,
         replacement: Container(
           padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height - kToolbarHeight) * .35 ,),
-          child: Text((LocalKeys.NO_ORDERS_YET).tr()),
+          child: Text((LocalKeys.NO_ORDERS_YET).tr() , textAlign: TextAlign.center,),
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -49,26 +49,32 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                 Text((LocalKeys.MY_SAVED_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
                 ListView.builder(itemBuilder: (context, index){
                   OrderModel orderModel = BlocProvider.of<UserBloc>(context).userSavedOrders[index];
-                  return GestureDetector(
-                    onTap: (){},
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
-                      decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0))
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
-                              color: AppColors.white,
-                            ),),
+                  return Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: GestureDetector(
+                      onTap: (){
+                        navigateToOrderCreationScreen(orderModel);
+                        return;
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
+                        decoration: BoxDecoration(
+                            color: AppColors.lightBlue,
+                            borderRadius: BorderRadius.all(Radius.circular(8.0))
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
+                                color: AppColors.white,
+                              ),),
 
-                            Text(DateFormat.yMd(Constants.CURRENT_LOCALE).format(orderModel.orderTime).replaceAll('/', ' / ') , style: TextStyle(
-                              color: AppColors.white,
-                            )),
-                          ],
+                              Text(DateFormat.yMd(Constants.CURRENT_LOCALE).format(orderModel.orderTime).replaceAll('/', ' / ') , style: TextStyle(
+                                color: AppColors.white,
+                              )),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -154,5 +160,10 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
         ),
       ),
     );
+  }
+
+  void navigateToOrderCreationScreen(OrderModel userOrderModel) {
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: userOrderModel.orderPackage, userOrder: userOrderModel)));
   }
 }
