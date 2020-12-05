@@ -109,7 +109,7 @@ class CartDataProvider {
     Map<String,dynamic> requestBody = {
       'address_id' : order.orderAddress.id,
     };
-    String apiURL = URL.getURL(apiPath: URL.POST_SAVE_ORDER_FOR_LATER);
+    String apiURL = URL.getURL(apiPath: URL.POST_CREATE_ORDER);
     ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
         methodURL: apiURL,
         requestBody: requestBody,

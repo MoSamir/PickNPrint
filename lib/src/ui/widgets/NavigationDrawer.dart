@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
@@ -105,13 +107,13 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                                 child: getMyOrderSection(),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: getLanguageSection(),
-                            ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            //   child: getLanguageSection(),
+                            // ),
                             SizedBox(height: 10,),
                           ],
                         ),
@@ -176,55 +178,62 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.lightBlue,
-                shape: BoxShape.circle,
-              ),
-              padding: EdgeInsets.all(8),
-              alignment: Alignment.center,
-              child: Center(
-                child: ImageIcon(
-                  AssetImage(Resources.USER_PLACEHOLDER_IMG),
-                  color: AppColors.white,
-                  size: 20,
+        Visibility(
+          replacement: Container(width: 0, height: 0,),
+          visible: BlocProvider.of<UserBloc>(context)
+              .currentLoggedInUser
+              .isAnonymous() ==
+              false,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlue,
+                  shape: BoxShape.circle,
                 ),
-              ),
-              height: 30,
-              width: 30,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  (LocalKeys.MY_PROFILE).tr(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                padding: EdgeInsets.all(8),
+                alignment: Alignment.center,
+                child: Center(
+                  child: ImageIcon(
+                    AssetImage(Resources.USER_PLACEHOLDER_IMG),
                     color: AppColors.white,
-                    fontSize: 16,
+                    size: 20,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: padding),
-                  child: Text(
-                    (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
+                height: 30,
+                width: 30,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    (LocalKeys.MY_PROFILE).tr(),
                     style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.lightBlue,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                      fontSize: 16,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: padding),
+                    child: Text(
+                      (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.lightBlue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         SizedBox(
           height: 10,
@@ -657,7 +666,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         .push(MaterialPageRoute(builder: (context) => ActiveOrderScreen()));
   }
 
-  void _gotToIssuesPage() {}
+  void _gotToIssuesPage() {
+    String supportPhoneNumber = BlocProvider.of<ApplicationDataBloc>(context).contactUsPhone;
+    launch("tel://$supportPhoneNumber");
+
+    return ;
+  }
 
   void _performLogin() {
     Navigator.pop(context);
@@ -682,8 +696,5 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         ),),
       ),
     );
-
   }
-
-
 }

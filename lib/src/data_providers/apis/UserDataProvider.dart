@@ -115,9 +115,7 @@ class UserDataProvider{
       requestHeaders: requestHeader,
       methodURL: apiURL,
       parserFunction: (saveAddressRawResponse){
-        print("********************************************************");
-        print("********************************************************");
-        return AddressViewModel.fromJson(saveAddressRawResponse[ApiParseKeys.ADDRESS_ROOT_KEY]);
+         return AddressViewModel.fromJson(saveAddressRawResponse[ApiParseKeys.ADDRESS_ROOT_KEY]);
       },
     );
     return ResponseViewModel<AddressViewModel>(
@@ -401,12 +399,6 @@ class UserDataProvider{
   }
 
   static Future<ResponseViewModel<AddressViewModel>> updateUserAddress(AddressViewModel newAddress) async{
-
-
-    print("********************** UPDATE ADDRESS ************************");
-    print(newAddress.id);
-    print("********************** UPDATE ADDRESS ************************");
-
     Map<String,dynamic> requestBody = {
       'address_id': newAddress.id ?? '',
       'buildingNumber': (newAddress.buildingNumber ?? 0).toString(),

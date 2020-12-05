@@ -1,9 +1,13 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
@@ -32,7 +36,7 @@ void main() async{
   userBloc = UserBloc(UserDataLoadingState() , authenticationBloc);
   appBloc.add(LoadApplicationData());
   authenticationBloc.add(AuthenticateUser());
-  Constants.CURRENT_LOCALE = "ar";
+  Constants.CURRENT_LOCALE = "en";
 
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -45,18 +49,22 @@ void main() async{
 
 
   runApp(
-      EasyLocalization(
-        supportedLocales: [Locale('en'), Locale('ar')],
-        path: 'assets/locales',
-        useOnlyLangCode: true,
-        saveLocale: true,
-        startLocale: Locale('ar'),
-        fallbackLocale: Locale('ar'),
-        child: AppEntrance(),
+      MaterialApp(
+        home:   EasyLocalization(
+          supportedLocales: [Locale('en'), Locale('ar')],
+          path: 'assets/locales',
+          useOnlyLangCode: true,
+          saveLocale: true,
+          startLocale: Locale('en'),
+          fallbackLocale: Locale('en'),
+          child: AppEntrance(),
+        ),
       ),
   );
 
+
 }
+
 
 
 class AppEntrance extends StatefulWidget {

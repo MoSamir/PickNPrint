@@ -54,94 +54,91 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
   @override
   Widget build(BuildContext context) {
     UserViewModel currentUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
-    return BaseScreen(
-      hasDrawer: true,
-      child: BlocConsumer(
-        builder: (context , state){
-          return ModalProgressHUD(
-            progressIndicator: LoadingWidget(),
-            inAsyncCall: state is UserDataLoadingState,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text((LocalKeys.SELECT_SHIPPING_ADDRESS).tr(), style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: AppColors.black,
-                    ), textAlign: TextAlign.start,),
-                    Text((LocalKeys.SOMEONE_WILL_CALL_YOU).tr(), style: TextStyle(
-                      color: AppColors.lightBlue,
-                    ), textAlign: TextAlign.start,),
-                    Image(image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                    ListView.builder(
-                      itemBuilder: (context , index){
-                        return UserAddressCard(
-                          address: currentUser.userSavedAddresses[index],
-                          onEditAddress : _onEditAddress,
-                          onDeleteAddress: _onRemoveAddress,
-                          onSelectAddress : _onSelectAddress,
-                          isChecked: order.orderAddress == currentUser.userSavedAddresses[index],
-                        );
-                      }
-                      , physics: NeverScrollableScrollPhysics()
-                      , itemCount: currentUser.userSavedAddresses.length ,
-                      shrinkWrap: true,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderCreationScreen(orderModel: order,)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: (50),
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Center(child: Text((LocalKeys.SELECT_ADDRESS_AND_CONTINUE).tr(), style: TextStyle(color: AppColors.white),)),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async{
-                        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
-                        setState(() {});
-                      },
-                      child: Text((LocalKeys.ADD_NEW_ADDRESS).tr() , style: TextStyle(
+    return BlocConsumer(
+      builder: (context , state){
+        return BaseScreen(
+          hasDrawer: true,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text((LocalKeys.SELECT_SHIPPING_ADDRESS).tr(), style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: AppColors.black,
+                  ), textAlign: TextAlign.start,),
+                  Text((LocalKeys.SOMEONE_WILL_CALL_YOU).tr(), style: TextStyle(
+                    color: AppColors.lightBlue,
+                  ), textAlign: TextAlign.start,),
+                  Image(image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
+                  ListView.builder(
+                    itemBuilder: (context , index){
+                      return UserAddressCard(
+                        address: currentUser.userSavedAddresses[index],
+                        onEditAddress : _onEditAddress,
+                        onDeleteAddress: _onRemoveAddress,
+                        onSelectAddress : _onSelectAddress,
+                        isChecked: order.orderAddress == currentUser.userSavedAddresses[index],
+                      );
+                    }
+                    , physics: NeverScrollableScrollPhysics()
+                    , itemCount: currentUser.userSavedAddresses.length ,
+                    shrinkWrap: true,),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderCreationScreen(orderModel: order,)));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: (50),
+                      decoration: BoxDecoration(
                         color: AppColors.lightBlue,
-                        decoration: TextDecoration.underline,
-                      )  , textAlign: TextAlign.center,),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Center(child: Text((LocalKeys.SELECT_ADDRESS_AND_CONTINUE).tr(), style: TextStyle(color: AppColors.white),)),
                     ),
+                  ),
+                  GestureDetector(
+                    onTap: () async{
+                      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
+                      setState(() {});
+                    },
+                    child: Text((LocalKeys.ADD_NEW_ADDRESS).tr() , style: TextStyle(
+                      color: AppColors.lightBlue,
+                      decoration: TextDecoration.underline,
+                    )  , textAlign: TextAlign.center,),
+                  ),
 
 
 
 
-                  ],
-                ),
+
+                ],
               ),
             ),
-          );
-        },
-        listener: (context,  state){
-          if (state is UserDataLoadingFailedState) {
-            if (state.error.errorCode == HttpStatus.requestTimeout) {
-              UIHelpers.showNetworkError(context);
-              return;
-            }
-            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-              return;
-            }
-            else {
-              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-              return;
-            }
+          ),
+        );
+      },
+      listener: (context,  state){
+        if (state is UserDataLoadingFailedState) {
+          if (state.error.errorCode == HttpStatus.requestTimeout) {
+            UIHelpers.showNetworkError(context);
+            return;
           }
-        },
-        cubit: BlocProvider.of<UserBloc>(context),
-      ),
+          else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+            UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+            return;
+          }
+          else {
+            UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+            return;
+          }
+        }
+      },
+      cubit: BlocProvider.of<UserBloc>(context),
     );
   }
 
@@ -149,6 +146,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false , addressModel: userSavedAddress,)));
     setState(() {});
   }
+
   void _onRemoveAddress(AddressViewModel userSavedAddress) async{
     await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddressDeletionConfirmationScreen(addressModel: userSavedAddress,)));
     setState(() {});

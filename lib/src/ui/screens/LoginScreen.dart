@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: _loginWithFacebook,
                               child: Container(
                                 width: MediaQuery.of(context).size.width - 32,
-                                height: 55,
+                                height: 50,
                                 decoration: BoxDecoration(
                                   color: AppColors.lightBlack,
                                   borderRadius: BorderRadius.all(Radius.circular(10)),

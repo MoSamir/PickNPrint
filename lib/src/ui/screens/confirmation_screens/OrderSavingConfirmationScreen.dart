@@ -13,46 +13,51 @@ class OrderSavingConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Container(
-      color: AppColors.lightBlack,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text((LocalKeys.YOUR_ORDER_SAVED).tr()),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: (50),
-            decoration: BoxDecoration(
-              color: AppColors.lightBlue,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+    return Scaffold(
+      body: Container(
+        color: AppColors.lightBlack,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text((LocalKeys.YOUR_ORDER_SAVED).tr()),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              height: (50),
+              decoration: BoxDecoration(
+                color: AppColors.lightBlue,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text((LocalKeys.ORDER_NUMBER).tr(args: [orderNumber.toString()])),
+                  Text(DateFormat.jm().format(orderTime ?? DateTime.now()))
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text((LocalKeys.ORDER_NUMBER).tr(args: [orderNumber.toString()])),
-                Text(DateFormat.jm().format(orderTime ?? DateTime.now()))
-              ],
+            SizedBox(height: 10,),
+            Text((LocalKeys.YOU_CAN_BACK).tr()),
+
+            SizedBox(
+              height: 50,
             ),
-          ),
-          Text((LocalKeys.YOU_CAN_BACK).tr()),
-          SizedBox(
-            height: 50,
-          ),
-          GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
-            },
-            child: Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(
-              color: AppColors.white,
-              decoration: TextDecoration.underline,
-            ) ,),
-          ),
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
+              },
+              child: Text((LocalKeys.CONTINUE_SHOPPING_LABEL).tr() , style: TextStyle(
+                color: AppColors.white,
+                decoration: TextDecoration.underline,
+              ) ,),
+            ),
 
 
 
 
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -20,11 +20,8 @@ class InstagramAuth with ChangeNotifier {
   InstagramAuth._();
 
   Future<void> signInWithInstagram(BuildContext context) async {
-    print("Hello World this Fn is Called");
-
     final flutterWebViewPlugin = new FlutterWebviewPlugin();
     String _accessToken , userId ;
-
     flutterWebViewPlugin.onUrlChanged.listen((String url) async {
       if(url.contains('access_token =')){
          _accessToken = url.split("access_token=")[1];

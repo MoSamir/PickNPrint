@@ -16,7 +16,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
 
   List<PackageModel> applicationPackages = List();
   int maxPackageSize  = 0 ;
-  String contactUsPhone = "01013615170";
+  String contactUsPhone = "";
   List<LocationModel> systemSupportedLocations = List<LocationModel>();
 
 
@@ -44,6 +44,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
     List<ResponseViewModel> applicationData = await Future.wait([
       Repository.getSystemPackages(),
       Repository.getSystemSupportedAreas(),
+      Repository.getSystemContactInfo(),
     ]);
     if(applicationData[0].isSuccess){
       applicationPackages = applicationData[0].responseData;
@@ -51,6 +52,9 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
     }
     if(applicationData[1].isSuccess){
       systemSupportedLocations = applicationData[1].responseData;
+    }
+    if(applicationData[2].isSuccess){
+      contactUsPhone = applicationData[2].responseData;
     }
 
     if(applicationData[0].isSuccess == false){

@@ -15,9 +15,6 @@ class BlocLogObserver extends BlocObserver {
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    print("**********************************************************");
-    print("Bloc $bloc Is Moving From ${transition.currentState} To ${transition.nextState} Because ${transition.event} Dispatched");
-    print("**********************************************************");
     super.onTransition(bloc, transition);
   }
 }

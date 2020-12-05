@@ -536,11 +536,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isEditingModeOn = !isEditingModeOn;
     });
     if(isEditingModeOn){
-      print("Hello World I should Dispatch now - 1");
       pickUserPicture(context);
       return;
     } else {
-      print("Hello World I should Dispatch now - 2");
       if(userImageFile != null)
         BlocProvider.of<UserBloc>(context).add(UpdateUserProfile(imageLink: userImageFile.path));
     }

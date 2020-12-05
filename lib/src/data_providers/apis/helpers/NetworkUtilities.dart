@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http ;
+import 'package:http/http.dart' show get;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
@@ -403,5 +405,26 @@ class NetworkUtilities {
       );
     }
     return responseViewModel;
+  }
+
+  static Future<ResponseViewModel<File>>getImageFile(String imageURL) async {
+    try{
+      var response = await get(imageURL);
+      var documentDirectory = await getApplicationDocumentsDirectory();
+      File file = new File('${documentDirectory.path}/imagetest.png');
+      file.writeAsBytesSync(response.bodyBytes);
+      return ResponseViewModel(
+        responseData: file,
+        isSuccess: true,
+      ) ;
+    } catch(error){
+      return ResponseViewModel(
+        isSuccess: false,
+        errorViewModel: ErrorViewModel(
+          errorCode: 500,
+          errorMessage: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
+        ),
+      ) ;
+    }
   }
 }

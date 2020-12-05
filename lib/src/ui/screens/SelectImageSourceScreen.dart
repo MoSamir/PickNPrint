@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -272,9 +275,10 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
   void pickUserImage(ImageSource source) async{
     final _picker = ImagePicker();
-    PickedFile image = await _picker.getImage(source: source , imageQuality: 100,);
+    PickedFile image = await _picker.getImage(source: source , imageQuality: 100, );
     if(image != null){
-      Navigator.of(context).pop(image.path);
+      File croppedFilePath = await cropImage(image.path);
+      Navigator.of(context).pop(croppedFilePath.path);
     } else {
       Fluttertoast.showToast(
           msg: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
@@ -336,5 +340,38 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
         ),
       ),
     );
+  }
+
+  Future<File> cropImage(String imagePath) async {
+      File croppedFile = await ImageCropper.cropImage(
+          sourcePath: imagePath,
+          aspectRatioPresets: Platform.isAndroid
+              ? [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ]
+              : [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio5x3,
+            CropAspectRatioPreset.ratio5x4,
+            CropAspectRatioPreset.ratio7x5,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          androidUiSettings: AndroidUiSettings(
+              toolbarTitle: 'Cropper',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false),
+          iosUiSettings: IOSUiSettings(
+            title: 'Cropper',
+          ));
+      return croppedFile;
   }
 }

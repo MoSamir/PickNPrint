@@ -17,10 +17,13 @@ import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
+import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
+import '../../Repository.dart';
+import 'confirmation_screens/OrderSavingConfirmationScreen.dart';
 import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
 import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
@@ -109,6 +112,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             }
             else if(state is OrderSavingSuccessState){
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => OrderSavingConfirmationScreen(orderNumber: state.cartOrders[0].orderNumber.toString(), orderTime:  state.cartOrders[0].orderTime,),
+              ));
             }
           },
           builder: (context , state){
@@ -153,7 +159,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     SizedBox(height: 10,),
                     Visibility(
                       replacement: Container(width: 0, height: 0,),
-                      visible: (widget.userOrder != null) && (widget.userOrder.statues != OrderStatus.SAVED),
+                      visible: (widget.userOrder == null) || (widget.userOrder.statues != OrderStatus.SAVED),
                       child: GestureDetector(child: Padding(
                         padding:  EdgeInsets.symmetric(vertical: padding),
                         child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ),
@@ -178,8 +184,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     SizedBox(height: 5,),
                     Visibility(
                       replacement: Container(width: 0, height: 0,),
-                      visible: (widget.userOrder != null) && (widget.userOrder.statues != OrderStatus.SAVED),
-                      child: GestureDetector(child: Padding(
+                      visible: (widget.userOrder == null) || (widget.userOrder.statues != OrderStatus.SAVED),                      child: GestureDetector(child: Padding(
                         padding:  EdgeInsets.symmetric(vertical: padding),
                         child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ),
                       ) , onTap: _addToCartAndContinueShopping,),
@@ -314,6 +319,22 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   }
   getFramesList() {
+
+
+    for(int i = 0 ; i < userOrder.userImages.length ; i++) {
+      print(userOrder.userImages[i]);
+      print("******************************************************");
+
+
+      if (userOrder.userImages[i].contains('http') || userOrder.userImages[i].contains('https')){
+        Repository.getImageFromURL(userOrder.userImages[i]);
+      }
+    }
+
+
+
+
+
     List<Widget> pictures = List();
     for(int i = 0 ; i < Math.max(widget.userSelectedPackage.packageSize , userOrder.userImages.length) ; i++){
       pictures.add(Padding(
@@ -348,7 +369,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             ),
             Visibility(
               child: Positioned.directional(
-                textDirection: ll.EasyLocalization.of(context).locale.languageCode == "en" ? TextDirection.ltr : TextDirection.rtl,
+                textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
                 top: 6,
                 start: 6,
                 child: GestureDetector(
@@ -396,10 +417,13 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     ),);
 
 
-    return ListView(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      children: pictures,
+    return Directionality(
+      textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+      child: ListView(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        children: pictures,
+      ),
     );
   }
 
@@ -448,8 +472,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   void _addToCartAndContinueShopping() async{
-//    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderAddedToCartSuccessfullyScreen()));
 
+    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+      return;
+    }
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
     if(errorMessageIfExist == null || errorMessageIfExist.isEmpty){
       createOrderBloc.add(AddOrderToCart(order: userOrder));
@@ -465,9 +492,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   Widget getImageFromPath(String userImage) {
 
     if(userImage.toLowerCase().contains('http') || userImage.toLowerCase().contains('https')){
-      return Image.network(userImage , fit: BoxFit.contain,);
+      return Image.network(userImage , fit: BoxFit.fill,);
     } else {
-      return Image.file(File(userImage) , fit: BoxFit.contain,);
+      return Image.file(File(userImage) , fit: BoxFit.fill,);
     }
   }
 

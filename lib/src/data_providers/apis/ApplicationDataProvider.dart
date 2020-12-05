@@ -50,6 +50,26 @@ class ApplicationDataProvider {
 
 
   }
+  static Future<ResponseViewModel<String>> getSystemContactInfo() async {
+
+    Map<String,dynamic> requestHeader = NetworkUtilities.getHeaders();
+    String apiURL = URL.getURL(apiPath: URL.GET_RETRIEVE_SYSTEM_INFO);
+    ResponseViewModel systemSupportedLocationResponse = await NetworkUtilities.handleGetRequest(
+      requestHeaders: requestHeader,
+      methodURL: apiURL,
+      parserFunction: (systemContactInfoRawResponse){
+        return systemContactInfoRawResponse[ApiParseKeys.SYSTEM_SETTINGS_KEY][ApiParseKeys.SYSTEM_PHONE_KEY];
+      },
+    );
+
+    return ResponseViewModel<String>(
+      responseData: systemSupportedLocationResponse.responseData,
+      isSuccess: systemSupportedLocationResponse.isSuccess,
+      errorViewModel: systemSupportedLocationResponse.errorViewModel,
+    );
+
+
+  }
 
   
 }

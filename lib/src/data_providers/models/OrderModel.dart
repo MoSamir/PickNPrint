@@ -14,7 +14,9 @@ class OrderModel {
   int orderNumber ;
   OrderStatus statues ;
   List<String> userImages = List();
-  OrderModel({this.orderPackage , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+
+  int deliveryTime;
+  OrderModel({this.orderPackage  , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
     List<OrderModel> ordersList = List<OrderModel>();
@@ -60,16 +62,23 @@ class OrderModel {
   }
 
   static List<OrderModel> fromOrdersList(saveOrderRawResponse) {
+
+
+
     List<OrderModel> ordersList  = List<OrderModel>();
     if(saveOrderRawResponse != null && saveOrderRawResponse is List) {
       for (int i = 0; i < saveOrderRawResponse.length; i++) {
         OrderStatus status = getOrderStatus(saveOrderRawResponse[i]['status']['key']);
+        int deliveryTime = int.parse((saveOrderRawResponse[i]['shippingDurationTo'] ?? 1).toString());
+        int orderId = int.parse((saveOrderRawResponse[i][ApiParseKeys.ORDER_ID] ?? 1).toString());
+
         DateTime orderTime = DateTime.parse(saveOrderRawResponse[i][ApiParseKeys.ORDER_CREATED_AT]);
-        List<OrderModel> subOrder = fromListJson(
-            saveOrderRawResponse[i][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
+        List<OrderModel> subOrder = fromListJson(saveOrderRawResponse[i][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
         for (OrderModel model in subOrder) {
           model.statues = status;
           model.orderTime = orderTime ?? DateTime.now();
+          model.deliveryTime = deliveryTime;
+          model.orderNumber = orderId;
           ordersList.add(model);
         }
       }
@@ -77,10 +86,13 @@ class OrderModel {
       try{
         OrderStatus status = getOrderStatus(saveOrderRawResponse['status']['key']);
         DateTime orderTime = DateTime.parse(saveOrderRawResponse[ApiParseKeys.ORDER_CREATED_AT]);
+        int deliveryTime = int.parse((saveOrderRawResponse['shippingDurationTo'] ?? 1).toString());
+
         List<OrderModel> subOrder = fromListJson(saveOrderRawResponse[ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
         for(OrderModel model in subOrder){
           model.statues = status;
           model.orderTime = orderTime ?? DateTime.now();
+          model.deliveryTime = deliveryTime;
           ordersList.add(model);
         }
       } catch(exception){
@@ -92,17 +104,12 @@ class OrderModel {
 
   static OrderStatus getOrderStatus(String orderStatus) {
 
-    print("***************************************");
-    print("Order Status => $orderStatus");
-    print("***************************************");
     if(orderStatus == 'preparing'){
       return OrderStatus.PREPARING;
     } else if(orderStatus == 'delivered') {
       return OrderStatus.DELIVERED;
     } else if(orderStatus == 'cancelled') {
       return OrderStatus.CANCELED;
-    } else if(orderStatus == 'preparing') {
-      return OrderStatus.PREPARING;
     } else if(orderStatus == 'shipping') {
       return OrderStatus.SHIPPING;
     } else if(orderStatus == 'saved') {

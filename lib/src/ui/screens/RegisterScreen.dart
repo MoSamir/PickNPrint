@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
         }
         else if(state is RegistrationSuccessState){
-          Navigator.pop(context , [userEmailTextController.text , userPhoneNumberTextController.text]);
+          Navigator.pop(context , [userEmailTextController.text , userPasswordTextController.text]);
         }
       },
       builder:  (context, state){

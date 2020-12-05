@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
 import 'package:picknprint/src/data_providers/apis/CartDataProvider.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
-import 'package:http/http.dart' as http;
+
 import 'data_providers/apis/ApplicationDataProvider.dart';
 import 'data_providers/apis/UserDataProvider.dart';
 import 'data_providers/models/PackageModel.dart';
@@ -65,6 +68,7 @@ class Repository {
       return apiResponse;
   }
   static Future<ResponseViewModel<List<LocationModel>>> getSystemSupportedAreas() async => await ApplicationDataProvider.getSystemSupportedAreas();
+  static Future<ResponseViewModel<String>> getSystemContactInfo() async => await ApplicationDataProvider.getSystemContactInfo();
 
 
   static Future<UserViewModel> makeSilentLogin() async {
@@ -143,6 +147,9 @@ class Repository {
   static Future<ResponseViewModel<AddressViewModel>> updateUserAddress({AddressViewModel newAddress}) async => UserDataProvider.updateUserAddress(newAddress);
 
   static saveOrderForLater(OrderModel order) async => CartDataProvider.saveOrderToLater(order);
+
+
+   static getImageFromURL(String imageURL) async => NetworkUtilities.getImageFile(imageURL);
 
 
 

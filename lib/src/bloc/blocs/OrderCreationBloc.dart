@@ -54,7 +54,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       if(orderCreationResult.isSuccess){
         yield OrderCreationLoadedSuccessState(
           orderNumber: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].orderNumber.toString() : '',
-          shippingDuration: "5",
+          shippingDuration: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].deliveryTime.toString() : '',
         );
         return ;
       }

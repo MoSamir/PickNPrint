@@ -18,7 +18,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
 
   @override
   Stream<AuthenticationStates> mapEventToState(AuthenticationEvents event) async*{
-    print("User => $event");
+
     bool isUserConnected = await NetworkUtilities.isConnected();
 
     if(isUserConnected == false){
