@@ -1,5 +1,4 @@
-
-import 'ErrorViewModel.dart';
+import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 
 class ResponseViewModel<T> {
   T responseData ;

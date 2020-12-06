@@ -49,6 +49,10 @@ class LocalKeys{
   static const String SELECT_AT_LEAST_ONE_IMAGE = "SELECT_AT_LEAST_ONE_IMAGE";
   static const String ADD_MORE_IMAGES = "ADD_MORE_IMAGES";
 
+  static const String EDIT_IMAGE = "EDIT_IMAGE";
+  static const String REMOVE_IMAGE = "REMOVE_IMAGE";
+
+
 
 
 
@@ -257,6 +261,7 @@ class LocalKeys{
 
   static const String UPDATE_PROFILE_LABEL = "UPDATE_PROFILE_LABEL";
   static const String UPDATE_PROFILE_HEADER = "UPDATE_PROFILE_HEADER";
+
 
 
 

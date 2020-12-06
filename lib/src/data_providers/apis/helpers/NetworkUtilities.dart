@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http ;
-import 'package:http/http.dart' show get;
+import 'package:http/http.dart' show get ;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';

@@ -16,6 +16,7 @@ import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -321,76 +322,72 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   getFramesList() {
 
 
-    for(int i = 0 ; i < userOrder.userImages.length ; i++) {
-      print(userOrder.userImages[i]);
-      print("******************************************************");
-
-
-      if (userOrder.userImages[i].contains('http') || userOrder.userImages[i].contains('https')){
-        Repository.getImageFromURL(userOrder.userImages[i]);
-      }
-    }
-
-
-
 
 
     List<Widget> pictures = List();
-    for(int i = 0 ; i < Math.max(widget.userSelectedPackage.packageSize , userOrder.userImages.length) ; i++){
+    for(int i = 0 ; i < Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length) ; i++){
       pictures.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: Duration(seconds: 2),
-              height: (150),
-              width: (150),
-              decoration: BoxDecoration(
-                color: userOrder.frameWithPath ? AppColors.black : AppColors.white,
-                border: Border.all(
-                  color: userOrder.isWhiteFrame ? AppColors.offWhite.withOpacity(.8) : AppColors.black,
-                  width: 5,
-                ),
-              ),
-              child: AnimatedContainer(
-                margin: EdgeInsets.all(8),
+        child: GestureDetector(
+          onTap: (){
+            if(userOrder.userImages[i] != null && userOrder.userImages[i].length > 0)
+              _openEditImage(userOrder.userImages[i] , i);
+            return;
+
+          },
+          child: Stack(
+            children: [
+              AnimatedContainer(
                 duration: Duration(seconds: 2),
-                child: userOrder.userImages[i].isEmpty ?  Center(
-                  child: IconButton(
-                    icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
-                    onPressed: ()async{
-                      String imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
-                      userOrder.userImages[i] = imagePath ?? '';
-                      setState(() {});
-                    },
-                  ),
-                ) :  getImageFromPath(userOrder.userImages[i]),
-              ),
-            ),
-            Visibility(
-              child: Positioned.directional(
-                textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
-                top: 6,
-                start: 6,
-                child: GestureDetector(
-                  onTap : () => removeSelectionImage(i),
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.red,
-                      shape: BoxShape.circle,
-
-                    ),
-
-                    child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                height: (150),
+                width: (150),
+                decoration: BoxDecoration(
+                  color: AppColors.lightGrey,
+                  border: Border.all(
+                    color: userOrder.isWhiteFrame ? AppColors.offWhite.withOpacity(.8) : AppColors.black,
+                    width: 5,
                   ),
                 ),
+                child: AnimatedContainer(
+                  padding: userOrder.frameWithPath ? EdgeInsets.all(4) : EdgeInsets.all(0),
+                  // margin: EdgeInsets.all(8),
+                  duration: Duration(seconds: 2),
+                  child:  userOrder.userImages[i] == null ||
+                          userOrder.userImages[i].isEmpty ?  Center(
+                    child: IconButton(
+                      icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
+                      onPressed: ()async{
+                        String imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
+                        userOrder.userImages[i] = imagePath ?? '';
+                        setState(() {});
+                      },
+                    ),
+                  ) :  getImageFromPath(userOrder.userImages[i]),
+                ),
               ),
-              visible: userOrder.userImages[i] != null && userOrder.userImages[i].length > 0,
-              replacement: Container(width: 0, height: 0,),
-            ),
-          ],
+              Visibility(
+                child: Positioned.directional(
+                  textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+                  top: 6,
+                  start: 6,
+                  child: GestureDetector(
+                    onTap : () => removeSelectionImage(i),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: AppColors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                    ),
+                  ),
+                ),
+                visible: i >= 3,
+                replacement: Container(width: 0, height: 0,),
+              ),
+            ],
+          ),
         ),
       ),);
     }
@@ -512,11 +509,45 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   void removeSelectionImage(int index) {
+  userOrder.userImages[index] = '';
+  setState(() {});
+  }
 
-  setState(() {
-    userOrder.userImages[index] = '';
-  });
+  void _openEditImage(String imageFilePath , int index) {
 
+    showModalBottomSheet(context: context, builder: (context){
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.lightBlue,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+          ),
+          height: 150,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  removeSelectionImage(index);
+                  return;
+                },
+                child: Text((LocalKeys.REMOVE_IMAGE).tr()),
+              ),
+              FlatButton(
+                onPressed: () async{
+                  File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
+                  userOrder.userImages.remove(imageFilePath);
+                  userOrder.userImages.insert(index , croppedFilePath.path);
+                  Navigator.pop(context);
+                  setState(() {});
+                },
+                child: Text((LocalKeys.EDIT_IMAGE).tr()),
+              ),
+            ],
+          ),
+        );
+    });
   }
 }
 

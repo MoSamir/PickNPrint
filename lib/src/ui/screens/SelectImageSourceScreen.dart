@@ -1,27 +1,24 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
-import 'package:picknprint/src/resources/instgramImagePicker/model/photo.dart' as instgramPhoto;
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
-
 import 'package:picknprint/src/resources/facebookImagePicker/flutter_facebook_image_picker.dart';
 import 'package:picknprint/src/resources/instgramImagePicker/InstagramAuth.dart';
 import 'package:picknprint/src/resources/instgramImagePicker/flutter_instagram_image_picker.dart';
+import 'package:picknprint/src/resources/instgramImagePicker/model/photo.dart' as instgramPhoto;
 import 'package:picknprint/src/resources/instgramImagePicker/screens.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
-
-import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 class SelectImageSourceScreen extends StatefulWidget {
   @override
   _SelectImageSourceScreenState createState() => _SelectImageSourceScreenState();
@@ -35,7 +32,6 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -198,11 +194,6 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     );
   }
 
-
-
-
-
-
   pickUserPicture(BuildContext context) async{
     showModalBottomSheet(context: context, builder: (context)=> Container(
       decoration: BoxDecoration(
@@ -277,7 +268,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     final _picker = ImagePicker();
     PickedFile image = await _picker.getImage(source: source , imageQuality: 100, );
     if(image != null){
-      File croppedFilePath = await cropImage(image.path);
+      File croppedFilePath = await UIHelpers.cropImage(image.path);
       Navigator.of(context).pop(croppedFilePath.path);
     } else {
       Fluttertoast.showToast(
@@ -299,10 +290,15 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
         MaterialPageRoute(
           builder: (_) => FacebookImagePicker(
             facebookUser.responseData.userToken,
-            onDone: (items) {
+            onDone: (items) async{
               Navigator.pop(context);
-              if(items != null && items.length > 0)
-                Navigator.pop(context, items[0].source);
+              if(items != null && items.length > 0) {
+                ResponseViewModel<File> imageFile = await Repository.getImageFromURL(items[0].source);
+                if(imageFile.isSuccess){
+                  File croppedFilePath = await UIHelpers.cropImage(imageFile.responseData.path);
+                  Navigator.of(context).pop(croppedFilePath.path);
+                }
+              }
             },
             onCancel: () => Navigator.pop(context),
           ),
@@ -321,17 +317,21 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
       accessToken = loginInfo[0];
       if (accessToken == null) return;
     }
-
     Navigator.push(context,
       MaterialPageRoute(
         builder: (context) => InstagramImagePicker(
           accessToken,
           showLogoutButton: true,
-          onDone: (List<instgramPhoto.Photo> items) {
+          onDone: (List<instgramPhoto.Photo> items) async{
             Navigator.pop(context);
             if(items != null && items.length > 0){
-              Navigator.pop(context , items[0].url);
-              return;
+
+              ResponseViewModel<File> imageFile = await Repository.getImageFromURL(items[0].url);
+              if(imageFile.isSuccess){
+                File croppedFilePath = await UIHelpers.cropImage(imageFile.responseData.path);
+                Navigator.pop(context , croppedFilePath.path);
+                return;
+              }
             }
             Navigator.pop(context);
             return;
@@ -342,36 +342,5 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     );
   }
 
-  Future<File> cropImage(String imagePath) async {
-      File croppedFile = await ImageCropper.cropImage(
-          sourcePath: imagePath,
-          aspectRatioPresets: Platform.isAndroid
-              ? [
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio3x2,
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.ratio4x3,
-            CropAspectRatioPreset.ratio16x9
-          ]
-              : [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio3x2,
-            CropAspectRatioPreset.ratio4x3,
-            CropAspectRatioPreset.ratio5x3,
-            CropAspectRatioPreset.ratio5x4,
-            CropAspectRatioPreset.ratio7x5,
-            CropAspectRatioPreset.ratio16x9
-          ],
-          androidUiSettings: AndroidUiSettings(
-              toolbarTitle: 'Cropper',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
-          iosUiSettings: IOSUiSettings(
-            title: 'Cropper',
-          ));
-      return croppedFile;
-  }
+
 }

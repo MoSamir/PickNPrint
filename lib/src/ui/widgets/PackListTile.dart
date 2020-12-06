@@ -5,7 +5,6 @@ import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'OrderPackSizeStackWidget.dart';
 
 class PackListTile extends StatelessWidget {
 

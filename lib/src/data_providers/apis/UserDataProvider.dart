@@ -197,7 +197,8 @@ class UserDataProvider{
       SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
       var userJson = mSharedPreference.getString(Constants.SHARED_PREFERENCE_USER_KEY);
       if (userJson == null) {
-        return UserViewModel.fromAnonymous();
+        UserViewModel userModel =  UserViewModel.fromAnonymous();
+        return userModel;
       } else {
         UserViewModel userViewModel =
         UserViewModel.fromJson(json.decode(userJson));
@@ -205,7 +206,8 @@ class UserDataProvider{
       }
     } catch(exception){
       print("Exception while reading Empty Preference => $exception");
-      return UserViewModel.fromAnonymous();
+      UserViewModel userModel =  UserViewModel.fromAnonymous();
+      return userModel;
     }
   }
 
@@ -344,11 +346,12 @@ class UserDataProvider{
       requestHeaders: requestHeader,
       requestBody: requestBody,
     );
-    return ResponseViewModel<UserViewModel>(
-      responseData: updateUserProfile.responseData,
-      isSuccess: updateUserProfile.isSuccess,
-      errorViewModel: updateUserProfile.errorViewModel
+    ResponseViewModel<UserViewModel> updateUserData = ResponseViewModel<UserViewModel>(
+        responseData: updateUserProfile.responseData,
+        isSuccess: updateUserProfile.isSuccess,
+        errorViewModel: updateUserProfile.errorViewModel
     );
+    return updateUserData;
   }
 
   static Future<ResponseViewModel<UserViewModel>> signInWithFacebook() async{

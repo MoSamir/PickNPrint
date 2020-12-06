@@ -20,11 +20,13 @@ class ApplicationDataProvider {
       },
     );
 
-    return ResponseViewModel<List<PackageModel>>(
+    ResponseViewModel<List<PackageModel>> packages = ResponseViewModel<List<PackageModel>>(
       responseData: systemSupportedLocationResponse.responseData,
       isSuccess: systemSupportedLocationResponse.isSuccess,
       errorViewModel: systemSupportedLocationResponse.errorViewModel,
     );
+
+    return packages;
 
 
 

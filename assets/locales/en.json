@@ -148,6 +148,8 @@
   "UPDATE_PROFILE_LABEL": "Update",
   "UPDATE_PROFILE_HEADER": "Update Your Information",
   "PLEASE_ADD_ADDRESS_FIRST": "Please Add address first before saving orders",
-  "NO_ORDERS_YET": "No Orders Yet"
+  "NO_ORDERS_YET": "No Orders Yet",
+  "EDIT_IMAGE": "Edit",
+  "REMOVE_IMAGE": "Delete"
 }
 

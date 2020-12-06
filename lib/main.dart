@@ -1,13 +1,7 @@
-
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
@@ -49,17 +43,15 @@ void main() async{
 
 
   runApp(
-      MaterialApp(
-        home:   EasyLocalization(
+      EasyLocalization(
           supportedLocales: [Locale('en'), Locale('ar')],
           path: 'assets/locales',
           useOnlyLangCode: true,
           saveLocale: true,
-          startLocale: Locale('en'),
+          // startLocale: Locale('en'),
           fallbackLocale: Locale('en'),
           child: AppEntrance(),
         ),
-      ),
   );
 
 
@@ -87,12 +79,9 @@ class _AppEntranceState extends State<AppEntrance> {
       providers: [
         BlocProvider.value(value: appBloc),
         BlocProvider.value(value: authenticationBloc),
-
         BlocProvider.value(value: userBloc),
       ],
       child: MaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        locale: context.locale,
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
         theme: ThemeData(

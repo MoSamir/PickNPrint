@@ -7,7 +7,6 @@ import 'package:picknprint/src/ui/widgets/NavigationDrawer.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 
-import '../../main.dart';
 
 class BaseScreen extends StatelessWidget {
   final Widget child;

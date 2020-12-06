@@ -12,6 +12,7 @@ class AppColors{
   static const Color offWhite = Color(0xffD8D8D8);
   static const Color blackBg = Color(0xff474747);
   static const Color addressCardBg = Color(0xffEEEEEE);
+  static const Color lightGrey = Colors.white54;
 
 }
 
