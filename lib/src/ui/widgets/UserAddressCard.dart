@@ -26,11 +26,15 @@ class UserAddressCard extends StatelessWidget {
             elevation: 2,
             color: AppColors.addressCardBg,
             child: RadioButtonListTile<AddressViewModel>(
+              key: GlobalKey(),
                 title: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(address.toString() , textAlign: TextAlign.start,),
                 ),
-                groupValue: address , value: address, selected: isChecked, onChanged: (AddressViewModel value){
+                groupValue: isChecked ? address : null,
+                value: address,
+                selected: isChecked,
+                onChanged: (AddressViewModel value){
                 onSelectAddress(value);
                 return ;
             }),

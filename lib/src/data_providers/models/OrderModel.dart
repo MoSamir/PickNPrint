@@ -14,9 +14,10 @@ class OrderModel {
   int orderNumber ;
   OrderStatus statues ;
   List<String> userImages = List();
+  String contactPhoneNumber  ;
 
   int deliveryTime;
-  OrderModel({this.orderPackage  , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+  OrderModel({this.orderPackage , this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
     List<OrderModel> ordersList = List<OrderModel>();

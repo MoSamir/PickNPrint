@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/resources/Validators.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 class OrderStatisticWidget extends StatefulWidget {
 
@@ -21,8 +24,11 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
 
   TextEditingController promoCodeTextController = TextEditingController();
 
+
+
   @override
   Widget build(BuildContext context) {
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +47,6 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
                     SvgPicture.network(
                       widget.orderModel.orderPackage.packageIcon,
                     ),
-
                     SizedBox(width: 10,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,12 +112,28 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
           width: MediaQuery.of(context).size.width,
           color: AppColors.lightBlack,
         ),
-        SizedBox(height: 10,),
-        Text((LocalKeys.PROMO_CODE).tr()),
-        buildTextField(
-          textController: promoCodeTextController,
-          hint: (LocalKeys.PROMO_CODE_HINT).tr(),
+
+        Card(
+          margin: EdgeInsets.symmetric(vertical: 2),
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 10,),
+                Text((LocalKeys.PROMO_CODE).tr()),
+                UIHelpers.buildTextField(
+                  context: context,
+                  textController: promoCodeTextController,
+                  hint: (LocalKeys.PROMO_CODE_HINT).tr(),
+                ),
+              ],
+            ),
+          ),
         ),
+
         Container(
           height: 1,
           width: MediaQuery.of(context).size.width,
@@ -138,7 +159,7 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
         ),
         GestureDetector(
           onTap: (){
-            widget.onCreateOrder(widget.orderModel);
+              widget.onCreateOrder(widget.orderModel);
             return;
           },
           child: Container(
@@ -155,43 +176,6 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
     );
   }
 
-  Widget buildTextField({String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate}){
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        autovalidate: autoValidate ?? false,
-        obscureText: secured ?? false,
-        validator: Validator.requiredField,
-        controller: textController,
-        onFieldSubmitted: (text){
-          if(nextNode != null)
-            FocusScope.of(context).requestFocus(nextNode);
-        },
-        focusNode: focusNode,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: .5,
-              color: AppColors.lightBlue,
-            ),
-          ),
-          fillColor: AppColors.offWhite,
-          filled: true,
-          hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: .5,
-              color: AppColors.lightBlue,
-            ),
-          ),
-          alignLabelWithHint: true,
-        ),
-        textInputAction: nextNode != null ? TextInputAction.next : TextInputAction.done,
-      ),
-    );
-  }
 
 
 

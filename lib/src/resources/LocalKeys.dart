@@ -120,6 +120,8 @@ class LocalKeys{
   static const String ORDER_DETAILS = "ORDER_DETAILS";
   static const String PLEASE_CHECK_ORDER = "PLEASE_CHECK_ORDER";
   static const String PLEASE_ADD_ADDRESS_FIRST = "PLEASE_ADD_ADDRESS_FIRST";
+  static const String CONFIRM_PHONE_NUMBER = "CONFIRM_PHONE_NUMBER";
+
 
 
 
@@ -154,14 +156,14 @@ class LocalKeys{
 
 //------------------------------- SHIPPING ADDRESS ----------------------------
 
-
-
   static const String SELECT_SHIPPING_ADDRESS = "SELECT_SHIPPING_ADDRESS";
   static const String SOMEONE_WILL_CALL_YOU = "SOMEONE_WILL_CALL_YOU";
   static const String EDIT_ADDRESS = "EDIT_ADDRESS";
   static const String DELETE_ADDRESS = "DELETE_ADDRESS";
   static const String SELECT_ADDRESS_AND_CONTINUE = "SELECT_ADDRESS_AND_CONTINUE";
   static const String ADD_NEW_ADDRESS = "ADD_NEW_ADDRESS";
+  static const String CUSTOMIZE_YOUR_IMAGE = "CUSTOMIZE_YOUR_IMAGE";
+
 
 
 
@@ -261,6 +263,8 @@ class LocalKeys{
 
   static const String UPDATE_PROFILE_LABEL = "UPDATE_PROFILE_LABEL";
   static const String UPDATE_PROFILE_HEADER = "UPDATE_PROFILE_HEADER";
+
+
 
 
 

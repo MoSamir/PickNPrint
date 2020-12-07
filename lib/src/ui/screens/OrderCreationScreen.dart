@@ -39,8 +39,6 @@ class OrderCreationScreen extends StatefulWidget {
 class _OrderCreationScreenState extends State<OrderCreationScreen> {
 
   OrderCreationBloc orderBloc ;
-  TextEditingController promoCodeTextController ;
-  FocusNode promoCodeFocusNode;
 
 
 
@@ -53,10 +51,8 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
   @override
   void initState() {
     super.initState();
-
     orderBloc = OrderCreationBloc(OrderCreationInitialState());
-    promoCodeTextController = TextEditingController();
-    promoCodeFocusNode = FocusNode();
+
   }
 
 
@@ -87,7 +83,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
             orderNumber: state.orderNumber,
             orderShippingDuration: state.shippingDuration,
           )));
-
         }
       },
       builder:  (context, state){
@@ -96,7 +91,8 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
           inAsyncCall: state is OrderCreationLoadingState,
           child: BaseScreen(
             hasDrawer: true,
-            child: SingleChildScrollView(
+            child: Form(
+
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -114,13 +110,7 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
                     SizedBox(height: 5,),
                     Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
                     SizedBox(height: 5,),
-                    OrderStatisticWidget(
-                      orderModel: widget.orderModel,
-                      onCreateOrder: (OrderModel order){
-                        orderBloc.add(CreateOrder(orderModel : widget.orderModel));
-                        return;
-                      },
-                    ),
+                   getStatisticsWidget(),
                     SizedBox(height: 25,),
                   ],
                 ),
@@ -132,4 +122,54 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
       cubit: orderBloc,
     );
   }
+
+  Widget buildTextField({String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate}){
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        obscureText: secured ?? false,
+        validator: Validator.requiredField,
+        controller: textController,
+        onFieldSubmitted: (text){
+          if(nextNode != null)
+            FocusScope.of(context).requestFocus(nextNode);
+        },
+        focusNode: focusNode,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              width: .5,
+              color: AppColors.lightBlue,
+            ),
+          ),
+          fillColor: AppColors.offWhite,
+          filled: true,
+          hintText: hint,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              width: .5,
+              color: AppColors.lightBlue,
+            ),
+          ),
+          alignLabelWithHint: true,
+        ),
+        textInputAction: nextNode != null ? TextInputAction.next : TextInputAction.done,
+      ),
+    );
+  }
+
+  Widget getStatisticsWidget() {
+    return OrderStatisticWidget(
+
+      orderModel: widget.orderModel,
+      onCreateOrder: (OrderModel order){
+          orderBloc.add(CreateOrder(orderModel: widget.orderModel));
+
+        return;
+      },
+    );
+  }
+
 }

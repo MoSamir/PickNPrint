@@ -150,8 +150,9 @@
   "NO_ORDERS_YET": "لا يوجد طلبات بعد",
   "PLEASE_ADD_ADDRESS_FIRST": "يرجي اضافه عنوان اولا",
   "EDIT_IMAGE": "تعديل",
-  "REMOVE_IMAGE": "حذف"
-
+  "REMOVE_IMAGE": "حذف",
+  "CUSTOMIZE_YOUR_IMAGE": "حسن من وصع الصوره",
+  "CONFIRM_PHONE_NUMBER": "رقم التواصل"
 
 }
 

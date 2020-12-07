@@ -15,6 +15,7 @@ import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
+import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 
 import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
@@ -41,10 +42,18 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
 
 
   OrderModel order ;
+  TextEditingController phoneNumberController = TextEditingController();
+  GlobalKey<FormState> _phoneNumberFormGlobalKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.userPhoneNumber != null){
+      phoneNumberController.text = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userPhoneNumber;
+    }
+
+
+
     order = widget.userOrder;
     if(order.orderAddress == null &&  BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses != null && BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses.length > 0)
         order.orderAddress = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses[0];
@@ -53,70 +62,102 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     UserViewModel currentUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
     return BlocConsumer(
+      listenWhen: (current,previous) => current != previous,
+      buildWhen: (current,previous) => current != previous,
       builder: (context , state){
         return BaseScreen(
           hasDrawer: true,
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text((LocalKeys.SELECT_SHIPPING_ADDRESS).tr(), style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: AppColors.black,
-                  ), textAlign: TextAlign.start,),
-                  Text((LocalKeys.SOMEONE_WILL_CALL_YOU).tr(), style: TextStyle(
-                    color: AppColors.lightBlue,
-                  ), textAlign: TextAlign.start,),
-                  Image(image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                  ListView.builder(
-                    itemBuilder: (context , index){
-                      return UserAddressCard(
-                        address: currentUser.userSavedAddresses[index],
-                        onEditAddress : _onEditAddress,
-                        onDeleteAddress: _onRemoveAddress,
-                        onSelectAddress : _onSelectAddress,
-                        isChecked: order.orderAddress == currentUser.userSavedAddresses[index],
-                      );
-                    }
-                    , physics: NeverScrollableScrollPhysics()
-                    , itemCount: currentUser.userSavedAddresses.length ,
-                    shrinkWrap: true,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderCreationScreen(orderModel: order,)));
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: (50),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightBlue,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Center(child: Text((LocalKeys.SELECT_ADDRESS_AND_CONTINUE).tr(), style: TextStyle(color: AppColors.white),)),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async{
-                      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
-                      setState(() {});
-                    },
-                    child: Text((LocalKeys.ADD_NEW_ADDRESS).tr() , style: TextStyle(
+            child: Form(
+              key: _phoneNumberFormGlobalKey,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text((LocalKeys.SELECT_SHIPPING_ADDRESS).tr(), style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: AppColors.black,
+                    ), textAlign: TextAlign.start,),
+                    Text((LocalKeys.SOMEONE_WILL_CALL_YOU).tr(), style: TextStyle(
                       color: AppColors.lightBlue,
-                      decoration: TextDecoration.underline,
-                    )  , textAlign: TextAlign.center,),
-                  ),
+                    ), textAlign: TextAlign.start,),
+                    Image(image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
 
 
+                    Card(
+                      margin: EdgeInsets.symmetric(vertical: 2),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: 10,),
+                            Text((LocalKeys.CONFIRM_PHONE_NUMBER).tr()),
+                            UIHelpers.buildTextField(
+                              context: context,
+                              validator: Validator.phoneValidator,
+                              textController: phoneNumberController,
+                              hint: (LocalKeys.CONFIRM_PHONE_NUMBER).tr(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
-
-
-                ],
+                    ListView.builder(
+                      itemBuilder: (context , index){
+                        return UserAddressCard(
+                          address: currentUser.userSavedAddresses[index],
+                          onEditAddress : _onEditAddress,
+                          onDeleteAddress: _onRemoveAddress,
+                          onSelectAddress : _onSelectAddress,
+                          isChecked: order.orderAddress == currentUser.userSavedAddresses[index],
+                        );
+                      }
+                      , physics: NeverScrollableScrollPhysics()
+                      , itemCount: currentUser.userSavedAddresses.length ,
+                      shrinkWrap: true,),
+                    GestureDetector(
+                      onTap: (){
+                        if(_phoneNumberFormGlobalKey.currentState.validate()) {
+                          order.contactPhoneNumber = phoneNumberController.text;
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderCreationScreen(orderModel: order,)));
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width,
+                        height: (50),
+                        decoration: BoxDecoration(
+                          color: AppColors.lightBlue,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Center(child: Text((LocalKeys.SELECT_ADDRESS_AND_CONTINUE).tr(), style: TextStyle(color: AppColors.white),)),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async{
+                        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
+                        setState(() {});
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text((LocalKeys.ADD_NEW_ADDRESS).tr() , style: TextStyle(
+                          color: AppColors.lightBlue,
+                          decoration: TextDecoration.underline,
+                        )  , textAlign: TextAlign.center,),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

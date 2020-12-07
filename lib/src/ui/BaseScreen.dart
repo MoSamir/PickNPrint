@@ -27,6 +27,10 @@ class BaseScreen extends StatelessWidget {
         },
         child: SafeArea(
           child: Scaffold(
+            extendBody: true,
+            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomPadding: true,
+            primary: true,
             key: scaffoldKey,
             drawer: resolveDrawer(),
 
