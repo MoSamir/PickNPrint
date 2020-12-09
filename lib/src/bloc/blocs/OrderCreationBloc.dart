@@ -48,27 +48,55 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleOrderCreation(CreateOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
-    if(saveOrderResponse.isSuccess){
-      ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
-      if(orderCreationResult.isSuccess){
-        yield OrderCreationLoadedSuccessState(
-          orderNumber: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].orderNumber.toString() : '',
-          shippingDuration: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].deliveryTime.toString() : '',
-        );
-        return ;
-      }
-      else {
-        yield OrderCreationLoadingFailureState(
-          error: orderCreationResult.errorViewModel,
-          failureEvent: event,
-        );
-        return ;
-      }
-    } else {
-      yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
-      return ;
+
+    ResponseViewModel<List<String>> uploadCartImages;
+    bool isLocalImages = false ;
+    try{
+      isLocalImages = await File.fromUri(Uri.parse(event.orderModel.userImages[0])).exists();
+    } catch(_){
+
     }
+
+    print(isLocalImages);
+    if(isLocalImages)
+      uploadCartImages = await Repository.uploadMultipleFiles(event.orderModel.userImages);
+    else
+      uploadCartImages = ResponseViewModel(
+        responseData: event.orderModel.userImages,
+        isSuccess: true
+      );
+    if(uploadCartImages.isSuccess){
+      event.orderModel.userImages.clear();
+      event.orderModel.userImages.addAll(uploadCartImages.responseData);
+      ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
+      if(saveOrderResponse.isSuccess){
+        ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
+        if(orderCreationResult.isSuccess){
+          yield OrderCreationLoadedSuccessState(
+            orderNumber: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].orderNumber.toString() : '',
+            shippingDuration: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].deliveryTime.toString() : '',
+          );
+          return ;
+        }
+        else {
+          yield OrderCreationLoadingFailureState(
+            error: orderCreationResult.errorViewModel,
+            failureEvent: event,
+          );
+          return ;
+        }
+      } else {
+        yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
+        return ;
+      }
+    }
+    else {
+      yield OrderSavingFailedState(failedEvent: event, error: uploadCartImages.errorViewModel,);
+      return ;
+      return;
+    }
+
+
   }
 
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{

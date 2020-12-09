@@ -10,7 +10,7 @@ class ParserHelper {
   }
 
   static double parseDouble(String number){
-    if(number == null) return 0.0;
+    if(number == null || number == "null" || number.isEmpty) return 0.0;
     if(number.contains('.')) return double.tryParse(number) ?? 0.0;
     return (int.tryParse(number) ?? 0.0) * 1.0;
   }

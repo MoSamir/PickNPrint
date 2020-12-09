@@ -151,6 +151,12 @@ class Repository {
 
 
 
+  static Future<ResponseViewModel<List<String>>> uploadMultipleFiles(List<String> filesToBeUploaded) async{
+    ResponseViewModel<List<String>> uploadFiles = await ApplicationDataProvider.uploadMultipleFiles(filesToBeUploaded);
+    return uploadFiles;
+  }
+
+
   static Future<ResponseViewModel<List<OrderModel>>> createSavedOrder(OrderModel orderModel) async{
     return CartDataProvider.createSavedOrder(orderModel);
   }

@@ -14,35 +14,24 @@ class CartDataProvider {
     String token = await UserDataProvider.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
-      HttpHeaders.authorizationHeader : 'Bearer $token'
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+      "Content-Type": "application/json"
     });
     Map<String,dynamic> requestBody = {
       'package_id' : order.orderPackage.packageId.toString(),
       'color': order.isWhiteFrame ? 1.toString() : 0.toString(),
       'selection': order.frameWithPath ? 1.toString() : 0.toString(),
+      'images': order.userImages,
     };
-    List<String> socialMediaImages = List<String>();
-    for(int i = 0 ; i < order.userImages.length ; i++){
-      if(order.userImages[i].startsWith('https') || order.userImages[i].startsWith('http')){
-        socialMediaImages.add(order.userImages[i]);
-      }
-    }
-    if(socialMediaImages.length > 0){
-      requestBody.putIfAbsent('imagesViaSocialMedia', () => socialMediaImages);
-    }
-
     if(order.userImages.length > order.orderPackage.packageSize){
       requestBody.putIfAbsent('additionalFramesQty', () => (order.userImages.length - order.orderPackage.packageSize).toString());
     }
-
     String apiURL = URL.getURL(apiPath: URL.POST_ADD_ORDER_TO_CART);
-
-    ResponseViewModel saveOrderResponse = await NetworkUtilities.handleUploadFiles(
+    ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
         methodURL: apiURL,
         requestBody: requestBody,
         requestHeaders: requestHeaders,
-        files: order.userImages,
-        isBodyJson: true,
+        acceptJson: true,
         parserFunction: (saveOrderRawResponse){
           return OrderModel.fromListJson(saveOrderRawResponse[ApiParseKeys.ORDER_CART_ROOT_KEY][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
         }

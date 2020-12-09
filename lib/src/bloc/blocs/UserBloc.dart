@@ -81,8 +81,6 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
 
 
 
-
-
   Stream<UserBlocStates> _handleForgetPassword(ForgetPassword event) async*{
     yield UserDataLoadingState();
     ResponseViewModel<bool> responseViewModel = await Repository.resendCodeForPhone(phoneNumber: event.phoneNumber);

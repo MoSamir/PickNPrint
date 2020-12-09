@@ -211,82 +211,8 @@ class UserDataProvider{
     }
   }
 
-  static Future<ResponseViewModel<List<String>>> createOrder(OrderModel orderModel) async{
 
-    await Future.delayed(Duration(seconds: 2),(){});
-    return ResponseViewModel<List<String>>(
-      responseData: ['123456','5'],
-      isSuccess: true,
-    );
-  }
 
-  static Future<ResponseViewModel<List<OrderModel>>> addToCart(OrderModel orderItem) async {
-    await Future.delayed(Duration(seconds:2),(){});
-    return ResponseViewModel<List<OrderModel>>(
-      responseData: [
-        OrderModel(
-          orderPackage: PackageModel(
-            packagePrice: 150,
-            packageSaving: 20,
-            packageSize: 3
-          ),
-        ),
-        OrderModel(
-          orderPackage: PackageModel(
-              packagePrice: 180,
-              packageSaving: 30,
-              packageSize: 4
-          ),
-        ),
-        OrderModel(
-          orderPackage: PackageModel(
-              packagePrice: 150,
-              packageSaving: 20,
-              packageSize: 3
-          ),
-        ),
-      ],
-      isSuccess: true,
-    );
-  }
-
-  static Future<ResponseViewModel<List<OrderModel>>> syncCart(List<OrderModel>  ordersList) async {
-    await Future.delayed(Duration(seconds:2),(){});
-    return ResponseViewModel<List<OrderModel>>(
-      responseData: [
-        OrderModel(
-          orderPackage: PackageModel(
-              packagePrice: 150,
-              packageSaving: 20,
-              packageSize: 3
-          ),
-        ),
-        OrderModel(
-          orderPackage: PackageModel(
-              packagePrice: 180,
-              packageSaving: 30,
-              packageSize: 4
-          ),
-        ),
-        OrderModel(
-          orderPackage: PackageModel(
-              packagePrice: 150,
-              packageSaving: 20,
-              packageSize: 3
-          ),
-        ),
-      ],
-      isSuccess: true,
-    );
-  }
-
-  static Future<ResponseViewModel<List<OrderModel>>> saveOrder(OrderModel order) async{
-    await Future.delayed(Duration(seconds:2),(){});
-    return ResponseViewModel<List<OrderModel>>(
-      responseData: List<OrderModel>(),
-      isSuccess: true,
-    );
-  }
 
 
   static Future<ResponseViewModel<UserViewModel>> updateUserProfile(String imageLink) async{

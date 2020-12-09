@@ -19,6 +19,10 @@ class URL{
   static const String POST_SAVE_ORDER_FOR_LATER = "order/saveOrder";
   static const String POST_CREATE_ORDER = "order/createOrder";
   static const String POST_CREATE_SAVED_ORDER = "order/placeSavedOrder";
+  static const String POST_UPLOAD_IMAGE = "uploadImage";
+
+
+
 
 
   static const String GET_RETRIEVE_ACTIVE_ORDERS = "order/getCurrentOrders";

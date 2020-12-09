@@ -5,28 +5,48 @@ class PackageModel {
 
   int packageSize  , packageId;
   String packageIcon  , packageMainImage;
-  double packagePrice , packageSaving  , priceForExtraFrame;
-  PackageModel({this.packagePrice ,  this.packageIcon ,this.packageSaving , this.packageId , this.priceForExtraFrame , this.packageMainImage ,this.packageSize});
+  double packagePrice , packageAfterDiscountPrice , packageSaving  , priceForExtraFrame;
+  PackageModel({this.packagePrice , this.packageAfterDiscountPrice ,  this.packageIcon ,this.packageSaving , this.packageId , this.priceForExtraFrame , this.packageMainImage ,this.packageSize});
 
 
 
-  static List<PackageModel> fromListJson(List<dynamic> packagesListJson){
+  static List<PackageModel> fromListJson(List<dynamic> packagesListJson ,  double frameAfterDiscount , double frameBeforeDiscount , int discountStartFrom){
     List<PackageModel> packagesList = List<PackageModel>();
-
     for(int i = 0 ; i <packagesListJson.length ; i++)
-      packagesList.add(fromJson(packagesListJson[i]));
+      packagesList.add(fromJson(packagesListJson[i] , frameAfterDiscount , frameBeforeDiscount , discountStartFrom));
     return packagesList;
   }
 
-  static PackageModel fromJson(Map<String,dynamic> packageJson) {
+  static PackageModel fromJson(Map<String,dynamic> packageJson , double frameAfterDiscount , double frameBeforeDiscount , int discountStartFrom) {
+
+    int packageSize = int.parse(packageJson[ApiParseKeys.PACKAGE_SIZE_KEY].toString());
+
+    double savePerFrame = frameBeforeDiscount - frameAfterDiscount;
+    int framesWithDiscount = (packageSize - discountStartFrom);
+    double packageSaving = savePerFrame * framesWithDiscount;
+    double packageGrossPrice = packageSize * frameBeforeDiscount;
+    double packageNetPrice = packageGrossPrice - packageSaving;
+
+    print("savePerFrame => $savePerFrame");
+    print("packageSize => $packageSize");
+    print("FrameWithDiscount => $framesWithDiscount");
+    print("saving => ${(savePerFrame * framesWithDiscount)}");
+    print("Gross Price => ${packageSize * frameBeforeDiscount}");
+    print("Net Price => ${(packageSize * frameBeforeDiscount) - (savePerFrame ?? 0.0 * framesWithDiscount ?? 0.0)}");
+    print("***************************************");
+
+
+
+
     return PackageModel(
       packageMainImage: packageJson[ApiParseKeys.PACKAGE_IMAGE],
       packageIcon: packageJson[ApiParseKeys.PACKAGE_ICON],
       packageId: int.parse(packageJson[ApiParseKeys.PACKAGE_ID].toString()),
       packageSize: int.parse(packageJson[ApiParseKeys.PACKAGE_SIZE_KEY].toString()),
-      packageSaving: ParserHelper.parseDouble(packageJson[ApiParseKeys.PACKAGE_DISCOUNT_PERCENTAGE].toString()),
-      packagePrice: ParserHelper.parseDouble(packageJson[ApiParseKeys.PACKAGE_PRICE].toString()),
-      priceForExtraFrame: ParserHelper.parseDouble((packageJson[ApiParseKeys.PACKAGE_FRAME_ROOT][ApiParseKeys.PACKAGE_PRICE]).toString()),
+      packageSaving: packageSaving,
+      packagePrice: packageGrossPrice,
+      packageAfterDiscountPrice: packageNetPrice,
+      priceForExtraFrame: frameAfterDiscount,
     );
   }
 

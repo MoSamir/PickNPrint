@@ -46,7 +46,7 @@ class PackListTile extends StatelessWidget {
                       Text('${package.packageSize} ${(LocalKeys.PACKAGE_SET).tr()}' , style: TextStyle(
                         color: AppColors.lightBlue,
                       ),),
-                      Text((LocalKeys.PRICE_START_FROM).tr(args:[package.packagePrice.toString()]), style: TextStyle(
+                      Text((LocalKeys.PRICE_START_FROM).tr(args:[package.packageAfterDiscountPrice.toString()]), style: TextStyle(
                         color: (backgroundColor == null || backgroundColor == AppColors.transparent) ? AppColors.white : AppColors.black,
                       ),),
                     ],

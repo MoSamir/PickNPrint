@@ -406,7 +406,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             margin: EdgeInsets.all(8),
             duration: Duration(seconds: 2),
             child: Center(
-              child: Text((LocalKeys.ADD_MORE_IMAGES).tr() , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
+              child: Text((LocalKeys.ADD_MORE_IMAGES).tr(args:[
+                widget.userSelectedPackage.priceForExtraFrame.toString(),
+              ]) , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
             ),
           ),
         ),

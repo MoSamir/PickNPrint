@@ -30,9 +30,7 @@ class PackageHomeScreenListing extends StatelessWidget {
           ),
           SizedBox(height: 8,),
           Center(
-            child: Text((LocalKeys.PRICE_TEXT).tr(args:([package.packagePrice.toString()])) , textAlign: TextAlign.center, style: TextStyle(
-              fontSize: 18, color: AppColors.black,
-            ),),
+            child: getDiscountText(),
           ),
           SizedBox(height: 2,),
           Center(
@@ -62,5 +60,44 @@ class PackageHomeScreenListing extends StatelessWidget {
 
       ),
     );
+  }
+
+  Widget getDiscountText() {
+    if(package.packageAfterDiscountPrice == package.packagePrice){
+      return Text(
+        (LocalKeys.PRICE_TEXT).tr(args:([package.packageAfterDiscountPrice.toString()])),
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+        ),
+      );
+    } else {
+      return RichText(
+        text: TextSpan(
+            children: [
+              TextSpan(
+                text: (LocalKeys.PRICE_TEXT).tr(args:([package.packagePrice.toString()])),
+                style: TextStyle(
+                  color: Colors.black38,
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+              TextSpan(text: '  '),
+              TextSpan(
+                text: (LocalKeys.PRICE_TEXT).tr(args:([package.packageAfterDiscountPrice.toString()])),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            ]
+        ),
+      );
+    }
+
+
+
   }
 }

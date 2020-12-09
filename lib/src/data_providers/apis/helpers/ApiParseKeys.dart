@@ -48,15 +48,21 @@ class ApiParseKeys {
   static const String PACKAGE_FRAME_ROOT = "frame";
   static const String PACKAGE_LIST_ROOT = "framePackages";
   static const String PACKAGE_ICON = "icon";
-
   static const String PACKAGE_IMAGE = "image";
+
+  static const String NORMAL_FRAME_PRICE = "framePrice";
+  static const String EXTRA_FRAME_PRICE = "framePriceAfterDiscount";
+  static const String DISCOUNT_AFTER_FRAME = "frameDiscountQty";
+
+
+
 
 //---------------------------- GET CART ITEMS ---------------------------------
 
   static const String ORDER_ID = "id";
   static const String ORDER_KEY = "order";
   static const String ORDERS_KEY = "orders";
-  static const String ORDER_PACKAGE_SIZE = "packageQuantity";
+  static const String ORDER_PACKAGE_SIZE = "itemsQty";
   static const String ORDER_PACKAGE_PRICE = "packagePrice";
   static const String ORDER_TOTAL_PRICE = "totalPrice";
   static const String ORDER_SUBTOTAL = "subTotal";
@@ -77,6 +83,8 @@ class ApiParseKeys {
 
   static const String SYSTEM_SETTINGS_KEY = "settings";
   static const String SYSTEM_PHONE_KEY = "phone";
+
+
 
 
 

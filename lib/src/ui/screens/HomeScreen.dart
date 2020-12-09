@@ -1,27 +1,22 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
-import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
-import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/AboutScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
-import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NumberedBoxWidget.dart';
 import 'package:picknprint/src/ui/widgets/PackageHomeScreenListing.dart';
-import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
