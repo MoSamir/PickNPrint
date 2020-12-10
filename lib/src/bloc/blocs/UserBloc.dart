@@ -152,24 +152,32 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     if(userOrders[0].isSuccess){
       userActiveOrders = List<OrderModel>();
       userActiveOrders.addAll(userOrders[0].responseData);
+    } else {
+      userCompletedOrders = List<OrderModel>();
     }
 
     // closed orders listing
     if(userOrders[1].isSuccess){
       userCompletedOrders = List<OrderModel>();
       userCompletedOrders.addAll(userOrders[1].responseData);
+    } else {
+      userCompletedOrders = List<OrderModel>();
     }
 
     // saved orders listing
     if(userOrders[2].isSuccess){
       userSavedOrders = List<OrderModel>();
       userSavedOrders.addAll(userOrders[2].responseData);
+    } else {
+      userSavedOrders = List<OrderModel>();
     }
 
     // User Cart listing
     if(userOrders[3].isSuccess){
       userCart = List<OrderModel>();
       userCart.addAll(userOrders[3].responseData);
+    } else {
+      userCart = List<OrderModel>();
     }
 
     yield UserDataLoadedState();

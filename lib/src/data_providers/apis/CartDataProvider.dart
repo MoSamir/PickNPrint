@@ -50,25 +50,14 @@ class CartDataProvider {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });
     Map<String,dynamic> requestBody = {
-      'order_status' : 'saved',
       'package_id' : order.orderPackage.packageId.toString(),
       'color': order.isWhiteFrame ? 1.toString() : 0.toString(),
       'selection': order.frameWithPath ? 1.toString() : 0.toString(),
-      'address_id': order.orderAddress.id.toString(),
+      'images': order.userImages,
     };
-    List<String> socialMediaImages = List<String>();
-    for(int i = 0 ; i < order.userImages.length ; i++){
-      if(order.userImages[i].startsWith('https') || order.userImages[i].startsWith('http')){
-        socialMediaImages.add(order.userImages[i]);
-      }
-    }
-    if(socialMediaImages.length > 0){
-      requestBody.putIfAbsent('imagesViaSocialMedia', () => socialMediaImages);
-    }
 
-    if(order.userImages.length > order.orderPackage.packageSize){
-      requestBody.putIfAbsent('additionalFramesQty', () => (order.userImages.length - order.orderPackage.packageSize).toString());
-    }
+
+
     String apiURL = URL.getURL(apiPath: URL.POST_SAVE_ORDER_FOR_LATER);
 
     ResponseViewModel saveOrderResponse = await NetworkUtilities.handleUploadFiles(

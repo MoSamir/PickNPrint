@@ -12,6 +12,7 @@ import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/ui/widgets/ListViewAnimatorWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
@@ -23,8 +24,15 @@ class SavedOrdersScreen extends StatefulWidget {
 }
 
 class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
+
+  String localeName = "en_US";
+
   @override
   Widget build(BuildContext context) {
+
+    if(Constants.CURRENT_LOCALE == "ar")
+      localeName = "ar_EG";
+
     return BaseScreen(
       hasDrawer: false,
       hasAppbar: true,
@@ -47,44 +55,42 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text((LocalKeys.MY_SAVED_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
-                ListView.builder(itemBuilder: (context, index){
-                  OrderModel orderModel = BlocProvider.of<UserBloc>(context).userSavedOrders[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: GestureDetector(
-                      onTap: (){
-                        navigateToOrderCreationScreen(orderModel);
-                        return;
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
-                        decoration: BoxDecoration(
-                            color: AppColors.lightBlue,
-                            borderRadius: BorderRadius.all(Radius.circular(8.0))
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
-                                color: AppColors.white,
-                              ),),
 
-                              Text(DateFormat.yMd(Constants.CURRENT_LOCALE).format(orderModel.orderTime).replaceAll('/', ' / ') , style: TextStyle(
-                                color: AppColors.white,
-                              )),
-                            ],
+                Padding(
+                    padding: EdgeInsets.all(8),
+                    child: ListViewAnimatorWidget(
+                      isScrollEnabled: false,
+                      listChildrenWidgets: BlocProvider.of<UserBloc>(context).userSavedOrders.map((OrderModel orderModel) => Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: GestureDetector(
+                          onTap: (){
+                            navigateToOrderCreationScreen(orderModel);
+                            return;
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
+                            decoration: BoxDecoration(
+                                color: AppColors.lightBlue,
+                                borderRadius: BorderRadius.all(Radius.circular(8.0))
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
+                                    color: AppColors.white,
+                                  ),),
+                                  Text(DateFormat.yMd(localeName).format(orderModel.orderTime).replaceAll('/', ' / ') , style: TextStyle(
+                                    color: AppColors.white,
+                                  )),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-                  itemCount: BlocProvider.of<UserBloc>(context).userSavedOrders.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.all(0),
-                  shrinkWrap: true,
-                ),
+                      )).toList(),
+                    )),
+
                 RichText(
                   text: TextSpan(
                     children: [

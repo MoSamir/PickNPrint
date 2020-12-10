@@ -53,22 +53,26 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     bool isLocalImages = false ;
     try{
       isLocalImages = await File.fromUri(Uri.parse(event.orderModel.userImages[0])).exists();
-    } catch(_){
-
-    }
-
-    print(isLocalImages);
-    if(isLocalImages)
+    } catch(_){}
+    if(isLocalImages) {
       uploadCartImages = await Repository.uploadMultipleFiles(event.orderModel.userImages);
-    else
-      uploadCartImages = ResponseViewModel(
-        responseData: event.orderModel.userImages,
-        isSuccess: true
-      );
-    if(uploadCartImages.isSuccess){
       event.orderModel.userImages.clear();
-      event.orderModel.userImages.addAll(uploadCartImages.responseData);
-      ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
+      if(uploadCartImages.isSuccess){
+        event.orderModel.userImages.addAll(uploadCartImages.responseData);
+      }
+    }
+    else {
+      uploadCartImages = ResponseViewModel(
+          responseData: event.orderModel.userImages,
+          isSuccess: true
+      );
+    }
+    if(uploadCartImages.isSuccess){
+
+      ResponseViewModel<List<OrderModel>> saveOrderResponse = ResponseViewModel<List<OrderModel>>(isSuccess: true);
+      if(event.orderModel.statues == OrderStatus.CART_ORDER)
+        saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
+
       if(saveOrderResponse.isSuccess){
         ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
         if(orderCreationResult.isSuccess){
@@ -101,17 +105,44 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveOrderForLater(event.order);
-    if(saveUserCart.isSuccess){
-      yield OrderSavingSuccessState(
-        cartOrders : saveUserCart.responseData,
-      );
-      return;
+
+    ResponseViewModel<List<String>> uploadCartImages;
+    bool isLocalImages = false ;
+
+    try{
+      isLocalImages = await File.fromUri(Uri.parse(event.order.userImages[0])).exists();
+    } catch(_){}
+    if(isLocalImages) {
+      uploadCartImages = await Repository.uploadMultipleFiles(event.order.userImages);
+      event.order.userImages.clear();
+      if(uploadCartImages.isSuccess){
+        event.order.userImages.addAll(uploadCartImages.responseData);
+      }
     }
     else {
-      yield OrderSavingFailedState(failedEvent: event, error: saveUserCart.errorViewModel,);
+      uploadCartImages = ResponseViewModel(
+          responseData: event.order.userImages,
+          isSuccess: true
+      );
+    }
+    if(uploadCartImages.isSuccess){
+      ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveOrderForLater(event.order);
+      if(saveUserCart.isSuccess){
+        yield OrderSavingSuccessState(
+          cartOrders : saveUserCart.responseData,
+        );
+        return;
+      }
+      else {
+        yield OrderSavingFailedState(failedEvent: event, error: saveUserCart.errorViewModel,);
+        return ;
+      }
+    } else {
+      yield OrderSavingFailedState(failedEvent: event, error: uploadCartImages.errorViewModel,);
       return ;
     }
+
+
   }
 
   Future<String> validateOrder(OrderModel userOrder) async{

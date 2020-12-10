@@ -141,7 +141,18 @@ class Repository {
   }
 
   static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async{
-    return CartDataProvider.getUserCart();
+    ResponseViewModel<List<OrderModel>> orders = await CartDataProvider.getUserCart();
+    if(orders.isSuccess){
+      List<OrderModel> successData = orders.responseData;
+      for(int i = 0 ; i < successData.length ; i++)
+        successData[i].statues = OrderStatus.CART_ORDER;
+      return ResponseViewModel<List<OrderModel>>(
+        isSuccess: true,
+        responseData: successData,
+      );
+    } else {
+      return orders;
+    }
   }
 
   static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel orderModel) async{

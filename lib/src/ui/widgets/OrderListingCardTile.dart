@@ -11,9 +11,18 @@ class OrderListingCardTile extends StatelessWidget {
 
   final OrderModel orderModel ;
   final Function onCardTapped ;
+  String localeName = "en_US";
   OrderListingCardTile({this.orderModel , this.onCardTapped});
   @override
   Widget build(BuildContext context) {
+
+
+
+
+    if(Constants.CURRENT_LOCALE == "ar")
+      localeName = "ar_EG";
+
+
     return GestureDetector(
       onTap: onCardTapped ?? (){},
       child: Container(
@@ -33,7 +42,7 @@ class OrderListingCardTile extends StatelessWidget {
                     Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
                       color: AppColors.white,
                     ),),
-                    Text(DateFormat.yMd(Constants.CURRENT_LOCALE).format(orderModel.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
+                    Text(DateFormat.yMd(localeName).format(orderModel.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
                       color: AppColors.white,
                     )),
                   ],

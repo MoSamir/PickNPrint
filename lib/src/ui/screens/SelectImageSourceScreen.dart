@@ -266,7 +266,8 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
   void pickUserImage(ImageSource source) async{
     final _picker = ImagePicker();
-    PickedFile image = await _picker.getImage(source: source , imageQuality: 100, );
+
+    PickedFile image = await _picker.getImage(source: source , imageQuality: 80, maxHeight: 150 , maxWidth: 150);
     if(image != null){
       File croppedFilePath = await UIHelpers.cropImage(image.path);
       Navigator.of(context).pop(croppedFilePath.path);

@@ -10,6 +10,7 @@ import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
+import 'package:picknprint/src/ui/widgets/ListViewAnimatorWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:picknprint/src/ui/widgets/OrderStatisticWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
@@ -22,6 +23,7 @@ class UserCartScreen extends StatefulWidget {
 class _UserCartScreenState extends State<UserCartScreen> {
 
   OrderCreationBloc createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
+  String localeName = "en_US";
 
 
   @override
@@ -32,6 +34,14 @@ class _UserCartScreenState extends State<UserCartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
+    if(Constants.CURRENT_LOCALE == "ar")
+      localeName = "ar_EG";
+
+
     return BlocConsumer(
       cubit: createOrderBloc,
       listener: (context , state){},
@@ -44,41 +54,40 @@ class _UserCartScreenState extends State<UserCartScreen> {
             title: (LocalKeys.MY_CART).tr(),
             centerTitle: true,
           ),
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 8),
-            shrinkWrap: true,
-            itemCount: BlocProvider.of<UserBloc>(context).userCart.length,
-            itemBuilder: (BuildContext context, int index) {
-              OrderModel order = BlocProvider.of<UserBloc>(context).userCart[index];
-
-              return GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(order)));
-                  return;
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
-                  decoration: BoxDecoration(
-                      color: AppColors.lightBlue,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0))
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text((LocalKeys.ORDER_NUMBER).tr(args: [(order.orderNumber.toString())]) , style: TextStyle(
-                          color: AppColors.white,
-                        ),),
-                        Text(DateFormat.yMd(Constants.CURRENT_LOCALE).format(order.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
-                          color: AppColors.white,
-                        )),
-                      ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListViewAnimatorWidget(
+              isScrollEnabled: true,
+              listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCart.map((OrderModel order){
+                print("Order Status => ${order.statues}");
+                return  GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(order)));
+                    return;
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
+                    decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))
+                    ),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text((LocalKeys.ORDER_NUMBER).tr(args: [(order.orderNumber.toString())]) , style: TextStyle(
+                            color: AppColors.white,
+                          ),),
+                          Text(DateFormat.yMd(localeName).format(order.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
+                            color: AppColors.white,
+                          )),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-
-            },
+                );
+              }).toList(),
+            ),
           ),
         );
       },

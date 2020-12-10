@@ -34,6 +34,10 @@ class OrderModel {
 
   static OrderModel fromJson(orderJson){
 
+    print("order json =>");
+    print(orderJson);
+    print("****************************************");
+
     List<String> orderImages = List<String>();
     if(orderJson[ApiParseKeys.ORDER_USER_IMAGES] != null && orderJson[ApiParseKeys.ORDER_USER_IMAGES] is List){
       for(int i = 0 ; i < (orderJson[ApiParseKeys.ORDER_USER_IMAGES]).length ; i++)
@@ -50,6 +54,7 @@ class OrderModel {
 
       orderNumber: int.parse((orderJson[ApiParseKeys.ORDER_ID]).toString()),
       orderPackage: PackageModel(
+
         packagePrice: ParserHelper.parseDouble(orderJson[ApiParseKeys.ORDER_PACKAGE_PRICE].toString()),
         packageSize: int.parse((orderJson[ApiParseKeys.ORDER_PACKAGE_SIZE] ?? 3).toString()),
         packageMainImage: orderJson[ApiParseKeys.ORDER_PACKAGE_IMAGE].toString(),
@@ -121,7 +126,7 @@ class OrderModel {
     }
   }
 }
-enum OrderStatus { PENDING , PREPARING , SHIPPING, DELIVERED  , CANCELED , SAVED}
+enum OrderStatus { PENDING , PREPARING , SHIPPING, DELIVERED  , CANCELED , SAVED , CART_ORDER}
 
 
 

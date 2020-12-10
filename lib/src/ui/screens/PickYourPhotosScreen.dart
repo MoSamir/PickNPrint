@@ -427,31 +427,18 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
 
-  void _saveOrderAndContinueShopping() async{
-    if(authenticationBloc.currentUser != null && authenticationBloc.currentUser.isAnonymous() == false) {
-      String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-      if(errorMessageIfExist != null){
-       Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: errorMessageIfExist,)));
-       return;
-      }
-
-      if(authenticationBloc.currentUser.userSavedAddresses != null &&
-          authenticationBloc.currentUser.userSavedAddresses.length >0 &&
-          userOrder.orderAddress == null){
-        userOrder.orderAddress = authenticationBloc.currentUser.userSavedAddresses[0];
-      } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> OrderSavingErrorScreen(error: (LocalKeys.PLEASE_ADD_ADDRESS_FIRST).tr(),)));
-        return;
-      }
+  void _saveOrderAndContinueShopping() async {
+    if (authenticationBloc.currentUser != null &&
+        authenticationBloc.currentUser.isAnonymous() == false) {
       createOrderBloc.add(SaveOrder(order: userOrder));
     }
-    else
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginScreen()));
+    else {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
   }
 
   void _proceedToCheckout() async {
-
-
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
     if(errorMessageIfExist != null){
       UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
