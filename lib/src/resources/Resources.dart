@@ -20,6 +20,9 @@ class Resources{
   static const String INFORMATION_BANNER_IMG = "assets/images/order_information_banner.png";
   static const String LOGOUT_ICON = "assets/images/logout_icon.png";
   static const String USER_PROFILE_PLACEHOLDER_IMG = "assets/images/user_profile_image_placeholder.png";
+  static const String ORDER_ONLINE_SLIDER_ICON = "assets/images/order_online_icon.png";
+  static const String CASH_ON_DELIVERY_SLIDER_ICON = "assets/images/cash_on_delivery_icon.png";
+  static const String FAST_DELIVERY_SLIDER_ICON = "assets/images/fast_delivery_icon.png";
 
 
 

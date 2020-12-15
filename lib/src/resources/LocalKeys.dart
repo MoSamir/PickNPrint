@@ -146,6 +146,7 @@ class LocalKeys{
   static const String YOU_CAN_BACK = "YOU_CAN_BACK";
   static const String CONTINUE_SHOPPING_LABEL = "CONTINUE_SHOPPING_LABEL";
 
+  static const String HOME_LABEL = "HOME_LABEL";
 //-------------------------------- ORDER ERROR SCREEN --------------------------
 
   static const String BACK_TO_ORDER = "BACK_TO_ORDER";
@@ -263,6 +264,23 @@ class LocalKeys{
 
   static const String UPDATE_PROFILE_LABEL = "UPDATE_PROFILE_LABEL";
   static const String UPDATE_PROFILE_HEADER = "UPDATE_PROFILE_HEADER";
+
+  static const String  PICK_FROM_GALLERY = "PICK_FROM_GALLERY";
+  static const String  PICK_FROM_CAMERA = "PICK_FROM_CAMERA";
+
+  static const String PROCEED_WITH_CURRENT_AMOUNT_WARNING = "PROCEED_WITH_CURRENT_AMOUNT_WARNING";
+
+  static const String PROCEED_LABEL = "PROCEED_LABEL";
+
+
+  //------------------------ FOOTER -----------------------------------
+
+  static const String FAST_DELIVERY_SLIDER_TEXT = "FAST_DELIVERY_SLIDER_TEXT";
+  static const String CASH_ON_DELIVERY_SLIDER_TEXT = "CASH_ON_DELIVERY_SLIDER_TEXT";
+  static const String ORDER_ONLINE_SLIDER_TEXT = "ORDER_ONLINE_SLIDER_TEXT";
+
+
+
 
 
 

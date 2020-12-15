@@ -152,9 +152,15 @@
   "EDIT_IMAGE": "تعديل",
   "REMOVE_IMAGE": "حذف",
   "CUSTOMIZE_YOUR_IMAGE": "حسن من وصع الصوره",
-  "CONFIRM_PHONE_NUMBER": "رقم التواصل"
+  "CONFIRM_PHONE_NUMBER": "رقم التواصل",
+  "PICK_FROM_GALLERY": "صورك",
+  "PICK_FROM_CAMERA": "الكاميرا",
+  "PROCEED_WITH_CURRENT_AMOUNT_WARNING": "لم تضع كل الصور هل تريد الاستمرار بالصور الحاليه ؟",
+  "PROCEED_LABEL": "استمرار",
+  "HOME_LABEL": "عوده",
+  "FAST_DELIVERY_SLIDER_TEXT": "اسرع توصيل",
+  "CASH_ON_DELIVERY_SLIDER_TEXT": "دفع عند الاستلام",
+  "ORDER_ONLINE_SLIDER_TEXT": "اطلب اونلاين"
 
 }
-
-
 

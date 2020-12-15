@@ -27,14 +27,6 @@ class PackageModel {
     double packageGrossPrice = packageSize * frameBeforeDiscount;
     double packageNetPrice = packageGrossPrice - packageSaving;
 
-    print("savePerFrame => $savePerFrame");
-    print("packageSize => $packageSize");
-    print("FrameWithDiscount => $framesWithDiscount");
-    print("saving => ${(savePerFrame * framesWithDiscount)}");
-    print("Gross Price => ${packageSize * frameBeforeDiscount}");
-    print("Net Price => ${(packageSize * frameBeforeDiscount) - (savePerFrame ?? 0.0 * framesWithDiscount ?? 0.0)}");
-    print("***************************************");
-
 
 
 

@@ -34,14 +34,8 @@ class _UserCartScreenState extends State<UserCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
     if(Constants.CURRENT_LOCALE == "ar")
       localeName = "ar_EG";
-
-
     return BlocConsumer(
       cubit: createOrderBloc,
       listener: (context , state){},
@@ -80,7 +74,8 @@ class _UserCartScreenState extends State<UserCartScreen> {
                           ),),
                           Text(DateFormat.yMd(localeName).format(order.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
                             color: AppColors.white,
-                          )),
+                          ),
+                          ),
                         ],
                       ),
                     ),

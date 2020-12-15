@@ -17,7 +17,7 @@ class UIHelpers {
     if(useDefaultDecoration ?? true){
       Fluttertoast.showToast(
           msg: message,
-          toastLength: toastLength ?? Toast.LENGTH_SHORT,
+          toastLength: toastLength ?? Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: (isError ?? false) ? Colors.red : Colors.green,
@@ -47,37 +47,22 @@ class UIHelpers {
     await Future.delayed(Duration(seconds: 2),(){});
     Navigator.pop(context);
   }
+
+
   static Future<File> cropImage(String imagePath) async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imagePath,
-        aspectRatioPresets: Platform.isAndroid
-            ? [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ]
-            : [
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio5x3,
-          CropAspectRatioPreset.ratio5x4,
-          CropAspectRatioPreset.ratio7x5,
-          CropAspectRatioPreset.ratio16x9
-        ],
+        aspectRatioPresets: [CropAspectRatioPreset.square],
         androidUiSettings: AndroidUiSettings(
+          hideBottomControls: true,
             toolbarTitle: (LocalKeys.CUSTOMIZE_YOUR_IMAGE).tr(),
             toolbarColor: AppColors.lightBlue,
             toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
+            initAspectRatio: CropAspectRatioPreset.original,),
         iosUiSettings: IOSUiSettings(
           title: (LocalKeys.CUSTOMIZE_YOUR_IMAGE).tr(),
-
         ));
+
     return croppedFile;
   }
   static  Widget buildTextField({BuildContext context , String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate}){

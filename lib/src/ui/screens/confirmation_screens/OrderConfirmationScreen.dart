@@ -24,12 +24,25 @@ class OrderConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+
     return WillPopScope(
       onWillPop: () async => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()) ,(route) => false),
       child: BaseScreen(
         hasAppbar: true,
         customAppbar: PickNPrintAppbar(
-          actions: [],
+          actions: [
+            FlatButton.icon(
+              padding: EdgeInsets.all(8),
+              onPressed: (){
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()) ,(route) => false);
+            },
+              label: Text((LocalKeys.HOME_LABEL).tr() , style: TextStyle(
+                color: AppColors.white,
+
+              ),),
+              icon: Icon(Icons.home , color: AppColors.lightBlue,),
+            ),
+          ],
           autoImplyLeading: false,
         ),
         child: SingleChildScrollView(
@@ -186,7 +199,9 @@ class OrderConfirmationScreen extends StatelessWidget {
   }
 
   void _callForHelp(context) {
+    print("Hello World");
     String supportPhoneNumber = BlocProvider.of<ApplicationDataBloc>(context).contactUsPhone;
     launch("tel://$supportPhoneNumber");
+
   }
 }

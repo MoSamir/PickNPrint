@@ -37,6 +37,9 @@ dependencies:
   flutter_svg:
   image_cropper:
   path_provider:
+  scroll_to_index: 1.0.6
+  carousel_slider: 2.3.1
+  configurable_expansion_tile: 1.0.0
 
 
 

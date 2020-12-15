@@ -23,6 +23,7 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../Repository.dart';
 import 'confirmation_screens/OrderSavingConfirmationScreen.dart';
 import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
@@ -48,22 +49,32 @@ class PickYourPhotosScreen extends StatefulWidget {
 class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   OrderModel userOrder = OrderModel();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   OrderCreationBloc createOrderBloc ;
-
+  AutoScrollController controller ;
   double padding = 7.0;
 
   @override
   void initState() {
     super.initState();
+    controller = AutoScrollController(
+        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: Axis.horizontal,
+        suggestedRowHeight: 255
+    );
     createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
     if(widget.userOrder == null){
-      List<String> imagesList = List();
-      for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++)
+      List<String> imagesList  = List(), originalsList = List();
+      for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++) {
         imagesList.add('');
-      userOrder = OrderModel(orderPackage: widget.userSelectedPackage , isWhiteFrame: true , frameWithPath: false, userImages: imagesList , orderTime: DateTime.now());
+        originalsList.add('');
+      }
+      userOrder = OrderModel(orderPackage: widget.userSelectedPackage , isWhiteFrame: false , frameWithPath: false, userImages: imagesList  , originalImages: originalsList, orderTime: DateTime.now());
     } else {
       userOrder = widget.userOrder;
+      if(userOrder.originalImages == null || userOrder.originalImages.isEmpty){
+        for(int i = 0 ; i < userOrder.userImages.length ; i++)
+          userOrder.originalImages.add(userOrder.userImages[i]);
+      }
     }
   }
 
@@ -152,7 +163,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     ),
                     SizedBox(height: 5,),
                     frameOptionsWidget(),
-                    Container(height: 170,
+                    Container(height: 245,
                       color: AppColors.white,
                       child: Center(
                         child: getFramesList(),),
@@ -191,14 +202,17 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                       ) , onTap: _addToCartAndContinueShopping,),
                     ),
                     SizedBox(height: 5,),
-                    GestureDetector(child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: padding),
-                      child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ), ),
-                    ) , onTap: (){
-                      Navigator.of(context).pop();
-                    },),
+                    Visibility(
+                      visible: false,
+                      child: GestureDetector(child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: padding),
+                        child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
+                          decoration: TextDecoration.underline,
+                        ), ),
+                      ) , onTap: (){
+                        Navigator.of(context).pop();
+                      },),
+                    ),
                     SizedBox(height: 10,),
 
                   ],
@@ -322,107 +336,130 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   getFramesList() {
 
 
-
+    if(userOrder.userImages.length < userOrder.orderPackage.packageSize){
+      int remainingImages = userOrder.orderPackage.packageSize  - userOrder.userImages.length;
+      for(int i = 0 ; i < remainingImages ; i++)
+        userOrder.userImages.add('');
+    }
 
     List<Widget> pictures = List();
     for(int i = 0 ; i < Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length) ; i++){
-      pictures.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
-        child: GestureDetector(
-          onTap: (){
-            if(userOrder.userImages[i] != null && userOrder.userImages[i].length > 0)
-              _openEditImage(userOrder.userImages[i] , i);
-            return;
-
-          },
-          child: Stack(
-            children: [
-              AnimatedContainer(
-                duration: Duration(seconds: 2),
-                height: (150),
-                width: (150),
-                decoration: BoxDecoration(
-                  color: AppColors.lightGrey,
-                  border: Border.all(
-                    color: userOrder.isWhiteFrame ? AppColors.offWhite.withOpacity(.8) : AppColors.black,
-                    width: 5,
-                  ),
-                ),
-                child: AnimatedContainer(
-                  padding: userOrder.frameWithPath ? EdgeInsets.all(4) : EdgeInsets.all(0),
-                  // margin: EdgeInsets.all(8),
+      pictures.add(AutoScrollTag(
+          key: ValueKey(i),
+          controller: controller,
+          index: i,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+          child: GestureDetector(
+            onTap: (){
+              if(userOrder.userImages[i] != null && userOrder.userImages[i].length > 0)
+                _openEditImage(userOrder.originalImages[i] , i);
+              return;
+            },
+            child: Stack(
+              children: [
+                AnimatedContainer(
                   duration: Duration(seconds: 2),
-                  child:  userOrder.userImages[i] == null ||
-                          userOrder.userImages[i].isEmpty ?  Center(
-                    child: IconButton(
-                      icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
-                      onPressed: ()async{
-                        String imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
-                        userOrder.userImages[i] = imagePath ?? '';
-                        setState(() {});
-                      },
-                    ),
-                  ) :  getImageFromPath(userOrder.userImages[i]),
-                ),
-              ),
-              Visibility(
-                child: Positioned.directional(
-                  textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
-                  top: 6,
-                  start: 6,
-                  child: GestureDetector(
-                    onTap : () => removeSelectionImage(i),
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: AppColors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                  height: (225),
+                  width: (225),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: userOrder.isWhiteFrame ? AppColors.black : AppColors.addressCardBg,
+                        spreadRadius: .4,
+                        blurRadius: 5,)
+                    ],
+                    color: AppColors.white.withOpacity(.95),
+                    border: Border.all(
+                      color: userOrder.isWhiteFrame ? AppColors.white : AppColors.black,
+                      width: 8,
                     ),
                   ),
+                  child: AnimatedContainer(
+                    padding: userOrder.frameWithPath ? EdgeInsets.all(16) : EdgeInsets.all(0),
+                    // margin: EdgeInsets.all(8),
+                    duration: Duration(seconds: 2),
+                    child: userOrder.userImages[i] == null ||
+                            userOrder.userImages[i].isEmpty ?  Center(
+                      child: IconButton(
+                        icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
+                        onPressed: ()async{
+                          List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
+                          userOrder.userImages[i] = imagePath[0] ?? '';
+                          userOrder.originalImages[i] = imagePath[1] ?? '';
+                          setState(() {});
+                        },
+                      ),
+                    ) :  getImageFromPath(userOrder.userImages[i]),
+                  ),
                 ),
-                visible: i >= 3,
-                replacement: Container(width: 0, height: 0,),
-              ),
-            ],
+                Visibility(
+                  child: Positioned.directional(
+                    textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+                    top: 6,
+                    start: 6,
+                    child: GestureDetector(
+                      onTap : () => removeSelectionImage(i),
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: AppColors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                      ),
+                    ),
+                  ),
+                  visible: i >= 3,
+                  replacement: Container(width: 0, height: 0,),
+                ),
+              ],
+            ),
           ),
         ),
       ),);
     }
-
-
-    pictures.add(Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
-      child: GestureDetector(
-        onTap: _addExtraFrame,
-        child: AnimatedContainer(
-          duration: Duration(seconds: 2),
-          height: (150),
-          width: (150),
-          color: AppColors.lightBlue,
+    pictures.add(AutoScrollTag(
+      key: ValueKey(Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length)),
+      controller: controller,
+      index: Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+        child: GestureDetector(
+          onTap: (){
+            _addExtraFrame();
+          },
           child: AnimatedContainer(
-            margin: EdgeInsets.all(8),
             duration: Duration(seconds: 2),
-            child: Center(
-              child: Text((LocalKeys.ADD_MORE_IMAGES).tr(args:[
-                widget.userSelectedPackage.priceForExtraFrame.toString(),
-              ]) , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
+            height: (225),
+            width: (225),
+            decoration: BoxDecoration(
+              color: AppColors.lightBlue,
+              boxShadow: [
+                BoxShadow(
+                  color: userOrder.isWhiteFrame ? AppColors.black : AppColors.addressCardBg,
+                  spreadRadius: .4,
+                  blurRadius: 5,)
+              ],),
+
+              child: AnimatedContainer(
+              margin: EdgeInsets.all(8),
+              duration: Duration(seconds: 2),
+              child: Center(
+                child: Text((LocalKeys.ADD_MORE_IMAGES).tr(args:[
+                  (widget.userSelectedPackage.packageAfterDiscountPrice ?? '').toString(),
+                ]) , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
+              ),
             ),
           ),
         ),
       ),
     ),);
-
-
-    return Directionality(
-      textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
-      child: ListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        children: pictures,
-      ),
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      children: pictures,
     );
   }
 
@@ -433,28 +470,62 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       createOrderBloc.add(SaveOrder(order: userOrder));
     }
     else {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => LoginScreen()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 
   void _proceedToCheckout() async {
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-    if(errorMessageIfExist != null){
-      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
+    if(errorMessageIfExist == (LocalKeys.SOME_IMAGES_IS_MISSING).tr()){
+      showDialog(context: context , barrierDismissible: true , builder: (context)=> AlertDialog(
+        elevation: 2,
+        content: Container(
+          width: MediaQuery.of(context).size.width * .7,
+          height: 150,
+          child: Center(
+            child: Text(errorMessageIfExist , textAlign: TextAlign.center , style: TextStyle(
+              color: AppColors.red,
+              fontWeight: FontWeight.w500,
+            ),),
+          ),
+        ),
+      ));
       return;
-    } else {
-      if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-      } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
-        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
-          comingFromRegistration: false,
-        )));
-      } else {
-        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
-      }
+    } else if(errorMessageIfExist == (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
+      showDialog(context: context , barrierDismissible: true , builder: (context)=> AlertDialog(
+        elevation: 2,
+        content: Container(
+          width: MediaQuery.of(context).size.width * .7,
+          height: 150,
+          child: Center(
+            child: Text(errorMessageIfExist , textAlign: TextAlign.center , style: TextStyle(
+              color: AppColors.red,
+              fontWeight: FontWeight.w500,
+            ),),
+          ),
+        ),
+        actions: [
+          FlatButton(
+            onPressed: (){
+              _checkoutOrder();
+              Navigator.pop(context);
+            },
+            child: Text((LocalKeys.PROCEED_LABEL).tr()),
+          ),
+          FlatButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            child: Text((LocalKeys.CANCEL_LABEL).tr()),
+          ),
+        ],
+      ));
+      return;
     }
-    setState(() {});
+    else {
+      _checkoutOrder();
+      return;
+    }
   }
 
   void _addToCartAndContinueShopping() async{
@@ -485,58 +556,136 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   Future<void> _addExtraFrame() async{
-
-    String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-    if(errorMessageIfExist != null){
-      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
-      return;
-    }
-
     setState(() {
+      print("User Images => ${userOrder.userImages.length}");
       userOrder.userImages.add('');
+      print("User Images => ${userOrder.userImages.length}");
+      userOrder.originalImages.add('');
+      print("User Images => ${userOrder.userImages.length}");
     });
+
   }
 
-  void removeSelectionImage(int index) {
-  userOrder.userImages[index] = '';
+  void removeSelectionImage(int index , {bool needPop}) {
+  try{
+    userOrder.userImages[index] = '';
+    userOrder.originalImages[index] = '';
+  } catch(exception){
+    print("EXCEPTION -> $exception");
+  }
   setState(() {});
+
+  if(needPop != null && needPop){
+    Navigator.pop(context);
+  }
   }
 
   void _openEditImage(String imageFilePath , int index) {
 
     showModalBottomSheet(context: context, builder: (context){
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.lightBlue,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          ),
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  removeSelectionImage(index);
-                  return;
-                },
-                child: Text((LocalKeys.REMOVE_IMAGE).tr()),
-              ),
-              FlatButton(
-                onPressed: () async{
-                  File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
-                  userOrder.userImages.remove(imageFilePath);
-                  userOrder.userImages.insert(index , croppedFilePath.path);
-                  Navigator.pop(context);
-                  setState(() {});
-                },
-                child: Text((LocalKeys.EDIT_IMAGE).tr()),
-              ),
-            ],
+        return ClipRRect(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.lightBlue,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            ),
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+
+                Text(
+                  (LocalKeys.CUSTOMIZE_YOUR_IMAGE).tr(),
+                  textScaleFactor: 1,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    // fontFamily: Constants.FONT_ARIAL,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ).tr(),
+                SizedBox(height: 15,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Center(
+                        child: FlatButton(
+                          onPressed: () {
+                            removeSelectionImage(index , needPop: true);
+                            return;
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.cleaning_services_rounded,
+                                color: Colors.white,
+                              ),
+                              Text((LocalKeys.REMOVE_IMAGE).tr() , style: TextStyle(
+                                color: AppColors.white,
+
+                              ),),
+                            ],
+                          ),
+
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: FlatButton(
+                          onPressed: () async{
+                            File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
+                            if(croppedFilePath != null){
+                              userOrder.userImages.removeAt(index);
+                              userOrder.userImages.insert(index , croppedFilePath.path);
+                            }
+                            Navigator.pop(context);
+                            setState(() {});
+
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                              Text((LocalKeys.EDIT_IMAGE).tr() , style: TextStyle(
+                                color: AppColors.white,
+                              ),),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
     });
+  }
+
+  void _checkoutOrder() async{
+    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+    } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
+      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
+        comingFromRegistration: false,
+      )));
+    } else {
+      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+    }
   }
 }
 

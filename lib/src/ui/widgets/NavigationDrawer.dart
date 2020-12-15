@@ -32,6 +32,10 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+
+  double profilesSectionHeight = 160;
+  double cartSectionHeight = 220;
+
   double padding = 6.0;
   @override
   Widget build(BuildContext context) {
@@ -89,24 +93,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                                   height: 0,
                                 ),
                                 child: getCartSection()),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Visibility(
-                              visible: BlocProvider.of<UserBloc>(context)
-                                      .currentLoggedInUser
-                                      .isAnonymous() ==
-                                  false,
-                              replacement: Container(
-                                width: 0,
-                                height: 0,
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: getMyOrderSection(),
-                              ),
-                            ),
+
                             // SizedBox(
                             //   height: 10,
                             // ),
@@ -174,205 +161,268 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   }
 
   Widget getProfileSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Visibility(
-          replacement: Container(width: 0, height: 0,),
-          visible: BlocProvider.of<UserBloc>(context)
-              .currentLoggedInUser
-              .isAnonymous() ==
-              false,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.lightBlue,
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(8),
-                alignment: Alignment.center,
-                child: Center(
-                  child: ImageIcon(
-                    AssetImage(Resources.USER_PLACEHOLDER_IMG),
-                    color: AppColors.white,
-                    size: 20,
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          profilesSectionHeight = profilesSectionHeight == 60 ? 160 : 60;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(seconds: 1),
+        height: profilesSectionHeight,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Visibility(
+              replacement: Container(width: 0, height: 0,),
+              visible: BlocProvider.of<UserBloc>(context)
+                  .currentLoggedInUser
+                  .isAnonymous() ==
+                  false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.lightBlue,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(8),
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: ImageIcon(
+                        AssetImage(Resources.USER_PLACEHOLDER_IMG),
+                        color: AppColors.white,
+                        size: 20,
+                      ),
+                    ),
+                    height: 30,
+                    width: 30,
                   ),
-                ),
-                height: 30,
-                width: 30,
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        (LocalKeys.MY_PROFILE).tr(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: padding),
+                        child: Text(
+                          (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.lightBlue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 5,
-              ),
-              Column(
+            ),
+            Visibility(
+              visible: profilesSectionHeight > 60,
+              replacement: Container(width: 0, height: 0,),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    (LocalKeys.MY_PROFILE).tr(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                      fontSize: 16,
-                    ),
+                  SizedBox(
+                    height: 10,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: padding),
-                    child: Text(
-                      (LocalKeys.MANAGE_YOUR_INFORMATION).tr(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.lightBlue,
+                  Visibility(
+                    visible: BlocProvider.of<UserBloc>(context)
+                            .currentLoggedInUser
+                            .isAnonymous() ==
+                        false,
+                    replacement: GestureDetector(
+                      onTap: _performLogin,
+                      child: Text(
+                        (LocalKeys.SIGN_IN).tr(),
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 14,
+                        ),
                       ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          replacement: Container(width: 0, height: 0,),
+                          visible: false ,
+                          child: GestureDetector(
+                            onTap: _gotoShippingAddresses,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: padding),
+                              child: Text(
+                                (LocalKeys.MY_SHIPPING_ADDRESSES).tr(),
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _gotoBasicData,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.MY_BASIC_DATA).tr(),
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _gotoUpdatePassword,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.UPDATE_MY_PASSWORD).tr(),
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _performLogout,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.LOGOUT).tr(),
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Visibility(
-          visible: BlocProvider.of<UserBloc>(context)
-                  .currentLoggedInUser
-                  .isAnonymous() ==
-              false,
-          replacement: GestureDetector(
-            onTap: _performLogin,
-            child: Text(
-              (LocalKeys.SIGN_IN).tr(),
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 14,
-              ),
             ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Visibility(
-                replacement: Container(width: 0, height: 0,),
-                visible: false ,
-                child: GestureDetector(
-                  onTap: _gotoShippingAddresses,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: padding),
-                    child: Text(
-                      (LocalKeys.MY_SHIPPING_ADDRESSES).tr(),
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: _gotoBasicData,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: padding),
-                  child: Text(
-                    (LocalKeys.MY_BASIC_DATA).tr(),
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: _gotoUpdatePassword,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: padding),
-                  child: Text(
-                    (LocalKeys.UPDATE_MY_PASSWORD).tr(),
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: _performLogout,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: padding),
-                  child: Text(
-                    (LocalKeys.LOGOUT).tr(),
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Widget getCartSection() {
     return GestureDetector(
-      onTap: gotoCartSection,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        color: AppColors.lightBlack,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.lightBlue,
-                  shape: BoxShape.circle,
+      onTap: (){
+        setState(() {
+          cartSectionHeight = cartSectionHeight == 70 ? 220 : 70 ;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(seconds: 1),
+        height: cartSectionHeight,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              color: AppColors.lightBlack,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Center(
+                          child: Icon(
+                        Icons.shopping_cart,
+                        color: AppColors.white,
+                        size: 15,
+                      )),
+                      height: 30,
+                      width: 30,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          (LocalKeys.MY_CART).tr(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          (LocalKeys.MY_CART_DESCRIPTION).tr(),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.lightBlue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                alignment: Alignment.center,
-                child: Center(
-                    child: Icon(
-                  Icons.shopping_cart,
-                  color: AppColors.white,
-                  size: 15,
-                )),
-                height: 30,
-                width: 30,
               ),
-              SizedBox(
-                width: 5,
-              ),
-              Column(
+            ),
+            Visibility(
+              replacement: Container(width: 0 , height: 0,),
+              visible: cartSectionHeight > 70 ,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    (LocalKeys.MY_CART).tr(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                      fontSize: 16,
-                    ),
+                  SizedBox(
+                    height: 10,
                   ),
-                  Text(
-                    (LocalKeys.MY_CART_DESCRIPTION).tr(),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.lightBlue,
+                  Visibility(
+                    visible: BlocProvider.of<UserBloc>(context)
+                        .currentLoggedInUser
+                        .isAnonymous() ==
+                        false,
+                    replacement: Container(
+                      width: 0,
+                      height: 0,
+                    ),
+                    child: Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: getMyOrderSection(),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -648,7 +698,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         (route) => false);
   }
 
-  void gotoCartSection() {}
+
 
   void _gotoSavedUncompletedPage() {
     Navigator.pop(context);

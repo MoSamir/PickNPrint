@@ -14,10 +14,11 @@ class OrderModel {
   int orderNumber ;
   OrderStatus statues ;
   List<String> userImages = List();
+  List<String> originalImages = List();
   String contactPhoneNumber  ;
 
   int deliveryTime;
-  OrderModel({this.orderPackage , this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+  OrderModel({this.orderPackage , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
     List<OrderModel> ordersList = List<OrderModel>();
@@ -33,11 +34,6 @@ class OrderModel {
 
 
   static OrderModel fromJson(orderJson){
-
-    print("order json =>");
-    print(orderJson);
-    print("****************************************");
-
     List<String> orderImages = List<String>();
     if(orderJson[ApiParseKeys.ORDER_USER_IMAGES] != null && orderJson[ApiParseKeys.ORDER_USER_IMAGES] is List){
       for(int i = 0 ; i < (orderJson[ApiParseKeys.ORDER_USER_IMAGES]).length ; i++)

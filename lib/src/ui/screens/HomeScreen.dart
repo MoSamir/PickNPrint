@@ -180,42 +180,48 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * .35,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(Resources.CHOOSE_PACKAGE_IMG),
-                          fit: BoxFit.fill
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: PackageModel(packageSize: 3),)));
+                      return;
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * .35,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(Resources.CHOOSE_PACKAGE_IMG),
+                            fit: BoxFit.fill
+                        ),
                       ),
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          bottom: 5,
-                          left: 0,
-                          right: 0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Center(
-                                child: Text((LocalKeys.CHOOSE_PACKAGE_KEY).tr(), textAlign: TextAlign.center,style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.black,
-                                ),),
-                              ),
-                              SizedBox(height: 5,),
-                              Center(
-                                child: Text((LocalKeys.WHAT_WE_OFFER).tr(), textAlign: TextAlign.center, style: TextStyle(
-                                  color: AppColors.white,
-                                ),),
-                              ),
-                              SizedBox(height: 10,),
-                            ],),
-                        )
-                      ],
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            bottom: 5,
+                            left: 0,
+                            right: 0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Center(
+                                  child: Text((LocalKeys.CHOOSE_PACKAGE_KEY).tr(), textAlign: TextAlign.center,style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.black,
+                                  ),),
+                                ),
+                                SizedBox(height: 5,),
+                                Center(
+                                  child: Text((LocalKeys.WHAT_WE_OFFER).tr(), textAlign: TextAlign.center, style: TextStyle(
+                                    color: AppColors.white,
+                                  ),),
+                                ),
+                                SizedBox(height: 10,),
+                              ],),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   getAvailablePackagesView(BlocProvider.of<ApplicationDataBloc>(context).applicationPackages),

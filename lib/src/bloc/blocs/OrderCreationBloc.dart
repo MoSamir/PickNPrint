@@ -106,9 +106,9 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
     yield OrderCreationLoadingState();
 
+    event.order.userImages.removeWhere((element) => element== null || element.isEmpty);
     ResponseViewModel<List<String>> uploadCartImages;
     bool isLocalImages = false ;
-
     try{
       isLocalImages = await File.fromUri(Uri.parse(event.order.userImages[0])).exists();
     } catch(_){}
@@ -146,26 +146,20 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
   }
 
   Future<String> validateOrder(OrderModel userOrder) async{
+    int filledImages = 0 , notFilledImages = 0;
     for(int i = 0 ; i < userOrder.userImages.length ; i++){
-      String imagePath = userOrder.userImages[i];
-      if(imagePath == null || imagePath.isEmpty){
-        return (LocalKeys.SOME_IMAGES_IS_MISSING).tr();
+      if(userOrder.userImages[i] == null || userOrder.userImages[i].isEmpty ){
+        notFilledImages++;
+      } else {
+        filledImages++;
       }
-      try{
-        File imageFile = File(imagePath);
-        var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
-        if(decodedImage.width < 50  || decodedImage.height < 50){
-          return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
-        }
-      } catch(exception){
-        ResponseViewModel isValidImage = await NetworkUtilities.handleGetRequest(
-          methodURL: imagePath,
-          parserFunction: (json){},
-        );
-        if(isValidImage.isSuccess == false && isValidImage.errorViewModel.errorCode == 404){
-          return (LocalKeys.IMAGE_IS_TOO_SMALL).tr();
-        }
-      }
+    }
+
+    if(filledImages < 3){
+      return (LocalKeys.SOME_IMAGES_IS_MISSING).tr();
+    }
+    else if(notFilledImages > 1){
+      return (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr();
     }
     return null;
   }

@@ -33,7 +33,6 @@ class BaseScreen extends StatelessWidget {
             primary: true,
             key: scaffoldKey,
             drawer: resolveDrawer(),
-
             appBar: resolveAppbar(),
             body: CustomScrollView(
               shrinkWrap: true,
@@ -53,7 +52,7 @@ class BaseScreen extends StatelessWidget {
                     hasScrollBody: false,
                     child: Container(
                       alignment: Alignment.bottomCenter,
-                      height: 150,
+                      height: 100,
                       child: PickNPrintFooter(),
                     ),
                   ),

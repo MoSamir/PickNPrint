@@ -45,7 +45,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
         //title: (LocalKeys.ABOUT_SCREEN_TITLE).tr(),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height - 220,
+        height: MediaQuery.of(context).size.height - 174,
         color: Colors.blue,
         child: Container(
           color: AppColors.blackBg,
@@ -217,41 +217,62 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
               textScaleFactor: 1,
               style: TextStyle(
                 fontSize: 18,
+                fontWeight: FontWeight.bold,
                 // fontFamily: Constants.FONT_ARIAL,
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ).tr(),
+            SizedBox(height: 15,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Expanded(
                   child: Center(
-                    child: FlatButton.icon(
+                    child: FlatButton(
                       onPressed: () {
                         pickUserImage(ImageSource.gallery);
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        Icons.image,
-                        color: Colors.white,
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.image,
+                            color: Colors.white,
+                          ),
+                          Text((LocalKeys.PICK_FROM_GALLERY).tr() , style: TextStyle(
+                            color: AppColors.white,
+
+                          ),),
+                        ],
                       ),
-                      label: Text(''),
+
                     ),
                   ),
                 ),
                 Expanded(
                   child: Center(
-                    child: FlatButton.icon(
+                    child: FlatButton(
                       onPressed: () {
                         pickUserImage(ImageSource.camera);
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+    Icons.camera_alt,
+    color: Colors.white,
+    ),
+                          Text((LocalKeys.PICK_FROM_CAMERA).tr() , style: TextStyle(
+                            color: AppColors.white,
+                          ),),
+                        ],
                       ),
-                      label: Text(''),
                     ),
                   ),
                 ), //getAppleLogin(),
@@ -270,7 +291,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     PickedFile image = await _picker.getImage(source: source , imageQuality: 80, maxHeight: 150 , maxWidth: 150);
     if(image != null){
       File croppedFilePath = await UIHelpers.cropImage(image.path);
-      Navigator.of(context).pop(croppedFilePath.path);
+      Navigator.of(context).pop([croppedFilePath.path , image.path]);
     } else {
       Fluttertoast.showToast(
           msg: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
@@ -297,7 +318,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                 ResponseViewModel<File> imageFile = await Repository.getImageFromURL(items[0].source);
                 if(imageFile.isSuccess){
                   File croppedFilePath = await UIHelpers.cropImage(imageFile.responseData.path);
-                  Navigator.of(context).pop(croppedFilePath.path);
+                  Navigator.of(context).pop([croppedFilePath.path , imageFile.responseData.path]);
                 }
               }
             },
@@ -330,7 +351,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
               ResponseViewModel<File> imageFile = await Repository.getImageFromURL(items[0].url);
               if(imageFile.isSuccess){
                 File croppedFilePath = await UIHelpers.cropImage(imageFile.responseData.path);
-                Navigator.pop(context , croppedFilePath.path);
+                Navigator.pop(context , [croppedFilePath.path , imageFile.responseData.path]);
                 return;
               }
             }

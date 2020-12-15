@@ -149,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: AppColors.lightBlue,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      child: Center(child: Text((LocalKeys.SIGN_IN).tr(), style: TextStyle(color: AppColors.white),)),
+                      child: Center(child: Text((LocalKeys.REGISTER_NEW_ACCOUNT).tr(), style: TextStyle(color: AppColors.white),)),
                     ),
                   ),
                   SizedBox(height: 20,),

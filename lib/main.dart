@@ -16,6 +16,7 @@ import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
+import 'package:picknprint/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
 import 'package:picknprint/src/utilities/BlocObserver.dart';
 
 
@@ -83,7 +84,7 @@ class _AppEntranceState extends State<AppEntrance> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
+        home:  HomeScreen(),
         theme: ThemeData(
           fontFamily: EasyLocalization.of(context).locale.languageCode == 'en'
             ? Resources.english_font_family
