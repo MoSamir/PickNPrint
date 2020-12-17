@@ -11,6 +11,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/ui/widgets/ListViewAnimatorWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
+
+import '../HomeScreen.dart';
 class ClosedOrderScreen extends StatefulWidget {
   @override
   _ClosedOrderScreenState createState() => _ClosedOrderScreenState();
@@ -23,6 +25,16 @@ class _ClosedOrderScreenState extends State<ClosedOrderScreen> {
       hasDrawer: false,
       hasAppbar: true,
       customAppbar: PickNPrintAppbar(
+        leadAction: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            if(Navigator.canPop(context)){
+              Navigator.pop(context);
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+            }
+          },
+        ),
         appbarColor: AppColors.black,
         actions: [],
         centerTitle: true,

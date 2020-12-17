@@ -351,6 +351,12 @@ class NetworkUtilities {
   }
 
   static ResponseViewModel handleError(http.Response serverResponse) {
+
+
+    print("Error Happened in API => ");
+    print(serverResponse.body);
+    print("***************************");
+
     ResponseViewModel responseViewModel;
     if (serverResponse.statusCode == HttpStatus.notFound || serverResponse.statusCode == HttpStatus.internalServerError) {
       responseViewModel = ResponseViewModel(

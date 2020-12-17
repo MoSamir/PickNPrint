@@ -15,12 +15,15 @@ class OrderModel {
   OrderStatus statues ;
   List<String> userImages = List();
   List<String> originalImages = List();
+  List<String> uploadedImages = List();
   String contactPhoneNumber  ;
+  double orderNetPrice , orderGrossPrice ;
 
   int deliveryTime;
-  OrderModel({this.orderPackage , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+  OrderModel({this.orderPackage, this.orderGrossPrice , this.orderNetPrice , this.uploadedImages , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
 
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
+
     List<OrderModel> ordersList = List<OrderModel>();
     if(saveOrderRawResponse != null && saveOrderRawResponse is List){
       for(int i = 0 ; i < saveOrderRawResponse.length ; i++){
@@ -47,10 +50,11 @@ class OrderModel {
     }
 
     return OrderModel(
-
+      orderGrossPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_GROSS_PRICE]).toString()),
+      orderNetPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_NET_PRICE]).toString()),
       orderNumber: int.parse((orderJson[ApiParseKeys.ORDER_ID]).toString()),
-      orderPackage: PackageModel(
 
+      orderPackage: PackageModel(
         packagePrice: ParserHelper.parseDouble(orderJson[ApiParseKeys.ORDER_PACKAGE_PRICE].toString()),
         packageSize: int.parse((orderJson[ApiParseKeys.ORDER_PACKAGE_SIZE] ?? 3).toString()),
         packageMainImage: orderJson[ApiParseKeys.ORDER_PACKAGE_IMAGE].toString(),
@@ -61,6 +65,7 @@ class OrderModel {
       frameWithPath: int.parse((orderJson[ApiParseKeys.ORDER_WITH_FRAME]).toString()) == 1 ,
       isWhiteFrame: int.parse((orderJson[ApiParseKeys.ORDER_WHITE_FRAME]).toString()) == 1 ,
       userImages: orderImages,
+
     );
   }
 

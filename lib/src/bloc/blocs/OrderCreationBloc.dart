@@ -50,29 +50,21 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     yield OrderCreationLoadingState();
 
     ResponseViewModel<List<String>> uploadCartImages;
-    bool isLocalImages = false ;
-    try{
-      isLocalImages = await File.fromUri(Uri.parse(event.orderModel.userImages[0])).exists();
-    } catch(_){}
-    if(isLocalImages) {
+    if(event.orderModel.uploadedImages == null || event.orderModel.uploadedImages.length < event.orderModel.userImages.length) {
       uploadCartImages = await Repository.uploadMultipleFiles(event.orderModel.userImages);
-      event.orderModel.userImages.clear();
       if(uploadCartImages.isSuccess){
-        event.orderModel.userImages.addAll(uploadCartImages.responseData);
+        event.orderModel.uploadedImages.addAll(uploadCartImages.responseData);
       }
     }
     else {
       uploadCartImages = ResponseViewModel(
-          responseData: event.orderModel.userImages,
           isSuccess: true
       );
     }
     if(uploadCartImages.isSuccess){
-
       ResponseViewModel<List<OrderModel>> saveOrderResponse = ResponseViewModel<List<OrderModel>>(isSuccess: true);
-      if(event.orderModel.statues == OrderStatus.CART_ORDER)
+      if(event.orderModel.statues != OrderStatus.CART_ORDER)
         saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
-
       if(saveOrderResponse.isSuccess){
         ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
         if(orderCreationResult.isSuccess){
@@ -83,6 +75,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
           return ;
         }
         else {
+          event.orderModel.uploadedImages = List();
           yield OrderCreationLoadingFailureState(
             error: orderCreationResult.errorViewModel,
             failureEvent: event,
@@ -90,6 +83,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
           return ;
         }
       } else {
+        event.orderModel.uploadedImages = List();
         yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
         return ;
       }
@@ -97,7 +91,6 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     else {
       yield OrderSavingFailedState(failedEvent: event, error: uploadCartImages.errorViewModel,);
       return ;
-      return;
     }
 
 
@@ -108,20 +101,14 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
     event.order.userImages.removeWhere((element) => element== null || element.isEmpty);
     ResponseViewModel<List<String>> uploadCartImages;
-    bool isLocalImages = false ;
-    try{
-      isLocalImages = await File.fromUri(Uri.parse(event.order.userImages[0])).exists();
-    } catch(_){}
-    if(isLocalImages) {
+    if(event.order.uploadedImages == null || event.order.uploadedImages.length < event.order.userImages.length) {
       uploadCartImages = await Repository.uploadMultipleFiles(event.order.userImages);
-      event.order.userImages.clear();
       if(uploadCartImages.isSuccess){
-        event.order.userImages.addAll(uploadCartImages.responseData);
+        event.order.uploadedImages.addAll(uploadCartImages.responseData);
       }
     }
     else {
       uploadCartImages = ResponseViewModel(
-          responseData: event.order.userImages,
           isSuccess: true
       );
     }
@@ -134,10 +121,12 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
         return;
       }
       else {
+        event.order.uploadedImages = List();
         yield OrderSavingFailedState(failedEvent: event, error: saveUserCart.errorViewModel,);
         return ;
       }
     } else {
+      event.order.uploadedImages = List();
       yield OrderSavingFailedState(failedEvent: event, error: uploadCartImages.errorViewModel,);
       return ;
     }

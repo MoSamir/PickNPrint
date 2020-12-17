@@ -23,11 +23,11 @@ import 'NetworkErrorView.dart';
 
 class PickNPrintAppbar extends StatefulWidget implements PreferredSizeWidget{
   final List<Widget> actions ;
+  final Widget leadAction ;
   final String title ;
   final Color appbarColor ;
-
   final bool centerTitle , autoImplyLeading;
-  PickNPrintAppbar({this.actions, this.appbarColor, this.title , this.autoImplyLeading , this.centerTitle});
+  PickNPrintAppbar({this.actions, this.leadAction ,this.appbarColor, this.title , this.autoImplyLeading , this.centerTitle});
 
 
 
@@ -96,10 +96,12 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
                 ),
               ) : Container(width: 0, height: 0,),
               title: Text(widget.title ?? ''),
+
               actions: widget.actions ?? [
                 getCartSize(),
                 getUser(state),
               ],
+              leading: widget.autoImplyLeading ?? false ? null : widget.leadAction ?? Container(width: 0, height: 0,),
               automaticallyImplyLeading: widget.autoImplyLeading ?? true,
               centerTitle: widget.centerTitle ?? false,
               elevation: 0,

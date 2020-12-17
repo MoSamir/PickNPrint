@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
@@ -50,8 +51,13 @@ class UIHelpers {
 
 
   static Future<File> cropImage(String imagePath) async {
+
+    // imagePath = (await testCompressAndGetFile(File.fromUri(Uri.parse(imagePath)) , ('x$imagePath'))).path;
+
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imagePath,
+        maxHeight: 4096,
+        maxWidth: 4096,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         androidUiSettings: AndroidUiSettings(
           hideBottomControls: true,
@@ -100,6 +106,13 @@ class UIHelpers {
         //textInputAction: nextNode != null ? TextInputAction.next : TextInputAction.done,
       ),
     );
+  }
+
+
+
+  static Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(file.path, targetPath , minWidth: 4096 , minHeight: 4096 , keepExif: true);
+    return result;
   }
 
 

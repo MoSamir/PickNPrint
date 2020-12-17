@@ -280,6 +280,13 @@ class LocalKeys{
   static const String ORDER_ONLINE_SLIDER_TEXT = "ORDER_ONLINE_SLIDER_TEXT";
 
 
+  //---------------------- LOW QUALITY IMAGE DIALOG -------------------------
+  static const String LOW_QUALITY_HEADER = "LOW_QUALITY_HEADER";
+  static const String SELECT_ANYWAY = "SELECT_ANYWAY";
+  static const String DONT_SELECT = "DONT_SELECT";
+  static const String LOW_QUALITY_IMAGE_MESSAGE = "LOW_QUALITY_IMAGE_MESSAGE";
+
+
 
 
 

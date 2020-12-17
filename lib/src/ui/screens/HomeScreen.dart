@@ -147,24 +147,40 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: AppColors.white,
                     padding: EdgeInsets.symmetric(horizontal: 8 , vertical: 10),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        RichText(
-                          text: TextSpan(
-                              children: [
-                                TextSpan(text: (LocalKeys.PICK_PHOTOS_KEY).tr(), style: TextStyle(color: AppColors.lightBlue , fontSize: 20)),
-                                TextSpan(text:'  '),
-                                TextSpan(text: (LocalKeys.AND_PRINT_KEY).tr(), style: TextStyle(color: AppColors.black , fontSize: 20)),
-                              ]
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: RichText(
+                              text: TextSpan(
+                                  children: [
+                                    TextSpan(text: (LocalKeys.PICK_PHOTOS_KEY).tr(), style: TextStyle(color: AppColors.lightBlue , fontSize: 20)),
+                                    TextSpan(text:'  '),
+                                    TextSpan(text: (LocalKeys.AND_PRINT_KEY).tr(), style: TextStyle(color: AppColors.black , fontSize: 20)),
+                                  ]
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(height: 10,),
                         Text(LocalKeys.PICK_N_PRINT_KEY , textAlign: TextAlign.start,).tr(),
                         SizedBox(height: 10,),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AboutScreen()));
+                            return;
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text((LocalKeys.READ_MORE_KEY).tr() , textAlign: TextAlign.end,),
+                          ),
+                        ),
                         Center(
                           child: GestureDetector(
                             onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AboutScreen()));
+                             PackageModel package =  BlocProvider.of<ApplicationDataBloc>(context).applicationPackages[0];
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
                             },
                             child: Container(
                               width: (200),
@@ -173,55 +189,49 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: AppColors.lightBlue,
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
-                              child: Center(child: Text((LocalKeys.READ_MORE_KEY).tr(), style: TextStyle(color: AppColors.white),)),
+                              child: Center(child: Text((LocalKeys.GO_LABEL).tr(), style: TextStyle(color: AppColors.white),)),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: PackageModel(packageSize: 3),)));
-                      return;
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * .35,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(Resources.CHOOSE_PACKAGE_IMG),
-                            fit: BoxFit.fill
-                        ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .35,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(Resources.CHOOSE_PACKAGE_IMG),
+                          fit: BoxFit.fill
                       ),
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned(
-                            bottom: 5,
-                            left: 0,
-                            right: 0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Center(
-                                  child: Text((LocalKeys.CHOOSE_PACKAGE_KEY).tr(), textAlign: TextAlign.center,style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.black,
-                                  ),),
-                                ),
-                                SizedBox(height: 5,),
-                                Center(
-                                  child: Text((LocalKeys.WHAT_WE_OFFER).tr(), textAlign: TextAlign.center, style: TextStyle(
-                                    color: AppColors.white,
-                                  ),),
-                                ),
-                                SizedBox(height: 10,),
-                              ],),
-                          )
-                        ],
-                      ),
+                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          bottom: 5,
+                          left: 0,
+                          right: 0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Center(
+                                child: Text((LocalKeys.CHOOSE_PACKAGE_KEY).tr(), textAlign: TextAlign.center,style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black,
+                                ),),
+                              ),
+                              SizedBox(height: 5,),
+                              Center(
+                                child: Text((LocalKeys.WHAT_WE_OFFER).tr(), textAlign: TextAlign.center, style: TextStyle(
+                                  color: AppColors.white,
+                                ),),
+                              ),
+                              SizedBox(height: 10,),
+                            ],),
+                        )
+                      ],
                     ),
                   ),
                   getAvailablePackagesView(BlocProvider.of<ApplicationDataBloc>(context).applicationPackages),

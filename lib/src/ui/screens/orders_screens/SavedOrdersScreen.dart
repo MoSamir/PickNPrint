@@ -17,6 +17,7 @@ import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 
+import '../HomeScreen.dart';
 import '../PickYourPhotosScreen.dart';
 class SavedOrdersScreen extends StatefulWidget {
   @override
@@ -37,6 +38,16 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
       hasDrawer: false,
       hasAppbar: true,
       customAppbar: PickNPrintAppbar(
+        leadAction: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            if(Navigator.canPop(context)){
+              Navigator.pop(context);
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+            }
+          },
+        ),
         appbarColor: AppColors.black,
         actions: [],
         centerTitle: true,
@@ -131,34 +142,6 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                   );
                 } , physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.all(0), shrinkWrap: true, itemCount: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages.length,),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 15 , horizontal: 8),
-                  color: AppColors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text((LocalKeys.REQUEST_EXTRA_PACKAGES_THAN).tr(args:[BlocProvider.of<ApplicationDataBloc>(context).maxPackageSize.toString()]) , style: TextStyle(
-                        color: AppColors.lightBlue,
-                      ),),
-                      GestureDetector(
-                        onTap: (){},
-                        child: Row(
-                          children: <Widget>[
-                            Text((LocalKeys.CHECKOUT_EXTRA_RATE).tr() , style: TextStyle(
-                            ),),
-                            Text((LocalKeys.HERE_LABEL).tr() , style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: AppColors.lightBlue,
-                            ),),
-
-
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 15,),
-                    ],
-                  ),
-                ),
 
               ],
             ),

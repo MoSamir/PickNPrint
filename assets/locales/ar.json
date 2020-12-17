@@ -16,9 +16,9 @@
   "PACKAGE_SIZE": "{} صور",
   "PRICE_TEXT": "{} جنيه",
   "SAVE_TEXT": "وفر {} جنيه",
-  "GO_LABEL": "انطلق",
-  "REQUEST_EXTRA_PACKAGES_THAN": "اكثر من {} قطع ؟",
-  "CHECKOUT_EXTRA_RATE": " مشاهده عروضنا الخاصه",
+  "GO_LABEL": "اختر الان",
+  "REQUEST_EXTRA_PACKAGES_THAN": "مقاس موحد مثالي",
+  "CHECKOUT_EXTRA_RATE": "اطارات 20*20 بجوده ممتازه ",
   "SELECT_PHOTOS_TO_BE_PRINTED": "اختر الصور التي تريد طبعها",
   "PICK_YOUR_PHOTOS_KEY": "اختر صورك",
   "BLACK_FRAME": "اطار اسود",
@@ -160,7 +160,16 @@
   "HOME_LABEL": "عوده",
   "FAST_DELIVERY_SLIDER_TEXT": "اسرع توصيل",
   "CASH_ON_DELIVERY_SLIDER_TEXT": "دفع عند الاستلام",
-  "ORDER_ONLINE_SLIDER_TEXT": "اطلب اونلاين"
+  "ORDER_ONLINE_SLIDER_TEXT": "اطلب اونلاين",
+  "LOW_QUALITY_HEADER": "صوره قليله الجوده",
+  "SELECT_ANYWAY": "اختر",
+  "DONT_SELECT": "اختيار اخرى",
+  "LOW_QUALITY_IMAGE_MESSAGE" : "هذه الصوره غالبا سوف تكون ضبابيه \n من الافضل اختيار صوره اخرى"
+
+
+
+
+
 
 }
 

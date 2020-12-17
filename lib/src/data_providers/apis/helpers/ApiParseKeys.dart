@@ -79,6 +79,9 @@ class ApiParseKeys {
   static const String ORDER_ITEMS_LIST_KEY = "items";
   static const String ORDER_CART_ROOT_KEY = "cart";
 
+  static const String ORDER_CART_GROSS_PRICE = "totalPrice";
+  static const String ORDER_CART_NET_PRICE = "subTotal";
+
   //------------------- GET SYSTEM CONTACT INFO ---------------------------
 
   static const String SYSTEM_SETTINGS_KEY = "settings";

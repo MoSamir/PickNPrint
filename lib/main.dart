@@ -45,11 +45,12 @@ void main() async{
 
   runApp(
       EasyLocalization(
-          supportedLocales: [Locale('en'), Locale('ar')],
+          supportedLocales: [Locale('en'),  /* Locale('ar') */ ],
           path: 'assets/locales',
           useOnlyLangCode: true,
           saveLocale: true,
-          // startLocale: Locale('en'),
+
+          //startLocale: Locale('en'),
           fallbackLocale: Locale('en'),
           child: AppEntrance(),
         ),
@@ -94,5 +95,6 @@ class _AppEntranceState extends State<AppEntrance> {
     );
   }
 }
+
 
 

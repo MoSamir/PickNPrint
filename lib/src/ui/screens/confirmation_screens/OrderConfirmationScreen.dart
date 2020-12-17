@@ -8,6 +8,8 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
+import 'package:picknprint/src/ui/screens/UserCartScreen.dart';
+import 'package:picknprint/src/ui/screens/orders_screens/ActiveOrdersScreen.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,7 +40,6 @@ class OrderConfirmationScreen extends StatelessWidget {
             },
               label: Text((LocalKeys.HOME_LABEL).tr() , style: TextStyle(
                 color: AppColors.white,
-
               ),),
               icon: Icon(Icons.home , color: AppColors.lightBlue,),
             ),
@@ -106,7 +107,9 @@ class OrderConfirmationScreen extends StatelessWidget {
                   children: <Widget>[
                     Text((LocalKeys.CHECK_YOUR_ORDERS).tr()),
                     GestureDetector(
-                      onTap: (){},
+                      onTap: (){
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> ActiveOrderScreen()), (route) => false);
+                      },
                       child: Text((LocalKeys.HERE_LABEL).tr(), style: TextStyle(
                         color: AppColors.lightBlue,
                         decoration: TextDecoration.underline,

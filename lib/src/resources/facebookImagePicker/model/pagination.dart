@@ -10,7 +10,8 @@ class Pagination {
     this.next,
   );
 
-  Pagination.fromJson(Map json)
-      : cursor = Cursors.fromJson(json['cursors']),
-        next = json['next'];
+  static Pagination fromJson(Map json){
+    if(json == null) return null ;
+    return Pagination(json['cursors'], json['next']);
+  }
 }

@@ -17,9 +17,11 @@ import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
+import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
@@ -36,11 +38,12 @@ import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 import 'AddNewShippingAddressScreen.dart';
 import 'SelectImageSourceScreen.dart';
-class PickYourPhotosScreen extends StatefulWidget {
 
+class PickYourPhotosScreen extends StatefulWidget {
   final PackageModel userSelectedPackage;
   final OrderModel userOrder;
-  PickYourPhotosScreen({this.userSelectedPackage,  this.userOrder});
+
+  PickYourPhotosScreen({this.userSelectedPackage, this.userOrder});
 
   @override
   _PickYourPhotosScreenState createState() => _PickYourPhotosScreenState();
@@ -49,173 +52,246 @@ class PickYourPhotosScreen extends StatefulWidget {
 class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   OrderModel userOrder = OrderModel();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  OrderCreationBloc createOrderBloc ;
-  AutoScrollController controller ;
+  OrderCreationBloc createOrderBloc;
+ ScrollController _scrollController =  ScrollController();
   double padding = 7.0;
+  double frameDimension = 225;
 
   @override
   void initState() {
     super.initState();
-    controller = AutoScrollController(
-        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
-        axis: Axis.horizontal,
-        suggestedRowHeight: 255
-    );
     createOrderBloc = OrderCreationBloc(OrderCreationInitialState());
-    if(widget.userOrder == null){
-      List<String> imagesList  = List(), originalsList = List();
-      for(int i = 0 ; i < widget.userSelectedPackage.packageSize; i++) {
+    if (widget.userOrder == null) {
+      List<String> imagesList = List(), originalsList = List();
+      for (int i = 0; i < widget.userSelectedPackage.packageSize; i++) {
         imagesList.add('');
         originalsList.add('');
       }
-      userOrder = OrderModel(orderPackage: widget.userSelectedPackage , isWhiteFrame: false , frameWithPath: false, userImages: imagesList  , originalImages: originalsList, orderTime: DateTime.now());
+      userOrder = OrderModel(
+          orderPackage: widget.userSelectedPackage,
+          isWhiteFrame: false,
+          frameWithPath: false,
+          uploadedImages: List<String>(),
+          userImages: imagesList,
+          originalImages: originalsList,
+          orderTime: DateTime.now());
     } else {
       userOrder = widget.userOrder;
-      if(userOrder.originalImages == null || userOrder.originalImages.isEmpty){
-        for(int i = 0 ; i < userOrder.userImages.length ; i++)
+      if (userOrder.originalImages == null ||
+          userOrder.originalImages.isEmpty) {
+        userOrder.originalImages = List<String>();
+        for (int i = 0; i < userOrder.userImages.length; i++)
           userOrder.originalImages.add(userOrder.userImages[i]);
       }
     }
   }
 
 
+  GlobalKey<FormState> _globalFormState = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()=> Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen())),
+      onWillPop: () => Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen())),
       child: Scaffold(
         key: _scaffoldKey,
         body: BlocConsumer(
-          listener: (context , state){
+          listener: (context, state) {
             if (state is OrderCreationLoadingFailureState) {
               if (state.error.errorCode == HttpStatus.requestTimeout) {
                 UIHelpers.showNetworkError(context);
                 return;
-              }
-              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              } else if (state.error.errorCode ==
+                  HttpStatus.serviceUnavailable) {
+                UIHelpers.showToast(
+                    (LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
                 return;
-              }
-              else {
+              } else {
                 UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
                 return;
               }
-            }
-            else if (state is OrderSavingFailedState) {
+            } else if (state is OrderSavingFailedState) {
               if (state.error.errorCode == HttpStatus.requestTimeout) {
                 UIHelpers.showNetworkError(context);
                 return;
-              }
-              else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-                UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              } else if (state.error.errorCode ==
+                  HttpStatus.serviceUnavailable) {
+                UIHelpers.showToast(
+                    (LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
                 return;
-              }
-              else {
+              } else {
                 UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
                 return;
               }
-            }
-            else if(state is OrderAddedToCartSuccessState){
+            } else if (state is OrderAddedToCartSuccessState) {
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => OrderAddedToCartSuccessfullyScreen(),
               ));
               return;
-            }
-            else if(state is OrderSavingSuccessState){
+            } else if (state is OrderSavingSuccessState) {
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => OrderSavingConfirmationScreen(orderNumber: state.cartOrders[0].orderNumber.toString(), orderTime:  state.cartOrders[0].orderTime,),
+                builder: (context) => OrderSavingConfirmationScreen(
+                  orderNumber: state.cartOrders[0].orderNumber.toString(),
+                  orderTime: state.cartOrders[0].orderTime,
+                ),
               ));
             }
           },
-          builder: (context , state){
+          builder: (context, state) {
             return ModalProgressHUD(
               inAsyncCall: state is OrderCreationLoadingState,
               progressIndicator: LoadingWidget(),
               child: BaseScreen(
                 customAppbar: PickNPrintAppbar(
+                  leadAction: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: (){
+                      if(Navigator.canPop(context)){
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+                      }
+                    },
+                  ),
                   appbarColor: AppColors.black,
                   centerTitle: true,
                   title: (LocalKeys.PICK_PHOTOS_KEY).tr(),
                 ),
                 hasDrawer: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      color: AppColors.offWhite,
-                      padding: EdgeInsets.symmetric(vertical: 16 , horizontal: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text((LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(), style: TextStyle(
-                            fontSize: 20,
-                            color: AppColors.black,
-                          ), ),
-                          Text((LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(), style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.lightBlue,
-                          ), ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 5,),
-                    frameOptionsWidget(),
-                    Container(height: 245,
-                      color: AppColors.white,
-                      child: Center(
-                        child: getFramesList(),),
-                    ),
-                    SizedBox(height: 10,),
-                    Visibility(
-                      replacement: Container(width: 0, height: 0,),
-                      visible: (widget.userOrder == null) || (widget.userOrder.statues != OrderStatus.SAVED),
-                      child: GestureDetector(child: Padding(
-                        padding:  EdgeInsets.symmetric(vertical: padding),
-                        child: Text((LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr() , textAlign: TextAlign.center, ),
-                      ) , onTap: _saveOrderAndContinueShopping,),
-                    ),
-                    SizedBox(height: 5,),
-                    Center(
-                      child: GestureDetector(
-                        onTap: _proceedToCheckout,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 32,
-                          height: (45),
-                          decoration: BoxDecoration(
-                            color: AppColors.lightBlue,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Center(child: Text((LocalKeys.PROCEED_TO_CHECKOUT).tr(), style: TextStyle(color: AppColors.white),)),
+                child: Form(
+                  key: _globalFormState,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        color: AppColors.offWhite,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              (LocalKeys.PICK_YOUR_PHOTOS_KEY).tr(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            Text(
+                              (LocalKeys.SELECT_PHOTOS_TO_BE_PRINTED).tr(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.lightBlue,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      // i love you
-                    ),
-                    SizedBox(height: 5,),
-                    Visibility(
-                      replacement: Container(width: 0, height: 0,),
-                      visible: (widget.userOrder == null) || (widget.userOrder.statues != OrderStatus.SAVED),                      child: GestureDetector(child: Padding(
-                        padding:  EdgeInsets.symmetric(vertical: padding),
-                        child: Text((LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr() , textAlign: TextAlign.center, ),
-                      ) , onTap: _addToCartAndContinueShopping,),
-                    ),
-                    SizedBox(height: 5,),
-                    Visibility(
-                      visible: false,
-                      child: GestureDetector(child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: padding),
-                        child: Text((LocalKeys.CHOOSE_DIFFERENT_SET).tr() , textAlign: TextAlign.center, style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ), ),
-                      ) , onTap: (){
-                        Navigator.of(context).pop();
-                      },),
-                    ),
-                    SizedBox(height: 10,),
-
-                  ],
+                      SizedBox(
+                        height: 5,
+                      ),
+                      frameOptionsWidget(),
+                      Container(
+                        height: 245,
+                        color: AppColors.white,
+                        child: Center(
+                          child: getFramesList(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Visibility(
+                        replacement: Container(
+                          width: 0,
+                          height: 0,
+                        ),
+                        visible: (widget.userOrder == null) ||
+                            (widget.userOrder.statues != OrderStatus.SAVED),
+                        child: GestureDetector(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.SAVE_ORDER_AND_CONTINUE_LATER).tr(),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          onTap: _saveOrderAndContinueShopping,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Center(
+                        child: GestureDetector(
+                          onTap: _proceedToCheckout,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width - 32,
+                            height: (45),
+                            decoration: BoxDecoration(
+                              color: AppColors.lightBlue,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Center(
+                                child: Text(
+                              (LocalKeys.PROCEED_TO_CHECKOUT).tr(),
+                              style: TextStyle(color: AppColors.white),
+                            )),
+                          ),
+                        ),
+                        // i love you
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Visibility(
+                        replacement: Container(
+                          width: 0,
+                          height: 0,
+                        ),
+                        visible: (widget.userOrder == null) ||
+                            (widget.userOrder.statues != OrderStatus.SAVED),
+                        child: GestureDetector(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.ADD_TO_CART_AND_CONTINUE_SHOPPING).tr(),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          onTap: _addToCartAndContinueShopping,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Visibility(
+                        visible: false,
+                        child: GestureDetector(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: padding),
+                            child: Text(
+                              (LocalKeys.CHOOSE_DIFFERENT_SET).tr(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -227,19 +303,35 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   frameOptionsWidget() {
-
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       color: AppColors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text((LocalKeys.SELECT_FRAME_OPTIONS).tr(),),
-          SizedBox(height: 10,),
+          Row(
+            children: [
+              Text(
+                (LocalKeys.SELECT_FRAME_OPTIONS).tr(),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Image.asset(
+                Resources.FRAME_OPTION_ICON,
+                height: 25,
+                width: 25,
+                fit: BoxFit.contain,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
           GestureDetector(
-            onTap: (){
-              userOrder.isWhiteFrame = true ;
+            onTap: () {
+              userOrder.isWhiteFrame = true;
               setState(() {});
             },
             child: Material(
@@ -257,17 +349,23 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                           shape: BoxShape.circle,
                           color: AppColors.white,
                           border: Border.all(
-                            color: userOrder.isWhiteFrame ? AppColors.lightBlue : AppColors.white,
+                            color: userOrder.isWhiteFrame
+                                ? AppColors.lightBlue
+                                : AppColors.white,
                             width: 3,
                           ),
                         ),
-
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Expanded(
-                        child: Text((LocalKeys.WHITE_FRAME).tr() , style: TextStyle(
-                          color: AppColors.black,
-                        ),),
+                        child: Text(
+                          (LocalKeys.WHITE_FRAME).tr(),
+                          style: TextStyle(
+                            color: AppColors.black,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -275,10 +373,12 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               ),
             ),
           ),
-          SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           GestureDetector(
-            onTap: (){
-              userOrder.isWhiteFrame = false ;
+            onTap: () {
+              userOrder.isWhiteFrame = false;
               setState(() {});
             },
             child: Material(
@@ -296,17 +396,23 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                           shape: BoxShape.circle,
                           color: AppColors.black,
                           border: Border.all(
-                            color: !userOrder.isWhiteFrame ? AppColors.lightBlue : AppColors.black,
+                            color: !userOrder.isWhiteFrame
+                                ? AppColors.lightBlue
+                                : AppColors.black,
                             width: 3,
                           ),
                         ),
-
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Expanded(
-                        child: Text((LocalKeys.BLACK_FRAME).tr() , style: TextStyle(
-                          color: AppColors.black,
-                        ),),
+                        child: Text(
+                          (LocalKeys.BLACK_FRAME).tr(),
+                          style: TextStyle(
+                            color: AppColors.black,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -314,15 +420,16 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               ),
             ),
           ),
-          SizedBox(height: 5,),
-
+          SizedBox(
+            height: 5,
+          ),
           CustomizedCheckboxListTile(
             dense: false,
             activeColor: AppColors.lightBlue,
             selected: userOrder.frameWithPath,
             value: userOrder.frameWithPath,
-            onChanged: (value){
-              userOrder.frameWithPath = value ;
+            onChanged: (value) {
+              userOrder.frameWithPath = value;
               setState(() {});
             },
             title: Text((LocalKeys.WITH_PATH).tr()),
@@ -330,76 +437,96 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         ],
       ),
     );
-
-
   }
+
   getFramesList() {
-
-
-    if(userOrder.userImages.length < userOrder.orderPackage.packageSize){
-      int remainingImages = userOrder.orderPackage.packageSize  - userOrder.userImages.length;
-      for(int i = 0 ; i < remainingImages ; i++)
-        userOrder.userImages.add('');
+    if (userOrder.userImages.length < userOrder.orderPackage.packageSize) {
+      int remainingImages =
+          userOrder.orderPackage.packageSize - userOrder.userImages.length;
+      for (int i = 0; i < remainingImages; i++) userOrder.userImages.add('');
     }
 
     List<Widget> pictures = List();
-    for(int i = 0 ; i < Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length) ; i++){
-      pictures.add(AutoScrollTag(
-          key: ValueKey(i),
-          controller: controller,
-          index: i,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
+
+    int currentFrames = Math.max(userOrder.orderPackage.packageSize, userOrder.userImages.length);
+
+    for (int i = 0; i < currentFrames; i++) {
+      pictures.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: GestureDetector(
-            onTap: (){
-              if(userOrder.userImages[i] != null && userOrder.userImages[i].length > 0)
-                _openEditImage(userOrder.originalImages[i] , i);
+            onTap: () async{
+              if (userOrder.userImages[i] != null &&
+                  userOrder.userImages[i].length > 0) {
+                _openEditImage(userOrder.originalImages[i], i);
+              } else {
+                List<String> imagePath =
+                    await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SelectImageSourceScreen()));
+                try{
+                  userOrder.userImages[i] = imagePath[0] ?? '';
+                  userOrder.originalImages[i] = imagePath[1] ?? '';
+                  setState(() {});
+                 double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                 animationIndex += (frameDimension/2.0);
+                 print('First Empty Frame at index => ${userOrder.userImages.indexWhere((element) => element == '')}');
+                  _scrollController.animateTo( animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+
+                } catch(exception){}
+              }
               return;
             },
             child: Stack(
               children: [
                 AnimatedContainer(
-                  duration: Duration(seconds: 2),
-                  height: (225),
-                  width: (225),
+                  duration: Duration(seconds: 1),
+                  height: (frameDimension),
+                  width: (frameDimension),
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: userOrder.isWhiteFrame ? AppColors.black : AppColors.addressCardBg,
+                        color: userOrder.isWhiteFrame
+                            ? AppColors.black
+                            : AppColors.addressCardBg,
                         spreadRadius: .4,
-                        blurRadius: 5,)
+                        blurRadius: 5,
+                      )
                     ],
                     color: AppColors.white.withOpacity(.95),
                     border: Border.all(
-                      color: userOrder.isWhiteFrame ? AppColors.white : AppColors.black,
+                      color: userOrder.isWhiteFrame
+                          ? AppColors.white
+                          : AppColors.black,
                       width: 8,
                     ),
                   ),
                   child: AnimatedContainer(
-                    padding: userOrder.frameWithPath ? EdgeInsets.all(16) : EdgeInsets.all(0),
+                    padding: userOrder.frameWithPath
+                        ? EdgeInsets.all(16)
+                        : EdgeInsets.all(0),
                     // margin: EdgeInsets.all(8),
-                    duration: Duration(seconds: 2),
+                    duration: Duration(seconds: 1),
                     child: userOrder.userImages[i] == null ||
-                            userOrder.userImages[i].isEmpty ?  Center(
-                      child: IconButton(
-                        icon: Icon(Icons.add_circle  , color: AppColors.lightBlue , size: 35,),
-                        onPressed: ()async{
-                          List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SelectImageSourceScreen()));
-                          userOrder.userImages[i] = imagePath[0] ?? '';
-                          userOrder.originalImages[i] = imagePath[1] ?? '';
-                          setState(() {});
-                        },
-                      ),
-                    ) :  getImageFromPath(userOrder.userImages[i]),
+                            userOrder.userImages[i].isEmpty
+                        ? Center(
+                          child: Icon(
+                            Icons.add_circle,
+                            color: AppColors.lightBlue,
+                            size: 35,
+                          ),
+                        )
+                        : getImageFromPath(userOrder.userImages[i]),
                   ),
                 ),
                 Visibility(
                   child: Positioned.directional(
-                    textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+                    textDirection: Constants.CURRENT_LOCALE == "en"
+                        ? TextDirection.ltr
+                        : TextDirection.rtl,
                     top: 6,
                     start: 6,
                     child: GestureDetector(
-                      onTap : () => removeSelectionImage(i),
+                      onTap: () => removeSelectionImage(i),
                       child: Container(
                         width: 20,
                         height: 20,
@@ -407,155 +534,190 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                           color: AppColors.red,
                           shape: BoxShape.circle,
                         ),
-                        child: Center(child: Icon(Icons.clear , color: AppColors.white, size: 15,),),
+                        child: Center(
+                          child: Icon(
+                            Icons.clear,
+                            color: AppColors.white,
+                            size: 15,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   visible: i >= 3,
-                  replacement: Container(width: 0, height: 0,),
+                  replacement: Container(
+                    width: 0,
+                    height: 0,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-      ),);
+      );
     }
-    pictures.add(AutoScrollTag(
-      key: ValueKey(Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length)),
-      controller: controller,
-      index: Math.max(userOrder.orderPackage.packageSize , userOrder.userImages.length),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0 , horizontal: 8.0),
-        child: GestureDetector(
-          onTap: (){
-            _addExtraFrame();
-          },
+    pictures.add(
+      GestureDetector(
+        onTap: () {
+          _addExtraFrame();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: AnimatedContainer(
-            duration: Duration(seconds: 2),
-            height: (225),
-            width: (225),
+            duration: Duration(seconds: 1),
+            height: (frameDimension),
+            width: (frameDimension),
             decoration: BoxDecoration(
               color: AppColors.lightBlue,
               boxShadow: [
                 BoxShadow(
-                  color: userOrder.isWhiteFrame ? AppColors.black : AppColors.addressCardBg,
+                  color: userOrder.isWhiteFrame
+                      ? AppColors.black
+                      : AppColors.addressCardBg,
                   spreadRadius: .4,
-                  blurRadius: 5,)
-              ],),
-
-              child: AnimatedContainer(
+                  blurRadius: 5,
+                )
+              ],
+            ),
+            child: AnimatedContainer(
               margin: EdgeInsets.all(8),
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               child: Center(
-                child: Text((LocalKeys.ADD_MORE_IMAGES).tr(args:[
-                  (widget.userSelectedPackage.packageAfterDiscountPrice ?? '').toString(),
-                ]) , textAlign: TextAlign.center, style: Styles.baseTextStyle,),
+                child: Text(
+                  (LocalKeys.ADD_MORE_IMAGES).tr(args: [
+                    (widget.userSelectedPackage.packageAfterDiscountPrice ?? '').toString(),
+                  ]),
+                  textAlign: TextAlign.center,
+                  style: Styles.baseTextStyle,
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),);
+    );
     return ListView(
+      controller: _scrollController,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       children: pictures,
     );
   }
 
-
   void _saveOrderAndContinueShopping() async {
-    if (authenticationBloc.currentUser != null &&
-        authenticationBloc.currentUser.isAnonymous() == false) {
+    UserViewModel currentUser =
+        BlocProvider.of<AuthenticationBloc>(context).currentUser;
+
+    if (currentUser != null && currentUser.isAnonymous() == false) {
       createOrderBloc.add(SaveOrder(order: userOrder));
-    }
-    else {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+    } else {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 
   void _proceedToCheckout() async {
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-    if(errorMessageIfExist == (LocalKeys.SOME_IMAGES_IS_MISSING).tr()){
-      showDialog(context: context , barrierDismissible: true , builder: (context)=> AlertDialog(
-        elevation: 2,
-        content: Container(
-          width: MediaQuery.of(context).size.width * .7,
-          height: 150,
-          child: Center(
-            child: Text(errorMessageIfExist , textAlign: TextAlign.center , style: TextStyle(
-              color: AppColors.red,
-              fontWeight: FontWeight.w500,
-            ),),
-          ),
-        ),
-      ));
+    if (errorMessageIfExist == (LocalKeys.SOME_IMAGES_IS_MISSING).tr()) {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => AlertDialog(
+                elevation: 2,
+                content: Container(
+                  width: MediaQuery.of(context).size.width * .7,
+                  height: 150,
+                  child: Center(
+                    child: Text(
+                      errorMessageIfExist,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ));
       return;
-    } else if(errorMessageIfExist == (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
-      showDialog(context: context , barrierDismissible: true , builder: (context)=> AlertDialog(
-        elevation: 2,
-        content: Container(
-          width: MediaQuery.of(context).size.width * .7,
-          height: 150,
-          child: Center(
-            child: Text(errorMessageIfExist , textAlign: TextAlign.center , style: TextStyle(
-              color: AppColors.red,
-              fontWeight: FontWeight.w500,
-            ),),
-          ),
-        ),
-        actions: [
-          FlatButton(
-            onPressed: (){
-              _checkoutOrder();
-              Navigator.pop(context);
-            },
-            child: Text((LocalKeys.PROCEED_LABEL).tr()),
-          ),
-          FlatButton(
-            onPressed: (){
-              Navigator.pop(context);
-            },
-            child: Text((LocalKeys.CANCEL_LABEL).tr()),
-          ),
-        ],
-      ));
+    } else if (errorMessageIfExist ==
+        (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => AlertDialog(
+                elevation: 2,
+                content: Container(
+                  width: MediaQuery.of(context).size.width * .7,
+                  height: 150,
+                  child: Center(
+                    child: Text(
+                      errorMessageIfExist,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      _checkoutOrder();
+                      Navigator.pop(context);
+                    },
+                    child: Text((LocalKeys.PROCEED_LABEL).tr()),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text((LocalKeys.CANCEL_LABEL).tr()),
+                  ),
+                ],
+              ));
       return;
-    }
-    else {
+    } else {
       _checkoutOrder();
       return;
     }
   }
 
-  void _addToCartAndContinueShopping() async{
-
-    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+  void _addToCartAndContinueShopping() async {
+    if (BlocProvider.of<AuthenticationBloc>(context)
+        .currentUser
+        .isAnonymous()) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
       return;
     }
     String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-    if(errorMessageIfExist == null || errorMessageIfExist.isEmpty){
+    if (errorMessageIfExist == null || errorMessageIfExist.isEmpty) {
       createOrderBloc.add(AddOrderToCart(order: userOrder));
     } else {
-      UIHelpers.showToast(errorMessageIfExist , true, false , toastLength: Toast.LENGTH_LONG);
+      UIHelpers.showToast(errorMessageIfExist, true, false,
+          toastLength: Toast.LENGTH_LONG);
       return;
     }
-
-
-
   }
 
   Widget getImageFromPath(String userImage) {
-
-    if(userImage.toLowerCase().contains('http') || userImage.toLowerCase().contains('https')){
-      return Image.network(userImage , fit: BoxFit.fill,);
+    if (userImage.toLowerCase().contains('http') ||
+        userImage.toLowerCase().contains('https')) {
+      return Image.network(
+        userImage,
+        fit: BoxFit.fill,
+      );
     } else {
-      return Image.file(File(userImage) , fit: BoxFit.fill,);
+      return Image.file(
+        File(userImage),
+        fit: BoxFit.fill,
+      );
     }
   }
 
-  Future<void> _addExtraFrame() async{
+  Future<void> _addExtraFrame() async {
     setState(() {
       print("User Images => ${userOrder.userImages.length}");
       userOrder.userImages.add('');
@@ -563,130 +725,145 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       userOrder.originalImages.add('');
       print("User Images => ${userOrder.userImages.length}");
     });
-
   }
 
-  void removeSelectionImage(int index , {bool needPop}) {
-  try{
-    userOrder.userImages[index] = '';
-    userOrder.originalImages[index] = '';
-  } catch(exception){
-    print("EXCEPTION -> $exception");
+  void removeSelectionImage(int index, {bool needPop}) {
+    try {
+      userOrder.userImages[index] = '';
+      userOrder.originalImages[index] = '';
+    } catch (exception) {
+      print("EXCEPTION -> $exception");
+    }
+    setState(() {});
+
+    if (needPop != null && needPop) {
+      Navigator.pop(context);
+    }
   }
-  setState(() {});
 
-  if(needPop != null && needPop){
-    Navigator.pop(context);
-  }
-  }
-
-  void _openEditImage(String imageFilePath , int index) {
-
-    showModalBottomSheet(context: context, builder: (context){
-        return ClipRRect(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.lightBlue,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-            ),
-            height: 150,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-
-                Text(
-                  (LocalKeys.CUSTOMIZE_YOUR_IMAGE).tr(),
-                  textScaleFactor: 1,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    // fontFamily: Constants.FONT_ARIAL,
-                    color: Colors.white,
+  void _openEditImage(String imageFilePath, int index) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return ClipRRect(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.lightBlue,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
+              ),
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    (LocalKeys.CUSTOMIZE_YOUR_IMAGE).tr(),
+                    textScaleFactor: 1,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      // fontFamily: Constants.FONT_ARIAL,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ).tr(),
+                  SizedBox(
+                    height: 15,
                   ),
-                  textAlign: TextAlign.center,
-                ).tr(),
-                SizedBox(height: 15,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Center(
-                        child: FlatButton(
-                          onPressed: () {
-                            removeSelectionImage(index , needPop: true);
-                            return;
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.cleaning_services_rounded,
-                                color: Colors.white,
-                              ),
-                              Text((LocalKeys.REMOVE_IMAGE).tr() , style: TextStyle(
-                                color: AppColors.white,
-
-                              ),),
-                            ],
-                          ),
-
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: FlatButton(
-                          onPressed: () async{
-                            File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
-                            if(croppedFilePath != null){
-                              userOrder.userImages.removeAt(index);
-                              userOrder.userImages.insert(index , croppedFilePath.path);
-                            }
-                            Navigator.pop(context);
-                            setState(() {});
-
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              ),
-                              Text((LocalKeys.EDIT_IMAGE).tr() , style: TextStyle(
-                                color: AppColors.white,
-                              ),),
-                            ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Center(
+                          child: FlatButton(
+                            onPressed: () {
+                              removeSelectionImage(index, needPop: true);
+                              return;
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.cleaning_services_rounded,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  (LocalKeys.REMOVE_IMAGE).tr(),
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Expanded(
+                        child: Center(
+                          child: FlatButton(
+                            onPressed: () async {
+                              File croppedFilePath =
+                                  await UIHelpers.cropImage(imageFilePath);
+                              if (croppedFilePath != null) {
+                                userOrder.userImages.removeAt(index);
+                                userOrder.userImages
+                                    .insert(index, croppedFilePath.path);
+                              }
+                              Navigator.pop(context);
+                              setState(() {});
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  (LocalKeys.EDIT_IMAGE).tr(),
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-    });
+          );
+        });
   }
 
-  void _checkoutOrder() async{
-    if(BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
-    } else if(BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0){
-      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(
-        comingFromRegistration: false,
-      )));
+  void _checkoutOrder() async {
+    if (BlocProvider.of<AuthenticationBloc>(context)
+        .currentUser
+        .isAnonymous()) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+    } else if (BlocProvider.of<AuthenticationBloc>(context)
+            .currentUser
+            .userSavedAddresses
+            .length ==
+        0) {
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => AddNewShippingAddressScreen(
+
+                comingFromRegistration: false,
+              )));
     } else {
-      await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(userOrder)));
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ShippingAddressScreen(userOrder)));
     }
   }
 }
-
-

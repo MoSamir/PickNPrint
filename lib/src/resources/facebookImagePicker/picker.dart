@@ -93,7 +93,7 @@ class _FacebookImagePickerState extends State<FacebookImagePicker>
     AlbumPaging albums = await _client.fetchAlbums();
     setState(() {
       _albums.addAll(albums.data);
-      _albumsNextLink = albums.pagination.next;
+      _albumsNextLink = albums.pagination != null ? albums.pagination.next : null;
     });
   }
 

@@ -13,6 +13,8 @@ import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
+import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -20,16 +22,18 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/LocationSelectionScreen.dart';
+import 'package:picknprint/src/ui/screens/OrderCreationScreen.dart';
+import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
-import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
-import 'package:picknprint/src/ui/widgets/PickNPrintFooter.dart';
 class AddNewShippingAddressScreen extends StatefulWidget {
 
   final bool comingFromRegistration ;
-  final AddressViewModel addressModel ;
-  AddNewShippingAddressScreen({this.comingFromRegistration , this.addressModel});
 
+  // in case of new address the user should be directed to the shipping Location screen not back home
+  final OrderModel userOrderModel ;
+  final AddressViewModel addressModel ;
+  AddNewShippingAddressScreen({this.comingFromRegistration , this.userOrderModel ,this.addressModel});
   @override
   _AddNewShippingAddressScreenState createState() => _AddNewShippingAddressScreenState();
 }
@@ -40,8 +44,6 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
   TextEditingController addressTextController , buildingNumberTextController , addressLandmarkTextController;
   FocusNode addressFocusNode , buildingNumberFocusNode , addressLandmarkFocusNode;
   LocationModel selectedCity , selectedArea ;
-
-
   GlobalKey<FormState> _addressFormKey = GlobalKey<FormState>();
 
   @override
@@ -93,7 +95,34 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
               backgroundColor: Colors.green,
               textColor: Colors.white,
               fontSize: 16.0);
-          Navigator.of(context).pop();
+          //Navigator.of(context).pop();
+
+
+          UserViewModel loggedInUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
+          AddressViewModel newAddress ;
+          List<AddressViewModel> userAddress = loggedInUser.userSavedAddresses;
+          try{
+            newAddress = userAddress.where((AddressViewModel element){
+              bool sameArea = element.area.id == selectedArea.id;
+              bool sameCity = element.city.id == selectedCity.id;
+              bool sameStreet = element.addressName == addressTextController.text;
+              return sameArea && sameCity && sameStreet;
+            }).first;
+          } catch(exception){}
+          OrderModel order = widget.userOrderModel;
+          order.orderAddress = newAddress;
+
+          if(loggedInUser.userPhoneNumber == null || loggedInUser.userPhoneNumber.isEpmty()){
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => ShippingAddressScreen(order)
+            ));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => OrderCreationScreen(orderModel: order,)
+            ));
+          }
+
+
         }
       },
       builder: (context , state){

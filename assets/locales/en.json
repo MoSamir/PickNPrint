@@ -13,12 +13,12 @@
   "PICK_N_PRINT_KEY": "  the easiest way to keep your memories with you, pick your favorite photos from you photo library, and we will print it and delver it for you in a glance",
   "CHOOSE_PACKAGE_KEY": "Choose package",
   "WHAT_WE_OFFER":"we’r offering a wide range of ready made frames\nselect the one suite you",
-  "PACKAGE_SIZE": "{} Packs",
+  "PACKAGE_SIZE": "{} Frames",
   "PRICE_TEXT": "{} LE",
   "SAVE_TEXT": "save {} LE",
-  "GO_LABEL": "GO",
-  "REQUEST_EXTRA_PACKAGES_THAN": "More than {} Packages ?",
-  "CHECKOUT_EXTRA_RATE": "Check our special rates",
+  "GO_LABEL": "Pick Now",
+  "REQUEST_EXTRA_PACKAGES_THAN": "One Perfect Size",
+  "CHECKOUT_EXTRA_RATE": "Frames 20 X 20 cm, premier quality",
   "SELECT_PHOTOS_TO_BE_PRINTED": "Select the photos you would like to print",
   "PICK_YOUR_PHOTOS_KEY": "Pick your photos",
   "BLACK_FRAME": "Black frame",
@@ -160,7 +160,12 @@
   "HOME_LABEL": "Home",
   "FAST_DELIVERY_SLIDER_TEXT": "Fast Delivery",
   "CASH_ON_DELIVERY_SLIDER_TEXT": "Cash on delivery",
-  "ORDER_ONLINE_SLIDER_TEXT": "Order online"
+  "ORDER_ONLINE_SLIDER_TEXT": "Order online",
+  "LOW_QUALITY_HEADER": "Low Image Quality",
+  "SELECT_ANYWAY": "Select anyway",
+  "DONT_SELECT": "Don't select",
+  "LOW_QUALITY_IMAGE_MESSAGE" : "This picture will probably come out blurry. \nIt'd be best to use a different one!"
+
 
 
 }

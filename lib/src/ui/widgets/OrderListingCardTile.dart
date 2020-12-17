@@ -107,7 +107,7 @@ class OrderListingCardTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text((LocalKeys.SUBTOTAL_LABEL).tr()),
-                    Text((LocalKeys.PRICE_TEXT).tr(args: [(orderModel.orderPackage.packagePrice + 40).toString(),
+                    Text((LocalKeys.PRICE_TEXT).tr(args: [(orderModel.orderNetPrice).toString(),
                     ])),
                   ],
                 ),
@@ -124,7 +124,7 @@ class OrderListingCardTile extends StatelessWidget {
                       color: AppColors.lightBlue,
                     ),),
                     Text((LocalKeys.PRICE_TEXT).tr(args: [
-                      (orderModel.orderPackage.packagePrice + 40).toString(),
+                      (orderModel.orderGrossPrice).toString(),
                     ]) , style: TextStyle(
                       color: AppColors.red,
                     ),),

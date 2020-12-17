@@ -7,6 +7,7 @@ import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/widgets/ListViewAnimatorWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,10 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
 
 
+
+
+
+
     if(Constants.CURRENT_LOCALE == "ar")
       localeName = "ar_EG";
 
@@ -32,6 +37,17 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
       hasDrawer: false,
       hasAppbar: true,
       customAppbar: PickNPrintAppbar(
+        leadAction: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            if(Navigator.canPop(context)){
+              Navigator.pop(context);
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+            }
+          },
+        ),
+        autoImplyLeading: true,
         appbarColor: AppColors.black,
         actions: [],
         centerTitle: true,

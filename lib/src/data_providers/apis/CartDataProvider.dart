@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:picknprint/src/data_providers/apis/UserDataProvider.dart';
@@ -21,10 +22,10 @@ class CartDataProvider {
       'package_id' : order.orderPackage.packageId.toString(),
       'color': order.isWhiteFrame ? 1.toString() : 0.toString(),
       'selection': order.frameWithPath ? 1.toString() : 0.toString(),
-      'images': order.userImages,
+      'images': order.uploadedImages,
     };
-    if(order.userImages.length > order.orderPackage.packageSize){
-      requestBody.putIfAbsent('additionalFramesQty', () => (order.userImages.length - order.orderPackage.packageSize).toString());
+    if(order.uploadedImages.length > order.orderPackage.packageSize){
+      requestBody.putIfAbsent('additionalFramesQty', () => (order.uploadedImages.length - order.orderPackage.packageSize).toString());
     }
     String apiURL = URL.getURL(apiPath: URL.POST_ADD_ORDER_TO_CART);
     ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
@@ -43,30 +44,35 @@ class CartDataProvider {
     );
   }
   static Future<ResponseViewModel<List<OrderModel>>> saveOrderToLater(OrderModel order) async {
-
     String token = await UserDataProvider.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
-      HttpHeaders.authorizationHeader : 'Bearer $token'
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+      "Content-Type": 'application/json'
     });
     Map<String,dynamic> requestBody = {
       'package_id' : order.orderPackage.packageId.toString(),
       'color': order.isWhiteFrame ? 1.toString() : 0.toString(),
       'selection': order.frameWithPath ? 1.toString() : 0.toString(),
-      'images': order.userImages,
+     'images': order.uploadedImages,
     };
 
 
 
     String apiURL = URL.getURL(apiPath: URL.POST_SAVE_ORDER_FOR_LATER);
 
-    ResponseViewModel saveOrderResponse = await NetworkUtilities.handleUploadFiles(
+    ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
         methodURL: apiURL,
+       acceptJson: true,
         requestBody: requestBody,
         requestHeaders: requestHeaders,
-        files: order.userImages,
-        isBodyJson: true,
         parserFunction: (saveOrderRawResponse){
+
+
+          print("*******************************************************");
+          print(saveOrderRawResponse);
+          print("*******************************************************");
+
           return OrderModel.fromOrdersList(saveOrderRawResponse[ApiParseKeys.ORDER_KEY]);
         }
     );
