@@ -5,10 +5,11 @@ import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
+import 'package:picknprint/src/data_providers/shared_preference/UserSharedPreference.dart';
 import 'package:picknprint/src/utilities/ParserHelpers.dart';
-
-import 'helpers/NetworkUtilities.dart';
-import 'helpers/URL.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/URL.dart';
 
 class ApplicationDataProvider {
 
@@ -79,7 +80,7 @@ class ApplicationDataProvider {
   }
 
   static Future<ResponseViewModel<List<String>>> uploadMultipleFiles(List<String> filesToBeUploaded) async{
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token',
     });
@@ -109,14 +110,25 @@ class ApplicationDataProvider {
       isSuccess: true,
       responseData: urls,
     );
+  }
 
+  static Future<ResponseViewModel<List<TestimonialViewModel>>> getTestimonials() async{
 
+    String url = URL.getURL(apiPath: URL.GET_APPLICATION_TESTIMONIALS);
+    Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders();
+    ResponseViewModel testimonialsListResponse = await NetworkUtilities.handleGetRequest(
+      methodURL: url,
+      requestHeaders: requestHeaders,
+      parserFunction: (Map<String,dynamic> testimonialsResponse){
+        return TestimonialViewModel.fromListJson(testimonialsResponse['testimonials']);
+      }
+    );
 
-
-
-
-
-
+    return ResponseViewModel<List<TestimonialViewModel>>(
+      isSuccess: testimonialsListResponse.isSuccess,
+      errorViewModel: testimonialsListResponse.errorViewModel,
+      responseData: testimonialsListResponse.responseData,
+    );
   }
 
   

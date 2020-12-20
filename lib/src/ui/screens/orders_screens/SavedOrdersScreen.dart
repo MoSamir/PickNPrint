@@ -31,7 +31,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
   @override
   Widget build(BuildContext context) {
 
-    if(Constants.CURRENT_LOCALE == "ar")
+    if(Constants.appLocale == "ar")
       localeName = "ar_EG";
 
     return BaseScreen(

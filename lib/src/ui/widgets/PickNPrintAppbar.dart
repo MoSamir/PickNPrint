@@ -48,7 +48,7 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl ,
+      textDirection: Constants.appLocale == "en" ? TextDirection.ltr : TextDirection.rtl ,
       child: BlocConsumer(
         cubit: BlocProvider.of<UserBloc>(context),
         listener: (context , state){
@@ -84,7 +84,7 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
         },
         builder: (context , state){
           return Directionality(
-            textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+            textDirection: Constants.appLocale == "en" ? TextDirection.ltr : TextDirection.rtl,
             child: AppBar(
               brightness: Brightness.light,
               backgroundColor: widget.appbarColor ?? AppColors.lightBlack,
@@ -164,7 +164,7 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
                 visible: BlocProvider.of<UserBloc>(context).userCart.length > 0,
                 replacement: Container(width: 0, height: 0,),
                 child: Positioned.directional(
-                    textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr : TextDirection.rtl,
+                    textDirection: Constants.appLocale == "en" ? TextDirection.ltr : TextDirection.rtl,
                     top: 3,
                     start: 0,
                     width: 18,

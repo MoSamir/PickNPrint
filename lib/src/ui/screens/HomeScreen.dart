@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
@@ -17,6 +19,7 @@ import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NumberedBoxWidget.dart';
 import 'package:picknprint/src/ui/widgets/PackageHomeScreenListing.dart';
+import 'package:picknprint/src/ui/widgets/TestimonialCard.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -241,29 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: <Widget>[
                         Container(
-                          height: MediaQuery.of(context).size.height * .3,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(Resources.LARGE_PACKAGE_IMG),
-                              fit: BoxFit.cover,
-                            ),
-                            border: Border(
-                              bottom: BorderSide(
-                                width: 2,
-                                color: AppColors.lightBlue,
-                              ),
-                            ),
-                          ),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 30),
-                              child: Text('${BlocProvider.of<ApplicationDataBloc>(context).maxPackageSize}+' , style: TextStyle(
-                                color: AppColors.lightBlue,
-                                fontSize: 30,
-                              ),),
-                            ),
-                          ),
+                          child: getTestimonialSlider(BlocProvider.of<ApplicationDataBloc>(context).testimonials),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 15),
@@ -303,6 +284,15 @@ class _HomeScreenState extends State<HomeScreen> {
        return PackageHomeScreenListing(package: package , onPackageTap: (){
          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
        },);
+      }).toList(),);
+
+  }
+
+  Widget getTestimonialSlider(List<TestimonialViewModel> testimonials) {
+         return CarouselSlider(
+      options: CarouselOptions(height: 310.0 , autoPlay: true , viewportFraction: .7 ),
+      items: testimonials.map((TestimonialViewModel testimonial){
+        return TestimonialCard(testimonialViewModel: testimonial,);
       }).toList(),);
 
   }

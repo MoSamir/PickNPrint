@@ -29,7 +29,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../Repository.dart';
 import 'confirmation_screens/OrderSavingConfirmationScreen.dart';
 import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
-import 'package:picknprint/src/ui/screens/OrderSavingErrorScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
@@ -75,7 +74,10 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
           userImages: imagesList,
           originalImages: originalsList,
           orderTime: DateTime.now());
-    } else {
+      restoreCache();
+
+    }
+    else {
       userOrder = widget.userOrder;
       if (userOrder.originalImages == null ||
           userOrder.originalImages.isEmpty) {
@@ -441,14 +443,13 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   getFramesList() {
     if (userOrder.userImages.length < userOrder.orderPackage.packageSize) {
-      int remainingImages =
-          userOrder.orderPackage.packageSize - userOrder.userImages.length;
+      int remainingImages = userOrder.orderPackage.packageSize - userOrder.userImages.length;
       for (int i = 0; i < remainingImages; i++) userOrder.userImages.add('');
     }
 
     List<Widget> pictures = List();
 
-    int currentFrames = Math.max(userOrder.orderPackage.packageSize, userOrder.userImages.length);
+    int currentFrames = Math.max(3, userOrder.userImages.length);
 
     for (int i = 0; i < currentFrames; i++) {
       pictures.add(
@@ -466,12 +467,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                 try{
                   userOrder.userImages[i] = imagePath[0] ?? '';
                   userOrder.originalImages[i] = imagePath[1] ?? '';
+                  cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
                   setState(() {});
-                 double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
-                 animationIndex += (frameDimension/2.0);
-                 print('First Empty Frame at index => ${userOrder.userImages.indexWhere((element) => element == '')}');
+                  double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                  animationIndex += (frameDimension/2.0);
                   _scrollController.animateTo( animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
-
                 } catch(exception){}
               }
               return;
@@ -520,13 +520,13 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                 ),
                 Visibility(
                   child: Positioned.directional(
-                    textDirection: Constants.CURRENT_LOCALE == "en"
+                    textDirection: Constants.appLocale == "en"
                         ? TextDirection.ltr
                         : TextDirection.rtl,
                     top: 6,
                     start: 6,
                     child: GestureDetector(
-                      onTap: () => removeSelectionImage(i),
+                      onTap: () => deleteFrameAt(i),
                       child: Container(
                         width: 20,
                         height: 20,
@@ -544,7 +544,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                       ),
                     ),
                   ),
-                  visible: i >= 3,
+                  visible: currentFrames > 3,
                   replacement: Container(
                     width: 0,
                     height: 0,
@@ -865,5 +865,50 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ShippingAddressScreen(userOrder)));
     }
+  }
+
+  void cacheImages({String croppedVersion, String originalVersion}) async{
+    await Repository.cacheCroppedImage(croppedVersion);
+    await Repository.cacheOriginalImage(originalVersion);
+    print("******************** Cached ****************************");
+  }
+
+  void restoreCache() async{
+    List<String> originalOrderItems = await Repository.getCachedOriginalOrderImages();
+    List<String> cachedCroppedOrderItems = await Repository.getCachedCroppedOrderImages();
+
+    print("Hello Cache => ${originalOrderItems.length}");
+    print("Hello Cache => ${cachedCroppedOrderItems.length}");
+
+    setState(() {
+      if(originalOrderItems != null){
+       for(int i = 0 ; i < originalOrderItems.length ; i++){
+         userOrder.originalImages[i] = originalOrderItems[i];
+       }
+     }
+      if(cachedCroppedOrderItems != null){
+       for(int i = 0 ; i < cachedCroppedOrderItems.length ; i++){
+         userOrder.userImages[i] = cachedCroppedOrderItems[i];
+       }
+     }
+    });
+  }
+
+  void deleteFrameAt(int i) {
+  setState(() {
+    try {
+      userOrder.userImages.removeAt(i);
+    } catch(exception){}
+
+    try {
+      userOrder.originalImages.removeAt(i);
+    } catch(exception){}
+
+    try {
+      userOrder.uploadedImages.removeAt(i);
+    } catch(exception){}
+
+    });
+
   }
 }

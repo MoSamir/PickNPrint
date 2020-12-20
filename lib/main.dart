@@ -25,13 +25,12 @@ ApplicationDataBloc appBloc = ApplicationDataBloc(ApplicationDataLoadingState())
 AuthenticationBloc authenticationBloc = AuthenticationBloc(AuthenticationInitiated());
 UserBloc userBloc ;
 void main() async{
-
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = BlocLogObserver();
   userBloc = UserBloc(UserDataLoadingState() , authenticationBloc);
   appBloc.add(LoadApplicationData());
   authenticationBloc.add(AuthenticateUser());
-  Constants.CURRENT_LOCALE = "en";
+  Constants.appLocale = "en";
 
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -39,8 +38,6 @@ void main() async{
     statusBarBrightness: Brightness.dark,
     statusBarIconBrightness: Brightness.light
   ));
-
-
 
 
   runApp(

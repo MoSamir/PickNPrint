@@ -7,6 +7,7 @@ import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 
 class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataStates>{
@@ -18,6 +19,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
   int maxPackageSize  = 0 ;
   String contactUsPhone = "";
   List<LocationModel> systemSupportedLocations = List<LocationModel>();
+  List<TestimonialViewModel> testimonials = List<TestimonialViewModel>();
 
 
   @override
@@ -45,6 +47,7 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
       Repository.getSystemPackages(),
       Repository.getSystemSupportedAreas(),
       Repository.getSystemContactInfo(),
+      Repository.getTestimonials(),
     ]);
     if(applicationData[0].isSuccess){
       applicationPackages = applicationData[0].responseData;
@@ -56,6 +59,10 @@ class ApplicationDataBloc extends Bloc<ApplicationDataEvents , ApplicationDataSt
     if(applicationData[2].isSuccess){
       contactUsPhone = applicationData[2].responseData;
     }
+    if(applicationData[3].isSuccess){
+      testimonials = applicationData[3].responseData;
+    }
+
 
     if(applicationData[0].isSuccess == false){
       yield ApplicationDataLoadingFailureState(error: applicationData[0].errorViewModel , failureEvent: event);

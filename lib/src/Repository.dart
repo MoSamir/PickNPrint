@@ -10,6 +10,12 @@ import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 
+import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
+import 'package:picknprint/src/data_providers/shared_preference/OrderSharedPreference.dart';
+import 'package:picknprint/src/resources/Constants.dart';
+
+import 'data_providers/shared_preference/UserSharedPreference.dart';
+
 class Repository {
 
 
@@ -45,17 +51,17 @@ class Repository {
 
 
   static Future<void> clearCache() async {
-    return await UserDataProvider.clearUserCache();
+    return await UserSharedPreference.clearUserCache();
   }
 
 
   static Future<ResponseViewModel<void>> saveEncryptedPassword(String userPassword) async {
-    return await UserDataProvider.saveEncryptedPassword(userPassword);
+    return await UserSharedPreference.saveEncryptedPassword(userPassword);
   }
 
 
   static Future<UserViewModel> getUser() async {
-     UserViewModel userModel = await UserDataProvider.getUser();
+     UserViewModel userModel = await UserSharedPreference.getUser();
      return userModel;
   }
 
@@ -76,17 +82,17 @@ class Repository {
 
   static Future<UserViewModel> makeSilentLogin() async {
     bool tokenRefreshed = await refreshToken();
-    return await UserDataProvider.getUser();
+    return await UserSharedPreference.getUser();
   }
 
   static Future<bool> refreshToken() async {
     try {
       List<String> userCredentials =
-      await UserDataProvider.getSilentLoginCredentials();
+      await UserSharedPreference.getSilentLoginCredentials();
       ResponseViewModel<UserViewModel> reLoginResponse =
       await UserDataProvider.signIn(userCredentials[0], userCredentials[1]);
       if (reLoginResponse.isSuccess) {
-        await UserDataProvider.saveUser(reLoginResponse.responseData);
+        await UserSharedPreference.saveUser(reLoginResponse.responseData);
         return true;
       } else {
         return false;
@@ -97,7 +103,7 @@ class Repository {
   }
 
   static Future<ResponseViewModel<void>> saveUser(UserViewModel userViewModel) async {
-   return await UserDataProvider.saveUser(userViewModel);
+   return await UserSharedPreference.saveUser(userViewModel);
   }
   static signIn({String userMail, String userPassword}) async {
     return await UserDataProvider.signIn(userMail, userPassword);
@@ -200,7 +206,23 @@ class Repository {
     return NetworkUtilities.getImageFile(imageURL);
    }
 
+  static Future<ResponseViewModel<List<TestimonialViewModel>>> getTestimonials() async{
+    return await ApplicationDataProvider.getTestimonials();
+  }
 
+
+  static Future<void> cacheCroppedImage(String imagePath) async {
+    OrderSharedPreference.saveImageToKey(imagePath , Constants.SHARED_PREFERENCE_CROPPED_ORDER_KEY);
+  }
+  static Future<void> cacheOriginalImage(String imagePath) async {
+    OrderSharedPreference.saveImageToKey(imagePath , Constants.SHARED_PREFERENCE_ORIGINAL_ORDER_KEY);
+  }
+  static Future<List<String>> getCachedCroppedOrderImages() async {
+    return await OrderSharedPreference.getImagesList(Constants.SHARED_PREFERENCE_CROPPED_ORDER_KEY);
+  }
+  static Future<List<String>> getCachedOriginalOrderImages() async {
+    return await OrderSharedPreference.getImagesList(Constants.SHARED_PREFERENCE_ORIGINAL_ORDER_KEY);
+  }
 
 
 }

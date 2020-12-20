@@ -28,7 +28,7 @@ class LocationSelectionScreen extends StatelessWidget {
           listChildrenWidgets: locationsList.map((e) => Padding(
             padding: const EdgeInsets.all(8.0),
             child: Directionality(
-              textDirection: Constants.CURRENT_LOCALE == "en" ? TextDirection.ltr: TextDirection.rtl,
+              textDirection: Constants.appLocale == "en" ? TextDirection.ltr: TextDirection.rtl,
               child: RadioButtonListTile<LocationModel>(
                 title: Text(e.name),
                 isThreeLine: false,

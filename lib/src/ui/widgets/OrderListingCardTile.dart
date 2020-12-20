@@ -19,7 +19,7 @@ class OrderListingCardTile extends StatelessWidget {
 
 
 
-    if(Constants.CURRENT_LOCALE == "ar")
+    if(Constants.appLocale == "ar")
       localeName = "ar_EG";
 
 
@@ -61,9 +61,9 @@ class OrderListingCardTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max
                         ,children: <Widget>[
 
-                        SvgPicture.network(
-                          orderModel.orderPackage.packageIcon,
-                        ),
+                        // SvgPicture.network(
+                        //   orderModel.orderPackage.packageIcon,
+                        // ),
                         //OrderPackSizeStackWidget(packageSize: orderModel.orderPackage.packageSize, isColored: false,),
                         SizedBox(width: 10,),
                         Column(
@@ -93,7 +93,7 @@ class OrderListingCardTile extends StatelessWidget {
                   children: <Widget>[
                     Text((LocalKeys.SHIPPING_FEES).tr()),
                     Text((LocalKeys.PRICE_TEXT).tr(args: [
-                      40.toString(),
+                      orderModel.orderAddress.deliveryFees.toString(),
                     ])),
                   ],
                 ),
@@ -124,7 +124,7 @@ class OrderListingCardTile extends StatelessWidget {
                       color: AppColors.lightBlue,
                     ),),
                     Text((LocalKeys.PRICE_TEXT).tr(args: [
-                      (orderModel.orderGrossPrice).toString(),
+                      ((orderModel.orderNetPrice + orderModel.orderAddress.deliveryFees)).toString(),
                     ]) , style: TextStyle(
                       color: AppColors.red,
                     ),),

@@ -65,6 +65,9 @@ class OrderModel {
       frameWithPath: int.parse((orderJson[ApiParseKeys.ORDER_WITH_FRAME]).toString()) == 1 ,
       isWhiteFrame: int.parse((orderJson[ApiParseKeys.ORDER_WHITE_FRAME]).toString()) == 1 ,
       userImages: orderImages,
+      orderAddress: AddressViewModel(
+        deliveryFees: ParserHelper.parseDouble((orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]).toString()),
+      ),
 
     );
   }

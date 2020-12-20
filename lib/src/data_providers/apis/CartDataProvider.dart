@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:picknprint/src/data_providers/apis/UserDataProvider.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/shared_preference/UserSharedPreference.dart';
 
 import 'helpers/ApiParseKeys.dart';
 import 'helpers/NetworkUtilities.dart';
@@ -12,7 +13,7 @@ import 'helpers/URL.dart';
 class CartDataProvider {
 
   static Future<ResponseViewModel<List<OrderModel>>> saveOrderToCart(OrderModel order) async {
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token',
@@ -44,7 +45,7 @@ class CartDataProvider {
     );
   }
   static Future<ResponseViewModel<List<OrderModel>>> saveOrderToLater(OrderModel order) async {
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token',
@@ -86,7 +87,7 @@ class CartDataProvider {
 
 
   static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel order) async {
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });
@@ -111,7 +112,7 @@ class CartDataProvider {
 
 
   static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async {
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
@@ -131,7 +132,7 @@ class CartDataProvider {
     );
   }
   static Future<ResponseViewModel<List<OrderModel>>> loadSavedOrders() async{
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });
@@ -150,7 +151,7 @@ class CartDataProvider {
     );
   }
   static Future<ResponseViewModel<List<OrderModel>>> loadClosedOrders() async{
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });
@@ -170,7 +171,7 @@ class CartDataProvider {
 
   }
   static Future<ResponseViewModel<List<OrderModel>>> loadActiveOrders() async{
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });
@@ -192,7 +193,7 @@ class CartDataProvider {
 
   static Future<ResponseViewModel<List<OrderModel>>> createSavedOrder(OrderModel orderModel) async{
 
-    String token = await UserDataProvider.getUserToken();
+    String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
     });

@@ -34,7 +34,7 @@ class _UserCartScreenState extends State<UserCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if(Constants.CURRENT_LOCALE == "ar")
+    if(Constants.appLocale == "ar")
       localeName = "ar_EG";
     return BlocConsumer(
       cubit: createOrderBloc,

@@ -1,8 +1,10 @@
 import 'package:picknprint/src/resources/Constants.dart';
 
 class URL{
-  static const String BASE_URL = "http://dawayerstudio.com/projects/pickandprint/public/api/"; // server
 
+  static const String SERVER_LINK = "http://dawayerstudio.com";
+
+  static const String BASE_URL = "$SERVER_LINK/projects/pickandprint/public/api/"; // server
   static const String POST_REGISTER = "auth/register?locale=";
   static const String GET_RETRIEVE_SYSTEM_INFO = "getSystemSettings";
   static const String POST_LOGIN = "auth/login?locale=";
@@ -22,9 +24,6 @@ class URL{
   static const String POST_UPLOAD_IMAGE = "uploadImage";
 
 
-
-
-
   static const String GET_RETRIEVE_ACTIVE_ORDERS = "order/getCurrentOrders";
   static const String GET_RETRIEVE_SAVED_ORDERS = "order/getUnCompletedOrders";
   static const String GET_RETRIEVE_PAST_ORDERS = "order/getPreviousOrders";
@@ -32,12 +31,13 @@ class URL{
   static const String GET_DELETE_ADDRESS_BY_ID = "deleteAddressById/";
   static const String PUT_EDIT_USER_ADDRESS = "editAddress?locale=";
 
+  static const String GET_APPLICATION_TESTIMONIALS = "getAllTestimonials";
 
 
 
   static String getURL({String apiPath}) {
     if(apiPath.endsWith('locale=')){
-      return '$BASE_URL$apiPath${Constants.CURRENT_LOCALE}';
+      return '$BASE_URL$apiPath${Constants.appLocale}';
     } else {
       return BASE_URL + apiPath;
     }

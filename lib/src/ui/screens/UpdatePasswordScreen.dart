@@ -42,7 +42,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: Constants.CURRENT_LOCALE == 'en' ? TextDirection.ltr : TextDirection.rtl,
+      textDirection: Constants.appLocale == 'en' ? TextDirection.ltr : TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.blackBg,
         body: BlocConsumer(

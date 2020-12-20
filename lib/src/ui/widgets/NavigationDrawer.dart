@@ -811,8 +811,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     return GestureDetector(
       onTap: (){
         String newLocale = "en";
-        newLocale = (Constants.CURRENT_LOCALE == "en") ? "ar": "en";
-        Constants.CURRENT_LOCALE = newLocale;
+        newLocale = (Constants.appLocale == "en") ? "ar": "en";
+        Constants.appLocale = newLocale;
         EasyLocalization.of(context).locale = Locale(newLocale);
         setState(() {});
         Navigator.pop(context);

@@ -6,6 +6,7 @@ import 'package:picknprint/src/Repository.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/URL.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -27,9 +28,19 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       if(event.orderModel.statues == OrderStatus.SAVED){
         yield* _handleSavedOrderCreation(event);
         return ;
+      }  else {
+        OrderModel eventOrder = event.orderModel;
+
+        if(eventOrder.uploadedImages == null)
+          eventOrder.uploadedImages = List<String>();
+
+      if(event.orderModel.statues == OrderStatus.CART_ORDER){
+        for(int i = 0 ; i < eventOrder.userImages.length ; i++) {
+          if (eventOrder.userImages[i].contains(URL.SERVER_LINK))
+            eventOrder.uploadedImages.add(eventOrder.userImages[i]);
+        }
       }
-      else {
-        yield* _handleOrderCreation(event);
+        yield* _handleOrderCreation(CreateOrder(orderModel: eventOrder));
         return ;
       }
 
@@ -48,7 +59,6 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleOrderCreation(CreateOrder event) async*{
     yield OrderCreationLoadingState();
-
     ResponseViewModel<List<String>> uploadCartImages;
     if(event.orderModel.uploadedImages == null || event.orderModel.uploadedImages.length < event.orderModel.userImages.length) {
       uploadCartImages = await Repository.uploadMultipleFiles(event.orderModel.userImages);
@@ -155,16 +165,36 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleAddOrderToCart(AddOrderToCart event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.order);
-    if(saveOrderResponse.isSuccess){
-      yield OrderAddedToCartSuccessState(
-        cartOrders : saveOrderResponse.responseData,
+
+    ResponseViewModel<List<String>> uploadCartImages;
+    if(event.order.uploadedImages == null || event.order.uploadedImages.length < event.order.userImages.length) {
+      uploadCartImages = await Repository.uploadMultipleFiles(event.order.userImages);
+      if(uploadCartImages.isSuccess){
+        event.order.uploadedImages.addAll(uploadCartImages.responseData);
+      }
+    }
+    else {
+      uploadCartImages = ResponseViewModel(
+          isSuccess: true
       );
-      return;
+    }
+
+    if(uploadCartImages.isSuccess){
+      ResponseViewModel<List<OrderModel>> saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.order);
+      if(saveOrderResponse.isSuccess){
+        yield OrderAddedToCartSuccessState(
+          cartOrders : saveOrderResponse.responseData,
+        );
+        return;
+      } else {
+        yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
+        return ;
+      }
     } else {
-     yield OrderSavingFailedState(failedEvent: event, error: saveOrderResponse.errorViewModel,);
+      yield OrderSavingFailedState(failedEvent: event, error: uploadCartImages.errorViewModel,);
       return ;
     }
+
   }
 
   Stream<CreateOrderStates> _handleSavedOrderCreation(CreateOrder event) async*{

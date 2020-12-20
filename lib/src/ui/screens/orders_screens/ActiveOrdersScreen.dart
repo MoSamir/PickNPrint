@@ -30,7 +30,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
 
 
-    if(Constants.CURRENT_LOCALE == "ar")
+    if(Constants.appLocale == "ar")
       localeName = "ar_EG";
 
     return BaseScreen(

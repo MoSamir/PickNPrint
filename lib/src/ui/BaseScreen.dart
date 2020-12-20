@@ -20,7 +20,7 @@ class BaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: Constants.CURRENT_LOCALE == 'en' ? TextDirection.ltr : TextDirection.rtl,
+      textDirection: Constants.appLocale == 'en' ? TextDirection.ltr : TextDirection.rtl,
       child: GestureDetector(
         onTap: (){
           FocusScope.of(context).requestFocus(FocusNode());

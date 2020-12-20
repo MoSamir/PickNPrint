@@ -87,7 +87,11 @@ class ApiParseKeys {
   static const String SYSTEM_SETTINGS_KEY = "settings";
   static const String SYSTEM_PHONE_KEY = "phone";
 
+//- ------------------- GET TESTIMONIALS -----------------------------------
 
+  static const String TESTIMONIAL_COMMENT_KEY = "comment";
+  static const String TESTIMONIAL_IMAGE_KEY = "image";
+  static const String TESTIMONIAL_ID_KEY = "id";
 
 
 
