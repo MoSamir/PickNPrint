@@ -17,6 +17,7 @@ class Album {
 
 
 
+
     String albumCover = '';
     try{
       albumCover = jsonAlbum['cover_photo']['source'];

@@ -586,22 +586,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       ),
                     ),
                     SizedBox(width: 5,),
-                    Visibility(
-                      visible: BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0,
-                      replacement: Container(width: 0, height: 0,),
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userSavedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                        ),)),
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        shape: BoxShape.circle,
                       ),
-
+                      child: Center(child: Text(BlocProvider.of<UserBloc>(context).userSavedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                      ),)),
                     ),
                   ],
                 ),
@@ -622,22 +617,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       ),
                     ),
                     SizedBox(width: 5,),
-                    Visibility(
-                      visible: BlocProvider.of<UserBloc>(context).userCompletedOrders.length > 0,
-                      replacement: Container(width: 0, height: 0,),
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userCompletedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                        ),)),
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        shape: BoxShape.circle,
                       ),
-
+                      child: Center(child: Text(BlocProvider.of<UserBloc>(context).userCompletedOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                      ),)),
                     ),
                   ],
                 ),
@@ -658,22 +648,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       ),
                     ),
                     SizedBox(width: 5,),
-                    Visibility(
-                      visible: BlocProvider.of<UserBloc>(context).userActiveOrders.length > 0,
-                      replacement: Container(width: 0, height: 0,),
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(child: Text(BlocProvider.of<UserBloc>(context).userActiveOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                        ),)),
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlue,
+                        shape: BoxShape.circle,
                       ),
-
+                      child: Center(child: Text(BlocProvider.of<UserBloc>(context).userActiveOrders.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                      ),)),
                     ),
 
 

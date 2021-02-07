@@ -24,7 +24,9 @@ class PackageHomeScreenListing extends StatelessWidget {
           ),
           SizedBox(height: 8,),
           Center(
-            child: SvgPicture.network(
+            child: package.packageMainImage.toLowerCase().endsWith('.svg') ? SvgPicture.network(
+              package.packageMainImage,
+            ) : Image.network(
               package.packageMainImage,
             ),
           ),
@@ -55,7 +57,6 @@ class PackageHomeScreenListing extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8,),
-
         ],
 
       ),

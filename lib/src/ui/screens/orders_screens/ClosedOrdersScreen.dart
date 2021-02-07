@@ -40,28 +40,20 @@ class _ClosedOrderScreenState extends State<ClosedOrderScreen> {
         centerTitle: true,
         title: (LocalKeys.PREVIOUS_ORDERS).tr(),
       ),
-      child: Visibility(
-        visible: BlocProvider.of<UserBloc>(context).userCompletedOrders.length > 0,
-        replacement: Container(
-          padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height - kToolbarHeight) * .35 ,),
-          child: Center(
-            child: Text((LocalKeys.NO_ORDERS_YET).tr()),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text((LocalKeys.MY_PREVIOUS_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListViewAnimatorWidget(
-                  isScrollEnabled: false,
-                  listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCompletedOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
-                ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text((LocalKeys.MY_PREVIOUS_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListViewAnimatorWidget(
+                placeHolder: Center(child: Text((LocalKeys.CLOSED_ORDERS_PLACEHOLDER).tr() , textAlign: TextAlign.center,),),
+                isScrollEnabled: false,
+                listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCompletedOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
               ),
+            ),
 
-            ],
-          ),
+          ],
         ),
       ),
     );

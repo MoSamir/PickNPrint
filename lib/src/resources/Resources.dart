@@ -23,7 +23,9 @@ class Resources{
   static const String ORDER_ONLINE_SLIDER_ICON = "assets/images/order_online_icon.png";
   static const String CASH_ON_DELIVERY_SLIDER_ICON = "assets/images/cash_on_delivery_icon.png";
   static const String FAST_DELIVERY_SLIDER_ICON = "assets/images/fast_delivery_icon.png";
-  static const String FRAME_OPTION_ICON = "assets/images/frame_icon.png";
+  static const String BLACK_FRAME_OPTION_ICON = "assets/images/black_frame_icon.png";
+  static const String WHITE_FRAME_OPTION_ICON = "assets/images/white_frame_icon.png";
+  static const String TESTIMONIALS_FAME_ICON = "assets/images/white_frame.svg";
 
 
 

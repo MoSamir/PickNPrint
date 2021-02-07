@@ -118,85 +118,6 @@ class NetworkUtilities {
     return postResponse;
   }
 
-  static Future<ResponseViewModel> handleUploadFiles(
-      {String methodURL,
-        Map<String, String> requestHeaders,
-        Function parserFunction,
-        List<String> files,
-        Map<String, dynamic> requestBody,
-        bool isBodyJson}) async {
-    ResponseViewModel uploadResponse;
-    try {
-      List<MultipartFile> imageFiles = List();
-      for (int i = 0; i < files.length; i++) {
-        try{
-          imageFiles.add(await MultipartFile.fromFile(files[i]));
-        } catch(exception){}
-      }
-      Map<String, dynamic> requestMap = requestBody ?? Map<String, dynamic>() ;
-      if(imageFiles != null && imageFiles.length > 0)
-      requestMap.putIfAbsent("images", () => imageFiles);
-
-      FormData formData = FormData.fromMap(requestMap);
-      Response serverResponse = await Dio().post(methodURL,
-          data: formData,
-          options: Options(headers: requestHeaders,));
-
-      if (serverResponse.statusCode == 200) {
-        uploadResponse = ResponseViewModel(
-          isSuccess: true,
-          errorViewModel: null,
-          responseData: parserFunction(serverResponse.data),
-        );
-      } else {
-        String serverError = "";
-        try {
-          serverError = json.decode(serverResponse.data)['error'] ??
-              json.decode(serverResponse.data)['message'];
-        } catch (exception) {
-          serverError = serverResponse.data;
-        }
-        uploadResponse = ResponseViewModel(
-          isSuccess: false,
-          errorViewModel: ErrorViewModel(
-            errorMessage: serverError,
-            errorCode: serverResponse.statusCode,
-          ),
-          responseData: null,
-        );
-
-        if (uploadResponse.errorViewModel.errorCode == HttpStatus.notFound) {
-          uploadResponse = ResponseViewModel(
-            isSuccess: false,
-            errorViewModel: ErrorViewModel(
-              errorMessage: (LocalKeys.SERVER_UNREACHABLE).tr(),
-              errorCode: serverResponse.statusCode,
-            ),
-            responseData: null,
-          );
-        }
-      }
-    } on SocketException {
-      uploadResponse = ResponseViewModel(
-        isSuccess: false,
-        errorViewModel: Constants.CONNECTION_TIMEOUT,
-        responseData: null,
-      );
-    } catch (exception) {
-      print("*************************************");
-      print("Exception in upload => $exception");
-      print("*************************************");
-      uploadResponse = ResponseViewModel(
-        isSuccess: false,
-        errorViewModel: ErrorViewModel(
-          errorMessage: '',
-          errorCode: HttpStatus.serviceUnavailable,
-        ),
-        responseData: null,
-      );
-    }
-    return uploadResponse;
-  }
 
 
   static Future<ResponseViewModel> handleUploadSingleFile(
@@ -209,22 +130,30 @@ class NetworkUtilities {
         bool isBodyJson}) async {
     ResponseViewModel uploadResponse;
     try {
+      
+      requestHeaders.putIfAbsent('Accept', () => 'multipart/form-data');
       MultipartFile imageFile = await MultipartFile.fromFile(fileURL);
       Map<String, dynamic> requestMap = requestBody ?? Map<String, dynamic>();
       requestMap.putIfAbsent(uploadKey, () => imageFile);
+
+
+
+
       FormData formData = FormData.fromMap(requestMap);
       Response serverResponse = await Dio().post(methodURL,
           data: formData,
           options: Options(
             headers: requestHeaders,
           ));
+
       if (serverResponse.statusCode == 200) {
         uploadResponse = ResponseViewModel(
           isSuccess: true,
           errorViewModel: null,
           responseData: parserFunction(serverResponse.data),
         );
-      } else {
+      }
+      else {
         String serverError = "";
         try {
           serverError = json.decode(serverResponse.data)['error'] ??
@@ -262,9 +191,10 @@ class NetworkUtilities {
 
       print("*************************************");
       print("Exception in upload => $exception");
+      print("Exception Message => ${(exception as DioError).message}");
+      print("Exception Error => ${(exception as DioError).error}");
+      print("Exception Response => ${(exception as DioError).response}");
       print("*************************************");
-
-
       uploadResponse = ResponseViewModel(
         isSuccess: false,
         errorViewModel: ErrorViewModel(

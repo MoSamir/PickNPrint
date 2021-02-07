@@ -164,12 +164,10 @@
   "LOW_QUALITY_HEADER": "صوره قليله الجوده",
   "SELECT_ANYWAY": "اختر",
   "DONT_SELECT": "اختيار اخرى",
-  "LOW_QUALITY_IMAGE_MESSAGE" : "هذه الصوره غالبا سوف تكون ضبابيه \n من الافضل اختيار صوره اخرى"
-
-
-
-
-
+  "LOW_QUALITY_IMAGE_MESSAGE" : "هذه الصوره غالبا سوف تكون ضبابيه \n من الافضل اختيار صوره اخرى",
+  "EMPTY_CART_PLACEHOLDER": "لا يوجد طلبات في السله",
+  "ACTIVE_ORDERS_PLACEHOLDER": "لا يوجد اي طلبات حاليا",
+  "CLOSED_ORDERS_PLACEHOLDER": "لم تقم باي طلبات بعد",
+  "SAVED_ORDERS_PLACEHOLDER": "لم تقم بحفظ اي طلبات بعد"
 
 }
-

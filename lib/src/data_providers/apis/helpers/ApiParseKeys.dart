@@ -73,7 +73,7 @@ class ApiParseKeys {
   static const String ORDER_EXTRA_FRAME_PRICE = "framePrice";
   static const String ORDER_WHITE_FRAME = "color";
   static const String ORDER_WITH_FRAME = "selection";
-  static const String ORDER_USER_IMAGES = "images";
+  static const String ORDER_USER_IMAGE = "image";
   static const String ORDER_SOCIAL_IMAGES = "imagesViaSocialMedia";
   static const String ORDER_CREATED_AT = "created_at";
   static const String ORDER_ITEMS_LIST_KEY = "items";

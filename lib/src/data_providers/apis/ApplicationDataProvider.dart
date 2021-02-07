@@ -84,6 +84,14 @@ class ApplicationDataProvider {
     Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token',
     });
+
+
+    print("************************************************");
+    for(int i = 0 ; i < filesToBeUploaded.length ; i++){
+      print("File => ${filesToBeUploaded[i]}");
+    }
+    print("************************************************");
+
     List<Future<ResponseViewModel>> uploadFileTasks = filesToBeUploaded.map((e) => NetworkUtilities.handleUploadSingleFile(
       fileURL: e,
       methodURL: URL.getURL(apiPath: URL.POST_UPLOAD_IMAGE),
@@ -93,6 +101,9 @@ class ApplicationDataProvider {
         return jsonResponse['path'];
       }
     )).toList();
+
+
+
     List<ResponseViewModel> responses =  await Future.wait(uploadFileTasks);
     List<String> urls = List<String>();
 

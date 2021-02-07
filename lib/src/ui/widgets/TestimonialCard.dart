@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
+import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/ui/widgets/EnhancedImageNetwork.dart';
 
 class TestimonialCard extends StatelessWidget {
@@ -9,9 +10,16 @@ class TestimonialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(
+          color: AppColors.lightGrey,
+          spreadRadius: 2.5,
+          blurRadius: 5.0,
+        ),]
+      ),
       height: 300,
-      width: 230,
+      width: 240,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Card(

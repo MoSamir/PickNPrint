@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
+import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/OrderCreationBloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
@@ -14,6 +15,7 @@ import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
+import 'package:picknprint/src/data_providers/apis/ApplicationDataProvider.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -52,7 +54,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   OrderModel userOrder = OrderModel();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   OrderCreationBloc createOrderBloc;
- ScrollController _scrollController =  ScrollController();
+  ScrollController _scrollController =  ScrollController();
   double padding = 7.0;
   double frameDimension = 225;
 
@@ -171,7 +173,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                       Container(
                         color: AppColors.offWhite,
                         padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,9 +242,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                             ),
                             child: Center(
                                 child: Text(
-                              (LocalKeys.PROCEED_TO_CHECKOUT).tr(),
-                              style: TextStyle(color: AppColors.white),
-                            )),
+                                  (LocalKeys.PROCEED_TO_CHECKOUT).tr(),
+                                  style: TextStyle(color: AppColors.white),
+                                )),
                           ),
                         ),
                         // i love you
@@ -312,21 +314,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: [
-              Text(
-                (LocalKeys.SELECT_FRAME_OPTIONS).tr(),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Image.asset(
-                Resources.FRAME_OPTION_ICON,
-                height: 25,
-                width: 25,
-                fit: BoxFit.contain,
-              ),
-            ],
+          Text(
+            (LocalKeys.SELECT_FRAME_OPTIONS).tr(),
           ),
           SizedBox(
             height: 10,
@@ -356,6 +345,12 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                                 : AppColors.white,
                             width: 3,
                           ),
+                        ),
+                        child: Image.asset(
+                          Resources.WHITE_FRAME_OPTION_ICON,
+                          height: 25,
+                          width: 25,
+                          fit: BoxFit.contain,
                         ),
                       ),
                       SizedBox(
@@ -392,6 +387,12 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   child: Row(
                     children: <Widget>[
                       Container(
+                        child: Image.asset(
+                          Resources.BLACK_FRAME_OPTION_ICON,
+                          height: 25,
+                          width: 25,
+                          fit: BoxFit.contain,
+                        ),
                         width: (25),
                         height: (25),
                         decoration: BoxDecoration(
@@ -442,14 +443,29 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   getFramesList() {
+
+    try{
+      userOrder.orderPackage =  BlocProvider.of<ApplicationDataBloc>(context)
+          .applicationPackages.firstWhere((element) => element.packageSize == 3);
+    } catch(exception){
+      debugPrint("Exception happened while parsing the package ! => $exception");
+      try{
+        userOrder.orderPackage =  BlocProvider.of<ApplicationDataBloc>(context)
+            .applicationPackages.first;
+      } catch(innerException){
+        userOrder.orderPackage.packageSize = 3;
+      }
+    }
+
     if (userOrder.userImages.length < userOrder.orderPackage.packageSize) {
       int remainingImages = userOrder.orderPackage.packageSize - userOrder.userImages.length;
       for (int i = 0; i < remainingImages; i++) userOrder.userImages.add('');
     }
 
-    List<Widget> pictures = List();
 
+    List<Widget> pictures = List();
     int currentFrames = Math.max(3, userOrder.userImages.length);
+
 
     for (int i = 0; i < currentFrames; i++) {
       pictures.add(
@@ -462,7 +478,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                 _openEditImage(userOrder.originalImages[i], i);
               } else {
                 List<String> imagePath =
-                    await Navigator.of(context).push(MaterialPageRoute(
+                await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => SelectImageSourceScreen()));
                 try{
                   userOrder.userImages[i] = imagePath[0] ?? '';
@@ -470,8 +486,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
                   setState(() {});
                   double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
-                  animationIndex += (frameDimension/2.0);
-                  _scrollController.animateTo( animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+
+                  _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
                 } catch(exception){}
               }
               return;
@@ -507,14 +523,14 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                     // margin: EdgeInsets.all(8),
                     duration: Duration(seconds: 1),
                     child: userOrder.userImages[i] == null ||
-                            userOrder.userImages[i].isEmpty
+                        userOrder.userImages[i].isEmpty
                         ? Center(
-                          child: Icon(
-                            Icons.add_circle,
-                            color: AppColors.lightBlue,
-                            size: 35,
-                          ),
-                        )
+                      child: Icon(
+                        Icons.add_circle,
+                        color: AppColors.lightBlue,
+                        size: 35,
+                      ),
+                    )
                         : getImageFromPath(userOrder.userImages[i]),
                   ),
                 ),
@@ -623,22 +639,22 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
           context: context,
           barrierDismissible: true,
           builder: (context) => AlertDialog(
-                elevation: 2,
-                content: Container(
-                  width: MediaQuery.of(context).size.width * .7,
-                  height: 150,
-                  child: Center(
-                    child: Text(
-                      errorMessageIfExist,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+            elevation: 2,
+            content: Container(
+              width: MediaQuery.of(context).size.width * .7,
+              height: 150,
+              child: Center(
+                child: Text(
+                  errorMessageIfExist,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.red,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ));
+              ),
+            ),
+          ));
       return;
     } else if (errorMessageIfExist ==
         (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
@@ -646,37 +662,37 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
           context: context,
           barrierDismissible: true,
           builder: (context) => AlertDialog(
-                elevation: 2,
-                content: Container(
-                  width: MediaQuery.of(context).size.width * .7,
-                  height: 150,
-                  child: Center(
-                    child: Text(
-                      errorMessageIfExist,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+            elevation: 2,
+            content: Container(
+              width: MediaQuery.of(context).size.width * .7,
+              height: 150,
+              child: Center(
+                child: Text(
+                  errorMessageIfExist,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.red,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                actions: [
-                  FlatButton(
-                    onPressed: () {
-                      _checkoutOrder();
-                      Navigator.pop(context);
-                    },
-                    child: Text((LocalKeys.PROCEED_LABEL).tr()),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text((LocalKeys.CANCEL_LABEL).tr()),
-                  ),
-                ],
-              ));
+              ),
+            ),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  _checkoutOrder();
+                  Navigator.pop(context);
+                },
+                child: Text((LocalKeys.PROCEED_LABEL).tr()),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text((LocalKeys.CANCEL_LABEL).tr()),
+              ),
+            ],
+          ));
       return;
     } else {
       _checkoutOrder();
@@ -696,8 +712,26 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     if (errorMessageIfExist == null || errorMessageIfExist.isEmpty) {
       createOrderBloc.add(AddOrderToCart(order: userOrder));
     } else {
-      UIHelpers.showToast(errorMessageIfExist, true, false,
-          toastLength: Toast.LENGTH_LONG);
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => AlertDialog(
+            elevation: 2,
+            content: Container(
+              width: MediaQuery.of(context).size.width * .7,
+              height: 150,
+              child: Center(
+                child: Text(
+                  errorMessageIfExist,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.red,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ));
       return;
     }
   }
@@ -808,7 +842,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                           child: FlatButton(
                             onPressed: () async {
                               File croppedFilePath =
-                                  await UIHelpers.cropImage(imageFilePath);
+                              await UIHelpers.cropImage(imageFilePath);
                               if (croppedFilePath != null) {
                                 userOrder.userImages.removeAt(index);
                                 userOrder.userImages
@@ -852,15 +886,15 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => LoginScreen()));
     } else if (BlocProvider.of<AuthenticationBloc>(context)
-            .currentUser
-            .userSavedAddresses
-            .length ==
+        .currentUser
+        .userSavedAddresses
+        .length ==
         0) {
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => AddNewShippingAddressScreen(
 
-                comingFromRegistration: false,
-              )));
+            comingFromRegistration: false,
+          )));
     } else {
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ShippingAddressScreen(userOrder)));
@@ -882,31 +916,31 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
     setState(() {
       if(originalOrderItems != null){
-       for(int i = 0 ; i < originalOrderItems.length ; i++){
-         userOrder.originalImages[i] = originalOrderItems[i];
-       }
-     }
+        for(int i = 0 ; i < originalOrderItems.length ; i++){
+          userOrder.originalImages[i] = originalOrderItems[i];
+        }
+      }
       if(cachedCroppedOrderItems != null){
-       for(int i = 0 ; i < cachedCroppedOrderItems.length ; i++){
-         userOrder.userImages[i] = cachedCroppedOrderItems[i];
-       }
-     }
+        for(int i = 0 ; i < cachedCroppedOrderItems.length ; i++){
+          userOrder.userImages[i] = cachedCroppedOrderItems[i];
+        }
+      }
     });
   }
 
   void deleteFrameAt(int i) {
-  setState(() {
-    try {
-      userOrder.userImages.removeAt(i);
-    } catch(exception){}
+    setState(() {
+      try {
+        userOrder.userImages.removeAt(i);
+      } catch(exception){}
 
-    try {
-      userOrder.originalImages.removeAt(i);
-    } catch(exception){}
+      try {
+        userOrder.originalImages.removeAt(i);
+      } catch(exception){}
 
-    try {
-      userOrder.uploadedImages.removeAt(i);
-    } catch(exception){}
+      try {
+        userOrder.uploadedImages.removeAt(i);
+      } catch(exception){}
 
     });
 

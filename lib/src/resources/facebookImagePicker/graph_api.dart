@@ -15,12 +15,16 @@ class GraphApi {
   GraphApi(this._accessToken);
 
   Future<AlbumPaging> fetchAlbums([String nextUrl]) async {
+
     String url = nextUrl ??
         '$_graphApiEndpoint/me/albums?fields=cover_photo{source},id,name,count&format=json';
     http.Response response = await http.get(Uri.parse(url),
         headers: {'Authorization': 'Bearer $_accessToken'});
     Map<String, dynamic> body = json.decode(response.body);
 
+    print("*************************ALBUMS********************************************");
+    print(json.decode(response.body));
+    print("*********************************************************************");
     if (response.statusCode != 200) {
       throw GraphApiException(body['error']['message'].toString());
     }
@@ -34,6 +38,10 @@ class GraphApi {
     http.Response response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $_accessToken',
     });
+
+    print("*********************************************************************");
+    print(json.decode(response.body));
+    print("*********************************************************************");
     Map<String, dynamic> body = json.decode(response.body);
 
     if (response.statusCode != 200) {

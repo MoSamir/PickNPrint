@@ -21,9 +21,7 @@ class OrderModel {
 
   int deliveryTime;
   OrderModel({this.orderPackage, this.orderGrossPrice , this.orderNetPrice , this.uploadedImages , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
-
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
-
     List<OrderModel> ordersList = List<OrderModel>();
     if(saveOrderRawResponse != null && saveOrderRawResponse is List){
       for(int i = 0 ; i < saveOrderRawResponse.length ; i++){
@@ -34,19 +32,11 @@ class OrderModel {
   }
 
 
-
-
   static OrderModel fromJson(orderJson){
     List<String> orderImages = List<String>();
-    if(orderJson[ApiParseKeys.ORDER_USER_IMAGES] != null && orderJson[ApiParseKeys.ORDER_USER_IMAGES] is List){
-      for(int i = 0 ; i < (orderJson[ApiParseKeys.ORDER_USER_IMAGES]).length ; i++)
-        orderImages.add(orderJson[ApiParseKeys.ORDER_USER_IMAGES][i].toString());
-    }
-
-
-    if(orderJson[ApiParseKeys.ORDER_SOCIAL_IMAGES] != null && orderJson[ApiParseKeys.ORDER_SOCIAL_IMAGES] is List){
-      for(int i = 0 ; i < (orderJson[ApiParseKeys.ORDER_SOCIAL_IMAGES]).length ; i++)
-        orderImages.add(orderJson[ApiParseKeys.ORDER_SOCIAL_IMAGES][i].toString());
+    if(orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY] != null && orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY] is List){
+      for(int i = 0 ; i < (orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY]).length ; i++)
+        orderImages.add(orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY][i][ApiParseKeys.ORDER_USER_IMAGE].toString());
     }
 
     return OrderModel(
@@ -62,52 +52,20 @@ class OrderModel {
         packageSaving: ParserHelper.parseDouble(orderJson[ApiParseKeys.ORDER_PACKAGE_DISCOUNT].toString()),
         priceForExtraFrame: ParserHelper.parseDouble(orderJson[ApiParseKeys.ORDER_EXTRA_FRAME_PRICE].toString()),
       ),
-      frameWithPath: int.parse((orderJson[ApiParseKeys.ORDER_WITH_FRAME]).toString()) == 1 ,
-      isWhiteFrame: int.parse((orderJson[ApiParseKeys.ORDER_WHITE_FRAME]).toString()) == 1 ,
+      frameWithPath: int.parse(((orderJson[ApiParseKeys.ORDER_WITH_FRAME]) ?? 0).toString()) == 1 ,
+      isWhiteFrame: int.parse(((orderJson[ApiParseKeys.ORDER_WHITE_FRAME] ?? 0)).toString()) == 1 ,
       userImages: orderImages,
       orderAddress: AddressViewModel(
         deliveryFees: ParserHelper.parseDouble((orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]).toString()),
       ),
-
     );
   }
 
   static List<OrderModel> fromOrdersList(saveOrderRawResponse) {
-
-
-
     List<OrderModel> ordersList  = List<OrderModel>();
     if(saveOrderRawResponse != null && saveOrderRawResponse is List) {
-      for (int i = 0; i < saveOrderRawResponse.length; i++) {
-        OrderStatus status = getOrderStatus(saveOrderRawResponse[i]['status']['key']);
-        int deliveryTime = int.parse((saveOrderRawResponse[i]['shippingDurationTo'] ?? 1).toString());
-        int orderId = int.parse((saveOrderRawResponse[i][ApiParseKeys.ORDER_ID] ?? 1).toString());
-
-        DateTime orderTime = DateTime.parse(saveOrderRawResponse[i][ApiParseKeys.ORDER_CREATED_AT]);
-        List<OrderModel> subOrder = fromListJson(saveOrderRawResponse[i][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
-        for (OrderModel model in subOrder) {
-          model.statues = status;
-          model.orderTime = orderTime ?? DateTime.now();
-          model.deliveryTime = deliveryTime;
-          model.orderNumber = orderId;
-          ordersList.add(model);
-        }
-      }
-    } else {
-      try{
-        OrderStatus status = getOrderStatus(saveOrderRawResponse['status']['key']);
-        DateTime orderTime = DateTime.parse(saveOrderRawResponse[ApiParseKeys.ORDER_CREATED_AT]);
-        int deliveryTime = int.parse((saveOrderRawResponse['shippingDurationTo'] ?? 1).toString());
-
-        List<OrderModel> subOrder = fromListJson(saveOrderRawResponse[ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
-        for(OrderModel model in subOrder){
-          model.statues = status;
-          model.orderTime = orderTime ?? DateTime.now();
-          model.deliveryTime = deliveryTime;
-          ordersList.add(model);
-        }
-      } catch(exception){
-        debugPrint("Exception while creating the order => $exception");
+      for (int i = 0; i < saveOrderRawResponse.length ; i++){
+        ordersList.add(fromJson(saveOrderRawResponse[i]));
       }
     }
     return ordersList;
@@ -131,11 +89,3 @@ class OrderModel {
   }
 }
 enum OrderStatus { PENDING , PREPARING , SHIPPING, DELIVERED  , CANCELED , SAVED , CART_ORDER}
-
-
-
-/*
-
-            // Current Orders  => [, "preparing", ""]
-            // Unsaved Orders  => [""]
- */

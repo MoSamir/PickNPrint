@@ -23,6 +23,7 @@ class LocationSelectionScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: ListViewAnimatorWidget(
+          placeHolder: Container(width: 0, height: 0,),
           isScrollEnabled: true,
           // ignore: missing_required_param
           listChildrenWidgets: locationsList.map((e) => Padding(

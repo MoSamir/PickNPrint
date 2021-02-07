@@ -28,7 +28,6 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -44,9 +43,8 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max
                     ,children: <Widget>[
-                    SvgPicture.network(
-                      widget.orderModel.orderPackage.packageIcon,
-                    ),
+                    if(widget.orderModel.orderPackage.packageIcon != null)
+                      SvgPicture.network(widget.orderModel.orderPackage.packageIcon,),
                     SizedBox(width: 10,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +110,6 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
           width: MediaQuery.of(context).size.width,
           color: AppColors.lightBlack,
         ),
-
         Card(
           margin: EdgeInsets.symmetric(vertical: 2),
           elevation: 0,
@@ -133,7 +130,6 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
             ),
           ),
         ),
-
         Container(
           height: 1,
           width: MediaQuery.of(context).size.width,

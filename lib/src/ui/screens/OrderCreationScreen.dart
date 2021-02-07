@@ -1,19 +1,16 @@
 import 'dart:io';
-import 'package:flutter_svg/svg.dart';
-import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
-import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
-import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
-import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/blocs/OrderCreationBloc.dart';
+import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
@@ -21,11 +18,11 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
-import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
-import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
-import 'package:picknprint/src/ui/widgets/OrderPackSizeStackWidget.dart';
+import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderStatisticWidget.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
+
+import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
 class OrderCreationScreen extends StatefulWidget {
 
   final OrderModel orderModel ;
@@ -96,7 +93,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
           child: BaseScreen(
             hasDrawer: true,
             child: Form(
-
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -168,7 +164,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
     return OrderStatisticWidget(
       orderModel: widget.orderModel,
       onCreateOrder: (OrderModel order){
-
         if(order.orderPackage.packageId == null){
           try {
             order.orderPackage.packageId = BlocProvider

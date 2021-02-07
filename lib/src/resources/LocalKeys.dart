@@ -9,6 +9,17 @@ class LocalKeys{
   static const String COMING_SOON = "COMING_SOON";
   static const String BACK_LABEL = "BACK_LABEL";
 
+  // ------------------------------ PLACE HOLDERS ------------------------------
+
+  static const String EMPTY_CART_PLACEHOLDER = "EMPTY_CART_PLACEHOLDER";
+  static const String ACTIVE_ORDERS_PLACEHOLDER = "ACTIVE_ORDERS_PLACEHOLDER";
+  static const String CLOSED_ORDERS_PLACEHOLDER = "CLOSED_ORDERS_PLACEHOLDER";
+  static const String SAVED_ORDERS_PLACEHOLDER = "SAVED_ORDERS_PLACEHOLDER";
+
+
+
+
+
 
 
 
@@ -285,6 +296,11 @@ class LocalKeys{
   static const String SELECT_ANYWAY = "SELECT_ANYWAY";
   static const String DONT_SELECT = "DONT_SELECT";
   static const String LOW_QUALITY_IMAGE_MESSAGE = "LOW_QUALITY_IMAGE_MESSAGE";
+
+
+
+
+
 
 
 

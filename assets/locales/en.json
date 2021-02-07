@@ -164,7 +164,13 @@
   "LOW_QUALITY_HEADER": "Low Image Quality",
   "SELECT_ANYWAY": "Select anyway",
   "DONT_SELECT": "Don't select",
-  "LOW_QUALITY_IMAGE_MESSAGE" : "This picture will probably come out blurry. \nIt'd be best to use a different one!"
+  "LOW_QUALITY_IMAGE_MESSAGE" : "This picture will probably come out blurry. \nIt'd be best to use a different one!",
+  "EMPTY_CART_PLACEHOLDER": "No Orders in cart yet",
+  "ACTIVE_ORDERS_PLACEHOLDER": "You don't have active orders yet",
+  "CLOSED_ORDERS_PLACEHOLDER": "You didn't complete any orders yet",
+  "SAVED_ORDERS_PLACEHOLDER": "You didn't save any orders yet"
+
+
 
 
 

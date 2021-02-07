@@ -9,6 +9,7 @@ import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
+import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/ListViewAnimatorWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
@@ -51,12 +52,15 @@ class _UserCartScreenState extends State<UserCartScreen> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListViewAnimatorWidget(
+              placeHolder: Center(
+                child: Text((LocalKeys.EMPTY_CART_PLACEHOLDER).tr()),
+              ),
               isScrollEnabled: true,
               listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCart.map((OrderModel order){
                 print("Order Status => ${order.statues}");
                 return  GestureDetector(
                   onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShippingAddressScreen(order)));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userOrder: order,)));
                     return;
                   },
                   child: Container(

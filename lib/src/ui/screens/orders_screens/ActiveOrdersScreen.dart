@@ -53,29 +53,23 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         centerTitle: true,
         title: (LocalKeys.ACTIVE_ORDERS).tr(),
       ),
-      child: Visibility(
-        visible: BlocProvider.of<UserBloc>(context).userActiveOrders.length > 0,
-        replacement: Container(
-          padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height - kToolbarHeight) * .35 ,),
-          child: Text((LocalKeys.NO_ORDERS_YET).tr()),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text((LocalKeys.ACTIVE_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListViewAnimatorWidget(
-                    isScrollEnabled: false,
-                    listChildrenWidgets: BlocProvider.of<UserBloc>(context).userActiveOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text((LocalKeys.ACTIVE_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListViewAnimatorWidget(
+                  placeHolder: Center(child: Text((LocalKeys.ACTIVE_ORDERS_PLACEHOLDER).tr() , textAlign: TextAlign.center,),),
+                  isScrollEnabled: false,
+                  listChildrenWidgets: BlocProvider.of<UserBloc>(context).userActiveOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
                 ),
+              ),
 
-              ],
-            ),
+            ],
           ),
         ),
       ),

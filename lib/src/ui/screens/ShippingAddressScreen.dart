@@ -59,7 +59,6 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
         order.orderAddress = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses[0];
   }
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -187,7 +186,6 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false , addressModel: userSavedAddress,)));
     setState(() {});
   }
-
   void _onRemoveAddress(AddressViewModel userSavedAddress) async{
     await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddressDeletionConfirmationScreen(addressModel: userSavedAddress,)));
     setState(() {});
