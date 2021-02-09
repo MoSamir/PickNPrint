@@ -43,5 +43,11 @@ class URL{
     }
   }
 
+  static String getFileStackImageURL(String imageHandle) {
+    return "https://cdn.filestackcontent.com/" + imageHandle + "?policy="  + Constants.FILE_STACK_ENCODE_POLICY +
+    "&signature=" + Constants.FILE_STACK_SIGNATURE;
+
+  }
+
 
 }

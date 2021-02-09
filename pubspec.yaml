@@ -18,9 +18,8 @@ dependencies:
   fluttertoast:
   http:
   dio:
-  firebase_core:
   firebase_auth:
-  file_picker:
+#  file_picker:
   modal_progress_hud:
   shared_preferences:
   youtube_player_iframe:
@@ -42,6 +41,8 @@ dependencies:
   configurable_expansion_tile: 1.0.0
   photo_manager: 0.5.8
   flutter_image_compress: 0.7.0
+  flutter_filestack:
+    path: ../flutter_filestack
 
 
 

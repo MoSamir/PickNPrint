@@ -18,11 +18,10 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
+import 'package:picknprint/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/OrderStatisticWidget.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
-
-import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
 class OrderCreationScreen extends StatefulWidget {
 
   final OrderModel orderModel ;

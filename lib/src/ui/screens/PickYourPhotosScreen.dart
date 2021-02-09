@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as Math;
 import 'package:easy_localization/easy_localization.dart' as ll;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_filestack/flutter_filestack.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
@@ -16,6 +18,7 @@ import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/apis/ApplicationDataProvider.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/URL.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -27,18 +30,15 @@ import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:picknprint/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
 import '../../Repository.dart';
 import 'confirmation_screens/OrderSavingConfirmationScreen.dart';
-import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/CheckBoxListTile.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
-
 import 'AddNewShippingAddressScreen.dart';
-import 'SelectImageSourceScreen.dart';
 
 class PickYourPhotosScreen extends StatefulWidget {
   final PackageModel userSelectedPackage;
@@ -77,7 +77,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
           originalImages: originalsList,
           orderTime: DateTime.now());
       restoreCache();
-
     }
     else {
       userOrder = widget.userOrder;
@@ -477,18 +476,40 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   userOrder.userImages[i].length > 0) {
                 _openEditImage(userOrder.originalImages[i], i);
               } else {
-                List<String> imagePath =
-                await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SelectImageSourceScreen()));
-                try{
-                  userOrder.userImages[i] = imagePath[0] ?? '';
-                  userOrder.originalImages[i] = imagePath[1] ?? '';
-                  cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
-                  setState(() {});
-                  double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                // List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) => SelectImageSourceScreen()));
+                // try{
+                //   userOrder.userImages[i] = imagePath[0] ?? '';
+                //   userOrder.originalImages[i] = imagePath[1] ?? '';
+                //   cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
+                //   setState(() {});
+                //   double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                //
+                //   _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+                // } catch(exception){}
 
-                  _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
-                } catch(exception){}
+
+                try{
+                  var response = await FlutterFilestack.getFileStackView(
+                    apiKey: Constants.FILE_STACK_API_KEY,
+                    containerName: Constants.FILE_STACK_CONTAINER_NAME,
+                    encodePolicy: Constants.FILE_STACK_ENCODE_POLICY,
+                    signature: Constants.FILE_STACK_SIGNATURE,
+                  );
+
+                  if(response != null){
+                    List<String> responseParts = response.replaceAll(' ', '').split(',');
+                    String getImageURL = URL.getFileStackImageURL(responseParts[1].split('=')[1].toString());
+                      userOrder.userImages[i] = getImageURL ?? '';
+                      userOrder.originalImages[i] = getImageURL ?? '';
+                      cacheImages(croppedVersion:  getImageURL ,originalVersion: getImageURL);
+                      setState(() {});
+                      double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                      _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+                  }
+                } catch(exception){
+                  print("Exception => $exception");
+                }
               }
               return;
             },
@@ -892,7 +913,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         0) {
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => AddNewShippingAddressScreen(
-
             comingFromRegistration: false,
           )));
     } else {
@@ -904,16 +924,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   void cacheImages({String croppedVersion, String originalVersion}) async{
     await Repository.cacheCroppedImage(croppedVersion);
     await Repository.cacheOriginalImage(originalVersion);
-    print("******************** Cached ****************************");
   }
 
   void restoreCache() async{
     List<String> originalOrderItems = await Repository.getCachedOriginalOrderImages();
     List<String> cachedCroppedOrderItems = await Repository.getCachedCroppedOrderImages();
-
-    print("Hello Cache => ${originalOrderItems.length}");
-    print("Hello Cache => ${cachedCroppedOrderItems.length}");
-
     setState(() {
       if(originalOrderItems != null){
         for(int i = 0 ; i < originalOrderItems.length ; i++){

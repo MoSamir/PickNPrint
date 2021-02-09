@@ -19,7 +19,8 @@ import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 
 import 'package:picknprint/src/ui/screens/AddNewShippingAddressScreen.dart';
-import 'file:///E:/Testing/pick_n_print/lib/src/ui/screens/confirmation_screens/AddressDeletionConfirmationScreen.dart';
+import 'package:picknprint/src/ui/screens/confirmation_screens/AddressDeletionConfirmationScreen.dart';
+
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
