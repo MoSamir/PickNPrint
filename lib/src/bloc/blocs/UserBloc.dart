@@ -141,7 +141,7 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
   Stream<UserBlocStates> _handleLoadingUserOrders(LoadUserOrders event) async*{
     yield UserDataLoadingState();
 
-    List<ResponseViewModel<List<OrderModel>>> userOrders = await Future.wait([
+    List<ResponseViewModel> userOrders = await Future.wait([
       Repository.loadActiveOrders(),
       Repository.loadClosedOrders(),
       Repository.loadSavedOrders(),
@@ -175,7 +175,7 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     // User Cart listing
     if(userOrders[3].isSuccess){
       userCart = List<OrderModel>();
-      userCart.addAll(userOrders[3].responseData);
+      userCart.add(userOrders[3].responseData);
     } else {
       userCart = List<OrderModel>();
     }
@@ -233,6 +233,7 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     ResponseViewModel<bool> saveAddressResponse = await Repository.deleteAddress(address : event.address);
     if(saveAddressResponse.isSuccess){
       currentLoggedInUser.userSavedAddresses.remove(event.address);
+
       yield UserAddressSavedSuccessfully();
       return;
     } else {

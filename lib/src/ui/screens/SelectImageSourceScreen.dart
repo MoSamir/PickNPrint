@@ -61,35 +61,38 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                 fontSize: 20,
                 color: AppColors.white,
               ), textAlign: TextAlign.center,),
-              Text((LocalKeys.SELECT_YOUR_PHOTOS_DESCRIPTION).tr(),
-                style: TextStyle(
-                  color: AppColors.white,
-                ), textAlign: TextAlign.center,),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      pickUserPicture(context);
-                      return;
-                    },
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width - 32,
-                      height: (50),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightBlue,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Center(child: Text((LocalKeys
-                          .UPLOAD_YOUR_OWN_LABEL).tr(), style: TextStyle(
-                          color: AppColors.white),)),
-                    ),
-                  ),
-                ),
-              ),
+              // Text((LocalKeys.SELECT_YOUR_PHOTOS_DESCRIPTION).tr(),
+              //   style: TextStyle(
+              //     color: AppColors.white,
+              //   ), textAlign: TextAlign.center,),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+              //   child: Center(
+              //     child: GestureDetector(
+              //       onTap: () {
+              //         pickUserPicture(context);
+              //         return;
+              //       },
+              //       child: Container(
+              //         width: MediaQuery
+              //             .of(context)
+              //             .size
+              //             .width - 32,
+              //         height: (50),
+              //         decoration: BoxDecoration(
+              //           color: AppColors.lightBlue,
+              //           borderRadius: BorderRadius.all(Radius.circular(10)),
+              //         ),
+              //         child: Center(child: Text((LocalKeys
+              //             .UPLOAD_YOUR_OWN_LABEL).tr(), style: TextStyle(
+              //             color: AppColors.white),)),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+              SizedBox(height: 10,),
+
               Text((LocalKeys.SELECT_YOUR_PHOTOS_DESCRIPTION).tr(),
                 style: TextStyle(
                   color: AppColors.white,
@@ -98,22 +101,27 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                 color: AppColors.white,
               ), textAlign: TextAlign.center,),
               SizedBox(height: 5,),
-              Text((LocalKeys.OR_LABEL).tr(), style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: AppColors.white,
-              ), textAlign: TextAlign.center,),
-              Text((LocalKeys.PICK_FROM_SOCIAL_MEDIA).tr(), style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: AppColors.white,
-              ), textAlign: TextAlign.center,),
+
+              // Text((LocalKeys.OR_LABEL).tr(), style: TextStyle(
+              //   fontWeight: FontWeight.bold,
+              //   fontSize: 20,
+              //   color: AppColors.white,
+              // ), textAlign: TextAlign.center,),
+              // Text((LocalKeys.PICK_FROM_SOCIAL_MEDIA).tr(), style: TextStyle(
+              //   fontWeight: FontWeight.bold,
+              //   fontSize: 20,
+              //   color: AppColors.white,
+              // ), textAlign: TextAlign.center,),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 8.0, horizontal: 8.0),
                 child: Center(
                   child: GestureDetector(
-                    onTap: _pickImageFromFacebook,
+                    onTap: (){
+                      print("Image Source is !");
+                      pickUserImage(ImageSource.camera);
+                      return;
+                    },
                     child: Container(
                       width: MediaQuery
                           .of(context)
@@ -126,9 +134,12 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: Image.asset(Resources.FACEBOOK_LOGO_IMG),
+                          Container(
+                            width: 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              child: Center(child: Icon(Icons.camera , size: 25,color: AppColors.white, ),),
+                            ),
                           ),
                           SizedBox(width: 8,),
                           Expanded(
@@ -139,14 +150,14 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Expanded(
-                                    child: Text((LocalKeys.FACEBOOK_LABEL).tr(),
+                                    child: Text((LocalKeys.PICK_FROM_CAMERA).tr(),
                                       style: TextStyle(
                                         color: AppColors.white,
                                       ), textAlign: TextAlign.center,),
                                   ),
                                   Expanded(
                                     child: Text(
-                                      (LocalKeys.SELECT_FROM_FACEBOOK).tr(),
+                                      (LocalKeys.SELECT_FROM_CAMERA).tr(),
                                       style: TextStyle(
                                         color: AppColors.white,
                                       ), textAlign: TextAlign.center,),
@@ -167,7 +178,7 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                     vertical: 8.0, horizontal: 8.0),
                 child: Center(
                   child: GestureDetector(
-                    onTap: _pickImageFromInstagram,
+                    onTap: getImageFromPickNPrintGallery,
                     child: Container(
                       width: MediaQuery
                           .of(context)
@@ -180,9 +191,12 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: Image.asset(Resources.INSTAGRAM_LOGO_IMG),
+                          Container(
+                            width: 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              child: Center(child: Icon(Icons.photo , size: 25, color: AppColors.white,),),
+                            ),
                           ),
                           SizedBox(width: 5,),
                           Expanded(
@@ -190,11 +204,11 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text((LocalKeys.INSTAGRAM_LABEL).tr(),
+                                Text((LocalKeys.PICK_FROM_GALLERY).tr(),
                                   style: TextStyle(
                                     color: AppColors.white,
                                   ), textAlign: TextAlign.center,),
-                                Text((LocalKeys.SELECT_FROM_INSTAGRAM).tr(),
+                                Text((LocalKeys.SELECT_FROM_GALLERY).tr(),
                                   style: TextStyle(
                                     color: AppColors.white,
                                   ), textAlign: TextAlign.center,),
@@ -327,78 +341,78 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     }
   }
 
-  void _pickImageFromFacebook() async {
-    ResponseViewModel<UserViewModel> facebookUser = await Repository
-        .signInWithFacebook();
-    if (facebookUser.isSuccess) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) =>
-              FacebookImagePicker(
-                facebookUser.responseData.userToken,
-                onDone: (items) async {
-                  Navigator.pop(context);
-                  if (items != null && items.length > 0) {
-                    ResponseViewModel<File> imageFile = await Repository
-                        .getImageFromURL(items[0].source);
-                    if (imageFile.isSuccess) {
-                      File croppedFilePath = await UIHelpers.cropImage(
-                          imageFile.responseData.path);
-                      Navigator.of(context).pop(
-                          [croppedFilePath.path, imageFile.responseData.path]);
-                    }
-                  }
-                },
-                onCancel: () => Navigator.pop(context),
-              ),
-        ),
-      );
-    }
-  }
-
-  void _pickImageFromInstagram() async {
-    String accessToken;
-    accessToken = await InstagramAuth().accessToken;
-    if (accessToken == null) {
-      List<String> loginInfo = await Navigator.push(context, MaterialPageRoute(
-        builder: (_) => InstagramWebViewLoginPage(),
-      ));
-      accessToken = loginInfo[0];
-      if (accessToken == null) return;
-    }
-    Navigator.push(context,
-      MaterialPageRoute(
-        builder: (context) =>
-            InstagramImagePicker(
-              accessToken,
-              showLogoutButton: true,
-              onDone: (List<instgramPhoto.Photo> items) async {
-                Navigator.pop(context);
-                if (items != null && items.length > 0) {
-                  ResponseViewModel<File> imageFile = await Repository
-                      .getImageFromURL(items[0].url);
-                  if (imageFile.isSuccess) {
-                    File croppedFilePath = await UIHelpers.cropImage(
-                        imageFile.responseData.path);
-                    Navigator.pop(context,
-                        [croppedFilePath.path, imageFile.responseData.path]);
-                    return;
-                  }
-                }
-                Navigator.pop(context);
-                return;
-              },
-              onCancel: () => Navigator.pop(context),
-            ),
-      ),
-    );
-  }
+  // void _pickImageFromFacebook() async {
+  //   ResponseViewModel<UserViewModel> facebookUser = await Repository
+  //       .signInWithFacebook();
+  //   if (facebookUser.isSuccess) {
+  //     Navigator.of(context).push(
+  //       MaterialPageRoute(
+  //         builder: (_) =>
+  //             FacebookImagePicker(
+  //               facebookUser.responseData.userToken,
+  //               onDone: (items) async {
+  //                 Navigator.pop(context);
+  //                 if (items != null && items.length > 0) {
+  //                   ResponseViewModel<File> imageFile = await Repository
+  //                       .getImageFromURL(items[0].source);
+  //                   if (imageFile.isSuccess) {
+  //                     File croppedFilePath = await UIHelpers.cropImage(
+  //                         imageFile.responseData.path);
+  //                     Navigator.of(context).pop(
+  //                         [croppedFilePath.path, imageFile.responseData.path]);
+  //                   }
+  //                 }
+  //               },
+  //               onCancel: () => Navigator.pop(context),
+  //             ),
+  //       ),
+  //     );
+  //   }
+  // }
+  // void _pickImageFromInstagram() async {
+  //   String accessToken;
+  //   accessToken = await InstagramAuth().accessToken;
+  //   if (accessToken == null) {
+  //     List<String> loginInfo = await Navigator.push(context, MaterialPageRoute(
+  //       builder: (_) => InstagramWebViewLoginPage(),
+  //     ));
+  //     accessToken = loginInfo[0];
+  //     if (accessToken == null) return;
+  //   }
+  //   Navigator.push(context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>
+  //           InstagramImagePicker(
+  //             accessToken,
+  //             showLogoutButton: true,
+  //             onDone: (List<instgramPhoto.Photo> items) async {
+  //               Navigator.pop(context);
+  //               if (items != null && items.length > 0) {
+  //                 ResponseViewModel<File> imageFile = await Repository
+  //                     .getImageFromURL(items[0].url);
+  //                 if (imageFile.isSuccess) {
+  //                   File croppedFilePath = await UIHelpers.cropImage(
+  //                       imageFile.responseData.path);
+  //                   Navigator.pop(context,
+  //                       [croppedFilePath.path, imageFile.responseData.path]);
+  //                   return;
+  //                 }
+  //               }
+  //               Navigator.pop(context);
+  //               return;
+  //             },
+  //             onCancel: () => Navigator.pop(context),
+  //           ),
+  //     ),
+  //   );
+  // }
 
 
   void getImageFromPickNPrintGallery() async {
-    Navigator.pop(context);
+//    Navigator.pop(context);
     String imageFilePath = await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => CustomGallery()));
+
     if (imageFilePath != null) {
       File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
       Navigator.of(context).pop([croppedFilePath.path, imageFilePath]);

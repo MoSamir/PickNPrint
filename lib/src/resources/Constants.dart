@@ -16,10 +16,7 @@ class Constants {
   static const String SHARED_PREFERENCE_CROPPED_ORDER_KEY = "SHARED_PREFERENCE_CROPPED_ORDER_KEY";
   static const String SHARED_PREFERENCE_ORIGINAL_ORDER_KEY = "SHARED_PREFERENCE_ORIGINAL_ORDER_KEY";
 
-  static const String FILE_STACK_API_KEY =  "APb5UOct7StW2ZppDsR8Fz";
-  static const String FILE_STACK_CONTAINER_NAME = "android-uploads";
-  static const String FILE_STACK_ENCODE_POLICY =  "eyJleHBpcnkiOjE2MTQ1NDc4MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdG9yZSIsImNvbnZlcnQiLCJydW5Xb3JrZmxvdyJdLCJjb250YWluZXIiOiJhbmRyb2lkLXVwbG9hZHMifQ==";
-  static const String FILE_STACK_SIGNATURE =  "4c0140523487c20d9992a3785a25d8802bee5ab4525803fe26b33ad72cb50809";
+  static const String FILE_STACK_API_KEY =  "AspW9mDCPREWfktPAU5O4z";
 
 
 }

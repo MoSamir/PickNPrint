@@ -75,9 +75,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
           }
         }
         else if(state is OrderCreationLoadedSuccessState){
-
-
-
           BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderConfirmationScreen(
             orderNumber: state.orderNumber,

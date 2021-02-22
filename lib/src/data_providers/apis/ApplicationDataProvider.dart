@@ -92,13 +92,14 @@ class ApplicationDataProvider {
     }
     print("************************************************");
 
-    List<Future<ResponseViewModel>> uploadFileTasks = filesToBeUploaded.map((e) => NetworkUtilities.handleUploadSingleFile(
+    List<Future<ResponseViewModel>> uploadFileTasks = filesToBeUploaded.map((e) => NetworkUtilities.handleUploadBinaryFile(
       fileURL: e,
-      methodURL: URL.getURL(apiPath: URL.POST_UPLOAD_IMAGE),
-      requestHeaders: requestHeaders,
+      methodURL: '${URL.POST_UPLOAD_IMAGE}${DateTime.now().toString()}',
+      requestHeaders: {},
       uploadKey: 'image',
       parserFunction: (Map<String,dynamic> jsonResponse){
-        return jsonResponse['path'];
+        print("JsonResponse => $jsonResponse");
+        return jsonResponse['url'];
       }
     )).toList();
 

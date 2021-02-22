@@ -18,4 +18,12 @@ class OrderSharedPreference {
     }
   }
 
+  static Future<void> removeCachedImages() async{
+
+    SharedPreferences mSharedPreference = await SharedPreferences.getInstance();
+    await mSharedPreference.remove(Constants.SHARED_PREFERENCE_ORIGINAL_ORDER_KEY);
+    await mSharedPreference.remove(Constants.SHARED_PREFERENCE_CROPPED_ORDER_KEY);
+
+  }
+
 }

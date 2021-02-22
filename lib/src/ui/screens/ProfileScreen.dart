@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:picknprint/src/ui/screens/UpdatePasswordScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -96,7 +96,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             inAsyncCall: state is UserDataLoadingState,
             child: BaseScreen(
               hasDrawer: false,
+
+
+
               customAppbar: PickNPrintAppbar(
+                leadAction: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: (){
+                    if(Navigator.canPop(context)){
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+                    }
+                  },
+                ),
                 appbarColor: AppColors.black,
                 actions: [],
                 centerTitle: true,
@@ -464,7 +477,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget getUpdateMyPasswordSection() {
 
     return GestureDetector(
-      onTap: (){},
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> UpdatePasswordScreen()));
+      },
       child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           decoration: BoxDecoration(
@@ -634,6 +649,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget getUserImage() {
+
+    print(" Hello => ${BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage}");
     if(isEditingModeOn && userImageFile != null)
       return Image.file(userImageFile,
         height: 100,

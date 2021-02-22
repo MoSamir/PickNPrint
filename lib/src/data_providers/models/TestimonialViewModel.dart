@@ -1,5 +1,5 @@
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
-
+import 'package:picknprint/src/utilities/ParserHelpers.dart';
 class TestimonialViewModel {
   String testimonialId , testimonialComment , testimonialImage;
   TestimonialViewModel({this.testimonialId, this.testimonialComment, this.testimonialImage});
@@ -8,7 +8,7 @@ class TestimonialViewModel {
     return TestimonialViewModel(
       testimonialComment: testimonialJson[ApiParseKeys.TESTIMONIAL_COMMENT_KEY].toString(),
       testimonialId: testimonialJson[ApiParseKeys.TESTIMONIAL_ID_KEY].toString(),
-      testimonialImage: testimonialJson[ApiParseKeys.TESTIMONIAL_IMAGE_KEY].toString(),
+      testimonialImage: ParserHelper.parseURL(testimonialJson[ApiParseKeys.TESTIMONIAL_IMAGE_KEY].toString()),
     );
   }
   static List<TestimonialViewModel> fromListJson(List<dynamic> testimonialsList){

@@ -5,8 +5,8 @@ class ParserHelper {
 
   static String parseURL(String url){
     if(url == null) return "";
-    if(url.contains(URL.BASE_URL)) return url ;
-    return URL.BASE_URL + "/" + url;
+    if(url.contains(URL.SERVER_LINK) || url.contains('https://cdn.filestackcontent.com')) return url ;
+    return URL.BASE_URL.replaceAll('api/', '') + "/" + url;
   }
 
   static double parseDouble(String number){

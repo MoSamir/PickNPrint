@@ -278,6 +278,8 @@ class LocalKeys{
 
   static const String  PICK_FROM_GALLERY = "PICK_FROM_GALLERY";
   static const String  PICK_FROM_CAMERA = "PICK_FROM_CAMERA";
+  static const String  SELECT_FROM_CAMERA = "SELECT_FROM_CAMERA";
+  static const String  SELECT_FROM_GALLERY = "SELECT_FROM_GALLERY";
 
   static const String PROCEED_WITH_CURRENT_AMOUNT_WARNING = "PROCEED_WITH_CURRENT_AMOUNT_WARNING";
 

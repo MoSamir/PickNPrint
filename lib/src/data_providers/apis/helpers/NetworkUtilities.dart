@@ -130,8 +130,11 @@ class NetworkUtilities {
         bool isBodyJson}) async {
     ResponseViewModel uploadResponse;
     try {
-      
-      requestHeaders.putIfAbsent('Accept', () => 'multipart/form-data');
+
+      // requestHeaders.putIfAbsent('Accept', () => 'multipart/form-data');
+      requestHeaders.putIfAbsent('X-Request-With', () => 'XMLHttpRequest');
+      // requestHeaders.putIfAbsent('Content-Type', () => 'multipart/form-data');
+
       MultipartFile imageFile = await MultipartFile.fromFile(fileURL);
       Map<String, dynamic> requestMap = requestBody ?? Map<String, dynamic>();
       requestMap.putIfAbsent(uploadKey, () => imageFile);
@@ -147,6 +150,7 @@ class NetworkUtilities {
           ));
 
       if (serverResponse.statusCode == 200) {
+        print("SERVER RESPONSE IS OK => ${serverResponse.data}");
         uploadResponse = ResponseViewModel(
           isSuccess: true,
           errorViewModel: null,
@@ -206,6 +210,37 @@ class NetworkUtilities {
     }
     return uploadResponse;
   }
+
+
+  static Future<ResponseViewModel> handleUploadBinaryFile(
+      {String methodURL,
+        Map<String, String> requestHeaders,
+        Function parserFunction,
+        String uploadKey ,
+        String fileURL,
+        Map<String, dynamic> requestBody,
+        bool isBodyJson}) async {
+    ResponseViewModel uploadResponse;
+      File _image = File(fileURL);
+
+      final bytes = await _image.readAsBytes();
+      var serverResponse = await http.post(methodURL, body: bytes);
+      print("Method URL -> $methodURL");
+
+
+      if (serverResponse.statusCode == 200) {
+        uploadResponse = ResponseViewModel(
+          isSuccess: true,
+          errorViewModel: null,
+          responseData: parserFunction(json.decode(serverResponse.body)),
+        );
+      }
+      else {
+          uploadResponse = handleError(serverResponse);
+      }
+      return uploadResponse;
+    }
+
 
 
   static Future<ResponseViewModel> handlePutRequest(

@@ -12,7 +12,7 @@ import 'helpers/URL.dart';
 
 class CartDataProvider {
 
-  static Future<ResponseViewModel<List<OrderModel>>> saveOrderToCart(OrderModel order) async {
+  static Future<ResponseViewModel<OrderModel>> saveOrderToCart(OrderModel order) async {
     String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
@@ -35,10 +35,10 @@ class CartDataProvider {
         requestHeaders: requestHeaders,
         acceptJson: true,
         parserFunction: (saveOrderRawResponse){
-          return OrderModel.fromListJson(saveOrderRawResponse[ApiParseKeys.ORDER_CART_ROOT_KEY][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
+          return OrderModel.fromJson(saveOrderRawResponse[ApiParseKeys.ORDER_CART_ROOT_KEY]);
         }
     );
-    return ResponseViewModel<List<OrderModel>>(
+    return ResponseViewModel<OrderModel>(
       responseData: saveOrderResponse.responseData,
       isSuccess: saveOrderResponse.isSuccess,
       errorViewModel: saveOrderResponse.errorViewModel,
@@ -111,7 +111,7 @@ class CartDataProvider {
   }
 
 
-  static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async {
+  static Future<ResponseViewModel<OrderModel>> getUserCart() async {
     String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
@@ -122,10 +122,10 @@ class CartDataProvider {
         methodURL: apiURL,
         requestHeaders: requestHeaders,
         parserFunction: (saveOrderRawResponse){
-          return OrderModel.fromListJson(saveOrderRawResponse[ApiParseKeys.ORDER_CART_ROOT_KEY][ApiParseKeys.ORDER_ITEMS_LIST_KEY]);
+          return OrderModel.fromJson(saveOrderRawResponse[ApiParseKeys.ORDER_CART_ROOT_KEY]);
         }
     );
-    return ResponseViewModel<List<OrderModel>>(
+    return ResponseViewModel<OrderModel>(
       responseData: saveOrderResponse.responseData,
       isSuccess: saveOrderResponse.isSuccess,
       errorViewModel: saveOrderResponse.errorViewModel,

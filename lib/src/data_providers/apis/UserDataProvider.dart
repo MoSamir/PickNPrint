@@ -153,8 +153,7 @@ class UserDataProvider{
   static Future<ResponseViewModel<UserViewModel>> updateUserProfile(String imageLink) async{
     String token = await UserSharedPreference.getUserToken();
     Map<String,dynamic> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
-      HttpHeaders.authorizationHeader : 'Bearer $token',
-    });
+      HttpHeaders.authorizationHeader : 'Bearer $token',});
     String apiURL = URL.getURL(apiPath: URL.UPLOAD_UPDATE_PROFILE_IMAGE);
 
     ResponseViewModel uploadResponse = await NetworkUtilities.handleUploadSingleFile(

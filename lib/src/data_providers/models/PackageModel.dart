@@ -33,8 +33,8 @@ class PackageModel {
 
 
     return PackageModel(
-      packageMainImage: packageJson[ApiParseKeys.PACKAGE_IMAGE],
-      packageIcon: packageJson[ApiParseKeys.PACKAGE_ICON],
+      packageMainImage: ParserHelper.parseURL(packageJson[ApiParseKeys.PACKAGE_IMAGE]),
+      packageIcon: ParserHelper.parseURL(packageJson[ApiParseKeys.PACKAGE_ICON]),
       packageId: int.parse(packageJson[ApiParseKeys.PACKAGE_ID].toString()),
       packageSize: int.parse(packageJson[ApiParseKeys.PACKAGE_SIZE_KEY].toString()),
       packageSaving: packageSaving,

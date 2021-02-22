@@ -78,6 +78,10 @@ class ApiParseKeys {
   static const String ORDER_CREATED_AT = "created_at";
   static const String ORDER_ITEMS_LIST_KEY = "items";
   static const String ORDER_CART_ROOT_KEY = "cart";
+  static const String ORDER_ITEM_STATUS = "status";
+  static const String ORDER_ITEM_STATUS_KEY = "key";
+
+
 
   static const String ORDER_CART_GROSS_PRICE = "totalPrice";
   static const String ORDER_CART_NET_PRICE = "subTotal";
@@ -92,6 +96,10 @@ class ApiParseKeys {
   static const String TESTIMONIAL_COMMENT_KEY = "comment";
   static const String TESTIMONIAL_IMAGE_KEY = "image";
   static const String TESTIMONIAL_ID_KEY = "id";
+
+
+
+
 
 
 

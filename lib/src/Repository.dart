@@ -55,6 +55,9 @@ class Repository {
   }
 
 
+
+
+
   static Future<ResponseViewModel<void>> saveEncryptedPassword(String userPassword) async {
     return await UserSharedPreference.saveEncryptedPassword(userPassword);
   }
@@ -146,19 +149,9 @@ class Repository {
     return await CartDataProvider.saveOrderToCart(orderModel);
   }
 
-  static Future<ResponseViewModel<List<OrderModel>>> getUserCart() async{
-    ResponseViewModel<List<OrderModel>> orders = await CartDataProvider.getUserCart();
-    if(orders.isSuccess){
-      List<OrderModel> successData = orders.responseData;
-      for(int i = 0 ; i < successData.length ; i++)
-        successData[i].statues = OrderStatus.CART_ORDER;
-      return ResponseViewModel<List<OrderModel>>(
-        isSuccess: true,
-        responseData: successData,
-      );
-    } else {
-      return orders;
-    }
+  static Future<ResponseViewModel<OrderModel>> getUserCart() async{
+    ResponseViewModel<OrderModel> order = await CartDataProvider.getUserCart();
+      return order;
   }
 
   static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel orderModel) async{
@@ -217,6 +210,12 @@ class Repository {
   static Future<void> cacheOriginalImage(String imagePath) async {
     OrderSharedPreference.saveImageToKey(imagePath , Constants.SHARED_PREFERENCE_ORIGINAL_ORDER_KEY);
   }
+
+  static Future<void> removeCachedImages() async {
+    OrderSharedPreference.removeCachedImages();
+
+  }
+
   static Future<List<String>> getCachedCroppedOrderImages() async {
     return await OrderSharedPreference.getImagesList(Constants.SHARED_PREFERENCE_CROPPED_ORDER_KEY);
   }

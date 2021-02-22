@@ -30,6 +30,7 @@ import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/LoginScreen.dart';
+import 'package:picknprint/src/ui/screens/SelectImageSourceScreen.dart';
 import 'package:picknprint/src/ui/screens/confirmation_screens/OrderAddedToCartSuccessfullyScreen.dart';
 import '../../Repository.dart';
 import 'confirmation_screens/OrderSavingConfirmationScreen.dart';
@@ -100,7 +101,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         body: BlocConsumer(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is OrderCreationLoadingFailureState) {
               if (state.error.errorCode == HttpStatus.requestTimeout) {
                 UIHelpers.showNetworkError(context);
@@ -129,16 +130,22 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               }
             } else if (state is OrderAddedToCartSuccessState) {
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+
+              await Future.delayed(Duration(seconds: 2));
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => OrderAddedToCartSuccessfullyScreen(),
               ));
               return;
             } else if (state is OrderSavingSuccessState) {
               BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+              await Future.delayed(Duration(seconds: 2));
+              int length = BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0 ? BlocProvider.of<UserBloc>(context).userSavedOrders.length - 1 : 0 ;
+              String orderNumber = BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0 ? BlocProvider.of<UserBloc>(context).userSavedOrders[length].orderNumber.toString() : '';
+              DateTime orderTime = BlocProvider.of<UserBloc>(context).userSavedOrders.length > 0 ? BlocProvider.of<UserBloc>(context).userSavedOrders[length].orderTime : DateTime.now();
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => OrderSavingConfirmationScreen(
-                  orderNumber: state.cartOrders[0].orderNumber.toString(),
-                  orderTime: state.cartOrders[0].orderTime,
+                  orderNumber:  orderNumber , //state.cartOrders[0].orderNumber.toString(),
+                  orderTime: orderTime,
                 ),
               ));
             }
@@ -476,40 +483,16 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                   userOrder.userImages[i].length > 0) {
                 _openEditImage(userOrder.originalImages[i], i);
               } else {
-                // List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => SelectImageSourceScreen()));
-                // try{
-                //   userOrder.userImages[i] = imagePath[0] ?? '';
-                //   userOrder.originalImages[i] = imagePath[1] ?? '';
-                //   cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
-                //   setState(() {});
-                //   double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
-                //
-                //   _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
-                // } catch(exception){}
-
-
+                List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SelectImageSourceScreen()));
                 try{
-                  var response = await FlutterFilestack.getFileStackView(
-                    apiKey: Constants.FILE_STACK_API_KEY,
-                    containerName: Constants.FILE_STACK_CONTAINER_NAME,
-                    encodePolicy: Constants.FILE_STACK_ENCODE_POLICY,
-                    signature: Constants.FILE_STACK_SIGNATURE,
-                  );
-
-                  if(response != null){
-                    List<String> responseParts = response.replaceAll(' ', '').split(',');
-                    String getImageURL = URL.getFileStackImageURL(responseParts[1].split('=')[1].toString());
-                      userOrder.userImages[i] = getImageURL ?? '';
-                      userOrder.originalImages[i] = getImageURL ?? '';
-                      cacheImages(croppedVersion:  getImageURL ,originalVersion: getImageURL);
-                      setState(() {});
-                      double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
-                      _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
-                  }
-                } catch(exception){
-                  print("Exception => $exception");
-                }
+                  userOrder.userImages[i] = imagePath[0] ?? '';
+                  userOrder.originalImages[i] = imagePath[1] ?? '';
+                  cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
+                  setState(() {});
+                  double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+                  _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+                } catch(exception){}
               }
               return;
             },
@@ -622,6 +605,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               child: Center(
                 child: Text(
                   (LocalKeys.ADD_MORE_IMAGES).tr(args: [
+                    widget.userSelectedPackage == null ? '' :
                     (widget.userSelectedPackage.packageAfterDiscountPrice ?? '').toString(),
                   ]),
                   textAlign: TextAlign.center,
@@ -758,10 +742,10 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   Widget getImageFromPath(String userImage) {
-    if (userImage.toLowerCase().contains('http') ||
-        userImage.toLowerCase().contains('https')) {
+    if (userImage.toLowerCase().contains('/http') ||
+        userImage.toLowerCase().contains('/https')) {
       return Image.network(
-        userImage,
+        userImage.replaceFirst('/', ''),
         fit: BoxFit.fill,
       );
     } else {

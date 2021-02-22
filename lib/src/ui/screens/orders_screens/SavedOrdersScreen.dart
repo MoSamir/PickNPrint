@@ -66,35 +66,39 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                   child: ListViewAnimatorWidget(
                     placeHolder: Center(child: Text((LocalKeys.SAVED_ORDERS_PLACEHOLDER).tr() , textAlign: TextAlign.center,),),
                     isScrollEnabled: false,
-                    listChildrenWidgets: BlocProvider.of<UserBloc>(context).userSavedOrders.map((OrderModel orderModel) => Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: GestureDetector(
-                        onTap: (){
-                          navigateToOrderCreationScreen(orderModel);
-                          return;
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
-                          decoration: BoxDecoration(
-                              color: AppColors.lightBlue,
-                              borderRadius: BorderRadius.all(Radius.circular(8.0))
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
-                                  color: AppColors.white,
-                                ),),
-                                Text(DateFormat.yMd(localeName).format(orderModel.orderTime).replaceAll('/', ' / ') , style: TextStyle(
-                                  color: AppColors.white,
-                                )),
-                              ],
+                    listChildrenWidgets: BlocProvider.of<UserBloc>(context).userSavedOrders.map((OrderModel orderModel){
+                      print("ORDER => ${orderModel.orderNumber}");
+                      print("ORDER => ${orderModel.statues}");
+                      return  Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: GestureDetector(
+                          onTap: (){
+                            navigateToOrderCreationScreen(orderModel);
+                            return;
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 15),
+                            decoration: BoxDecoration(
+                                color: AppColors.lightBlue,
+                                borderRadius: BorderRadius.all(Radius.circular(8.0))
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text((LocalKeys.ORDER_NUMBER).tr(args: [(orderModel.orderNumber.toString())]) , style: TextStyle(
+                                    color: AppColors.white,
+                                  ),),
+                                  Text(DateFormat.yMd(localeName).format(orderModel.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
+                                    color: AppColors.white,
+                                  )),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    )).toList(),
+                      );
+                    }).toList(),
                   )),
 
               RichText(

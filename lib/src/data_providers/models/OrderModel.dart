@@ -39,7 +39,13 @@ class OrderModel {
         orderImages.add(orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY][i][ApiParseKeys.ORDER_USER_IMAGE].toString());
     }
 
+
+    String itemStatus = orderJson[ApiParseKeys.ORDER_ITEM_STATUS] != null ?
+    orderJson[ApiParseKeys.ORDER_ITEM_STATUS][ApiParseKeys.ORDER_ITEM_STATUS_KEY] : null;
+
     return OrderModel(
+      statues: getOrderStatus(itemStatus),
+      orderTime:  DateTime.parse(orderJson[ApiParseKeys.ORDER_CREATED_AT] ?? DateTime.now().toString()),
       orderGrossPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_GROSS_PRICE]).toString()),
       orderNetPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_NET_PRICE]).toString()),
       orderNumber: int.parse((orderJson[ApiParseKeys.ORDER_ID]).toString()),
@@ -73,6 +79,7 @@ class OrderModel {
 
   static OrderStatus getOrderStatus(String orderStatus) {
 
+    print("Order Statues => $orderStatus");
     if(orderStatus == 'preparing'){
       return OrderStatus.PREPARING;
     } else if(orderStatus == 'delivered') {

@@ -22,7 +22,7 @@ class EnhancedImageNetwork extends StatelessWidget {
       width: width ?? 50,
       height: height ?? 50,
       placeholder: placeHolder ?? AssetImage('assets/images/app_logo.png') ,
-      image: NetworkImage(image ?? ''),
+      image: NetworkImage(image ?? '' + "?${DateTime.now().timeZoneOffset}" ?? ''),
     ),) :
     FadeInImage(
       imageErrorBuilder: (BuildContext context,
@@ -34,7 +34,7 @@ class EnhancedImageNetwork extends StatelessWidget {
       fit: fit ?? BoxFit.cover,
       placeholder: placeHolder ?? AssetImage(
           'assets/images/app_logo.png'),
-      image:NetworkImage(image ?? ''),
+      image:NetworkImage(image + "?${DateTime.now().timeZoneOffset}" ?? ''),
     );
   }
 }

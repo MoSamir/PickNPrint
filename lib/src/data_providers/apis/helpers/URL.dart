@@ -21,7 +21,7 @@ class URL{
   static const String POST_SAVE_ORDER_FOR_LATER = "order/saveOrder";
   static const String POST_CREATE_ORDER = "order/createOrder";
   static const String POST_CREATE_SAVED_ORDER = "order/placeSavedOrder";
-  static const String POST_UPLOAD_IMAGE = "uploadImage";
+  static const String POST_UPLOAD_IMAGE = "https://www.filestackapi.com/api/store/S3?key=${Constants.FILE_STACK_API_KEY}&filename=";
 
 
   static const String GET_RETRIEVE_ACTIVE_ORDERS = "order/getCurrentOrders";
@@ -43,11 +43,9 @@ class URL{
     }
   }
 
-  static String getFileStackImageURL(String imageHandle) {
-    return "https://cdn.filestackcontent.com/" + imageHandle + "?policy="  + Constants.FILE_STACK_ENCODE_POLICY +
-    "&signature=" + Constants.FILE_STACK_SIGNATURE;
-
-  }
-
+  // static String getFileStackImageURL(String imageHandle) {
+  //   return "https://cdn.filestackcontent.com/" + imageHandle + "?policy="  + Constants.FILE_STACK_ENCODE_POLICY +
+  //       "&signature=" + Constants.FILE_STACK_SIGNATURE;
+  // }
 
 }

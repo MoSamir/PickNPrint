@@ -39,6 +39,8 @@
   "FACEBOOK_LABEL": "Facebook",
   "SELECT_FROM_INSTAGRAM": "Select from your Instagram Images",
   "SELECT_FROM_FACEBOOK": "Select from your Facebook Images",
+  "SELECT_FROM_CAMERA": "Capture Images and use it",
+  "SELECT_FROM_GALLERY": " Select from your Phone Gallery ",
   "CAPTURE_IMAGE_USING": "Pick image from",
   "UNABLE_TO_READ_IMAGE": "Unable to read the image please try again",
   "COMING_SOON": "Coming soon",

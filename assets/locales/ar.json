@@ -38,6 +38,8 @@
   "INSTAGRAM_LABEL": "انستجرام",
   "SELECT_FROM_FACEBOOK": "اختر من صور الفيسبوك",
   "SELECT_FROM_INSTAGRAM": "اختر من صور انستجرام",
+  "SELECT_FROM_CAMERA": "التقط صوره و استخدمها",
+  "SELECT_FROM_GALLERY": " اختر من صور هاتفك",
   "FACEBOOK_LABEL": "فيسبوك",
   "CAPTURE_IMAGE_USING": "التقاط الصوره عن طريق",
   "UNABLE_TO_READ_IMAGE": "عفوا لم نستطع قراءه الصوره يرجي اختيار الصوره مجددا",

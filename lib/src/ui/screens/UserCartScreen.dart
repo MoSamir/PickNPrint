@@ -16,6 +16,8 @@ import 'package:picknprint/src/ui/widgets/OrderListingCardTile.dart';
 import 'package:picknprint/src/ui/widgets/OrderStatisticWidget.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+import 'HomeScreen.dart';
 class UserCartScreen extends StatefulWidget {
   @override
   _UserCartScreenState createState() => _UserCartScreenState();
@@ -44,6 +46,16 @@ class _UserCartScreenState extends State<UserCartScreen> {
         return BaseScreen(
           hasDrawer: false,
           customAppbar: PickNPrintAppbar(
+            leadAction: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: (){
+                if(Navigator.canPop(context)){
+                  Navigator.pop(context);
+                } else {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+                }
+              },
+            ),
             appbarColor: AppColors.black,
             actions: [],
             title: (LocalKeys.MY_CART).tr(),

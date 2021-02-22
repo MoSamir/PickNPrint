@@ -1,5 +1,6 @@
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/utilities/ParserHelpers.dart';
 
 class UserViewModel {
 
@@ -44,6 +45,7 @@ class UserViewModel {
 
   static UserViewModel fromJson(userJson) {
 
+
     String userTokenInformation = userJson[ApiParseKeys.REGISTER_USER_TOKEN];
     Map<String,dynamic> userDataInformation = userJson[ApiParseKeys.REGISTER_USER_DATA];
     return UserViewModel(
@@ -52,7 +54,7 @@ class UserViewModel {
       userPhoneNumber: userDataInformation[ApiParseKeys.REGISTER_USER_PHONE_NUMBER] ?? '',
       userMail: userDataInformation[ApiParseKeys.REGISTER_USER_EMAIL] ?? '',
       userToken: userTokenInformation ?? '',
-      userProfileImage: userDataInformation[ApiParseKeys.REGISTER_USER_IMAGE] ?? '',
+      userProfileImage: ParserHelper.parseURL(userDataInformation[ApiParseKeys.REGISTER_USER_IMAGE]) ?? '',
       userSavedAddresses: List<AddressViewModel>(),
     );
   }
