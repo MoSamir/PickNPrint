@@ -51,13 +51,12 @@ class UIHelpers {
 
 
   static Future<File> cropImage(String imagePath) async {
-
-    // imagePath = (await testCompressAndGetFile(File.fromUri(Uri.parse(imagePath)) , ('x$imagePath'))).path;
-
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imagePath,
         maxHeight: 4096,
         maxWidth: 4096,
+        cropStyle: CropStyle.rectangle,
+
         aspectRatioPresets: [CropAspectRatioPreset.square],
         androidUiSettings: AndroidUiSettings(
           hideBottomControls: true,

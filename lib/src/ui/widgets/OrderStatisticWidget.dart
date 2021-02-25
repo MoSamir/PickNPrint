@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
+import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:picknprint/src/resources/Validators.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
-
+import 'dart:math' as Math;
 class OrderStatisticWidget extends StatefulWidget {
 
   final OrderModel orderModel;
@@ -28,6 +29,14 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(widget.orderModel.orderPackage == null){
+      widget.orderModel.orderPackage = PackageModel(
+        packageId: Math.max(widget.orderModel.uploadedImages ?? 0, widget.orderModel.userImages ?? 0),
+        packageSize: Math.max(widget.orderModel.uploadedImages ?? 0, widget.orderModel.userImages ?? 0),
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

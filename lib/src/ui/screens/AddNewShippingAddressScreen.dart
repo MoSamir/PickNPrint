@@ -57,6 +57,9 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
   Widget build(BuildContext context) {
     return BlocConsumer(
       listener: (context , state){
+
+        print("User Widget Order => ${widget.userOrderModel}");
+
         if (state is UserDataLoadingFailedState) {
           if (state.error.errorCode == HttpStatus.requestTimeout) {
             showDialog(
@@ -101,6 +104,8 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
           UserViewModel loggedInUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
           AddressViewModel newAddress ;
           List<AddressViewModel> userAddress = loggedInUser.userSavedAddresses;
+          OrderModel order = widget.userOrderModel;
+
           try{
             newAddress = userAddress.where((AddressViewModel element){
               bool sameArea = element.area.id == selectedArea.id;
@@ -108,15 +113,19 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
               bool sameStreet = element.addressName == addressTextController.text;
               return sameArea && sameCity && sameStreet;
             }).first;
+            order.orderAddress = newAddress;
           } catch(exception){}
-          OrderModel order = widget.userOrderModel;
-          order.orderAddress = newAddress;
 
-          if(loggedInUser.userPhoneNumber == null || loggedInUser.userPhoneNumber.isEpmty()){
+
+          print("Order is null ? $order");
+          print("User Widget Order Before dismissing => ${widget.userOrderModel}");
+
+          if(loggedInUser.userPhoneNumber == null || loggedInUser.userPhoneNumber.toString().isEmpty || newAddress == null){
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => ShippingAddressScreen(order)
             ));
-          } else {
+          }
+          else {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => OrderCreationScreen(orderModel: order,)
             ));

@@ -13,6 +13,7 @@ import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/CreateOrderStates.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
+import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
@@ -157,19 +158,23 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
   }
 
   Widget getStatisticsWidget() {
+
     return OrderStatisticWidget(
       orderModel: widget.orderModel,
       onCreateOrder: (OrderModel order){
-        if(order.orderPackage.packageId == null){
+        if(order.orderPackage == null || order.orderPackage.packageId == null){
           try {
-            order.orderPackage.packageId = BlocProvider
-                .of<ApplicationDataBloc>(context)
-                .applicationPackages
-                .firstWhere((element) =>
-            order.orderPackage.packageSize == element.packageSize)
-                .packageId;
+            order.orderPackage.packageId = BlocProvider.of<ApplicationDataBloc>(context).applicationPackages.firstWhere((element) =>
+            order.orderPackage.packageSize == element.packageSize).packageId;
           } catch(exception){
             debugPrint("Exception while trying to find suitable package => $exception");
+
+            order.orderPackage = PackageModel(
+              packageSize: order.uploadedImages.length,
+              packageId: order.uploadedImages.length,
+            );
+
+
           }
         }
         orderBloc.add(CreateOrder(orderModel: widget.orderModel));

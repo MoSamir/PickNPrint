@@ -35,8 +35,10 @@ class UserAddressCard extends StatelessWidget {
                 value: address,
                 selected: isChecked,
                 onChanged: (AddressViewModel value){
+
                 onSelectAddress(value);
                 return ;
+
             }),
           ),
           Padding(

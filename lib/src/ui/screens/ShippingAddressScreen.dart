@@ -53,10 +53,8 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
       phoneNumberController.text = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userPhoneNumber;
     }
 
-
-
     order = widget.userOrder;
-    if(order.orderAddress == null &&  BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses != null && BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses.length > 0)
+    if(order != null && order.orderAddress == null &&  BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses != null && BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses.length > 0)
         order.orderAddress = BlocProvider.of<UserBloc>(context).currentLoggedInUser.userSavedAddresses[0];
   }
 
@@ -119,7 +117,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                           onEditAddress : _onEditAddress,
                           onDeleteAddress: _onRemoveAddress,
                           onSelectAddress : _onSelectAddress,
-                          isChecked: order.orderAddress == currentUser.userSavedAddresses[index],
+                          isChecked:  order != null && order.orderAddress == currentUser.userSavedAddresses[index],
                         );
                       }
                       , physics: NeverScrollableScrollPhysics()
@@ -145,7 +143,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                     ),
                     GestureDetector(
                       onTap: () async{
-                        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false,)));
+                        await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false, userOrderModel: order,)));
                         setState(() {});
                       },
                       child: Padding(
@@ -193,6 +191,11 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
   }
   void _onSelectAddress(AddressViewModel userSavedAddress) {
     setState(() {
+
+      print("Order => ${widget.userOrder}");
+      if(order == null) {
+        order = widget.userOrder;
+      }
       order.orderAddress = userSavedAddress;
     });
   }

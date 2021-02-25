@@ -36,7 +36,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
       if(event.orderModel.statues == OrderStatus.CART_ORDER){
         for(int i = 0 ; i < eventOrder.userImages.length ; i++) {
-          if (eventOrder.userImages[i].contains(URL.SERVER_LINK))
+          if (eventOrder.userImages[i].contains("http") || eventOrder.userImages[i].contains("https"))
             eventOrder.uploadedImages.add(eventOrder.userImages[i]);
         }
       }
