@@ -40,10 +40,6 @@ dependencies:
   carousel_slider: 2.3.1
   configurable_expansion_tile: 1.0.0
   photo_manager: 0.5.8
-  flutter_image_compress: 0.7.0
-  flutter_filestack:
-    path: ../flutter_filestack
-
 
 
 

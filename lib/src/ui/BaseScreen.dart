@@ -13,8 +13,9 @@ class BaseScreen extends StatelessWidget {
   final bool hasDrawer , hasAppbar;
   final PickNPrintAppbar customAppbar;
   final String screenTitle ;
+  final ScrollPhysics scrollPhysics ;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  BaseScreen({this.child, this.hasDrawer , this.customAppbar , this.hasAppbar, this.screenTitle});
+  BaseScreen({this.child, this.hasDrawer , this.scrollPhysics ,this.customAppbar , this.hasAppbar, this.screenTitle});
 
 
   @override
@@ -35,6 +36,7 @@ class BaseScreen extends StatelessWidget {
             drawer: resolveDrawer(),
             appBar: resolveAppbar(),
             body: CustomScrollView(
+              physics: scrollPhysics ?? RangeMaintainingScrollPhysics(),
               shrinkWrap: true,
               anchor: 0.0,
               slivers: [
@@ -42,8 +44,8 @@ class BaseScreen extends StatelessWidget {
                   padding: EdgeInsets.all(0),
                   sliver: SliverToBoxAdapter(
                     child: SingleChildScrollView(
-                        child: child,
-                    ),
+                        physics: scrollPhysics ?? RangeMaintainingScrollPhysics(),
+                        child: child),
                   ),
                 ),
                 SliverPadding(

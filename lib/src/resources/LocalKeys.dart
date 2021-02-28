@@ -132,6 +132,9 @@ class LocalKeys{
   static const String PLEASE_CHECK_ORDER = "PLEASE_CHECK_ORDER";
   static const String PLEASE_ADD_ADDRESS_FIRST = "PLEASE_ADD_ADDRESS_FIRST";
   static const String CONFIRM_PHONE_NUMBER = "CONFIRM_PHONE_NUMBER";
+  static const String INVALID_PROMO_CODE = "INVALID_PROMO_CODE";
+  static const String DISCOUNT_LABEL = "DISCOUNT_LABEL";
+
 
 
 
@@ -298,6 +301,9 @@ class LocalKeys{
   static const String SELECT_ANYWAY = "SELECT_ANYWAY";
   static const String DONT_SELECT = "DONT_SELECT";
   static const String LOW_QUALITY_IMAGE_MESSAGE = "LOW_QUALITY_IMAGE_MESSAGE";
+
+
+
 
 
 

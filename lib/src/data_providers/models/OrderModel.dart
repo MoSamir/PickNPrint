@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
-import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
+import 'package:picknprint/src/data_providers/models/PromocodeModel.dart';
+
 import 'package:picknprint/src/utilities/ParserHelpers.dart';
 
 class OrderModel {
@@ -18,9 +18,10 @@ class OrderModel {
   List<String> uploadedImages = List();
   String contactPhoneNumber  ;
   double orderNetPrice , orderGrossPrice ;
+  PromoCodeModel promoCode ;
 
   int deliveryTime;
-  OrderModel({this.orderPackage, this.orderGrossPrice , this.orderNetPrice , this.uploadedImages , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
+  OrderModel({this.orderPackage, this.promoCode , this.orderGrossPrice , this.orderNetPrice , this.uploadedImages , this.originalImages ,this.contactPhoneNumber , this.deliveryTime , this.statues ,this.orderNumber , this.orderTime , this.frameWithPath , this.isWhiteFrame , this.userImages , this.orderAddress});
   static List<OrderModel> fromListJson(saveOrderRawResponse) {
     List<OrderModel> ordersList = List<OrderModel>();
     if(saveOrderRawResponse != null && saveOrderRawResponse is List){
@@ -31,7 +32,6 @@ class OrderModel {
     return ordersList;
   }
 
-
   static OrderModel fromJson(orderJson){
     List<String> orderImages = List<String>();
     if(orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY] != null && orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY] is List){
@@ -39,12 +39,30 @@ class OrderModel {
         orderImages.add(orderJson[ApiParseKeys.ORDER_ITEMS_LIST_KEY][i][ApiParseKeys.ORDER_USER_IMAGE].toString());
     }
 
-
     String itemStatus = orderJson[ApiParseKeys.ORDER_ITEM_STATUS] != null ?
     orderJson[ApiParseKeys.ORDER_ITEM_STATUS][ApiParseKeys.ORDER_ITEM_STATUS_KEY] : null;
 
+
+    AddressViewModel orderAddress = AddressViewModel(deliveryFees: ParserHelper.parseDouble((orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]).toString()),);
+
+    try{
+      if(orderJson[ApiParseKeys.ADDRESS_ROOT_KEY] != null && orderJson[ApiParseKeys.ADDRESS_ROOT_KEY] is Map ) {
+        Map<String,dynamic> addressMap = orderJson[ApiParseKeys.ADDRESS_ROOT_KEY];
+        addressMap.putIfAbsent( ApiParseKeys.ADDRESSES_SHIPPING_FEES , () => orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]);
+        orderAddress = AddressViewModel.getOrderAddressFromJson(addressMap);
+      }
+    } catch(_){}
+
+
+
+    int deliveryExpectedTime = 5 ;
+    try{
+      deliveryExpectedTime =  int.parse(orderJson[ApiParseKeys.ORDER_SHIPPING_TIME].toString());
+    } catch(_){}
+
     return OrderModel(
       statues: getOrderStatus(itemStatus),
+     deliveryTime: deliveryExpectedTime,
       orderTime:  DateTime.parse(orderJson[ApiParseKeys.ORDER_CREATED_AT] ?? DateTime.now().toString()),
       orderGrossPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_GROSS_PRICE]).toString()),
       orderNetPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_NET_PRICE]).toString()),
@@ -61,9 +79,7 @@ class OrderModel {
       frameWithPath: int.parse(((orderJson[ApiParseKeys.ORDER_WITH_FRAME]) ?? 0).toString()) == 1 ,
       isWhiteFrame: int.parse(((orderJson[ApiParseKeys.ORDER_WHITE_FRAME] ?? 0)).toString()) == 1 ,
       userImages: orderImages,
-      orderAddress: AddressViewModel(
-        deliveryFees: ParserHelper.parseDouble((orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]).toString()),
-      ),
+      orderAddress: orderAddress,
     );
   }
 
@@ -93,6 +109,15 @@ class OrderModel {
     } else {
       return OrderStatus.PENDING;
     }
+  }
+
+  calculateOrderTotal() {
+    double total = 0.0;
+
+    if(orderPackage != null){
+      total = orderPackage.packagePrice + ((userImages.length - orderPackage.packageSize) * orderPackage.priceForExtraFrame);
+    }
+    return total;
   }
 }
 enum OrderStatus { PENDING , PREPARING , SHIPPING, DELIVERED  , CANCELED , SAVED , CART_ORDER}

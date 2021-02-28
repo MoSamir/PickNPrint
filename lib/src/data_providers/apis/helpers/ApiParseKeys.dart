@@ -80,7 +80,9 @@ class ApiParseKeys {
   static const String ORDER_CART_ROOT_KEY = "cart";
   static const String ORDER_ITEM_STATUS = "status";
   static const String ORDER_ITEM_STATUS_KEY = "key";
+  static const String ORDER_SHIPPING_TIME = "shippingDurationTo";
 
+  //
 
 
   static const String ORDER_CART_GROSS_PRICE = "totalPrice";
@@ -97,7 +99,10 @@ class ApiParseKeys {
   static const String TESTIMONIAL_IMAGE_KEY = "image";
   static const String TESTIMONIAL_ID_KEY = "id";
 
+// --------------- CHECK PROMOCODE ------------------------------------------
 
+
+  static const String DISCOUNT_AMOUNT = "discountAmount";
 
 
 

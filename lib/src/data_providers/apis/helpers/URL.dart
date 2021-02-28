@@ -32,6 +32,7 @@ class URL{
   static const String PUT_EDIT_USER_ADDRESS = "editAddress?locale=";
 
   static const String GET_APPLICATION_TESTIMONIALS = "getAllTestimonials";
+  static const String POST_CHECK_PROMO_CODE = "order/checkPromotionCode";
 
 
   static String getURL({String apiPath}) {

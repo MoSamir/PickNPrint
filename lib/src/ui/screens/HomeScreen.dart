@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/src/bloc/blocs/ApplicationDataBloc.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
+import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
@@ -99,9 +100,33 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height:MediaQuery.of(context).size.height * .5,
                                 width: MediaQuery.of(context).size.width,
-                                child:YoutubePlayerIFrame(
-                                  controller: _controller,
-                                  aspectRatio: 16 / 9,
+                                child: FutureBuilder<bool>(
+                                  future: NetworkUtilities.isConnected(),
+                                  builder: (context, snapshot){
+                                    Widget child = Center(child: LoadingWidget(),);
+                                    if(snapshot.hasData){
+                                      if(snapshot.data){
+                                        child = YoutubePlayerIFrame(
+                                          controller: _controller,
+                                          aspectRatio: 16 / 9,
+                                        );
+                                      } else {
+                                        child = Center(
+                                          child: Container(
+                                            height:MediaQuery.of(context).size.height * .5,
+                                            width: MediaQuery.of(context).size.width,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG),
+                                                  fit: BoxFit.fill
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    return child;
+                                  },
                                 ),
                               ),
                               Positioned(

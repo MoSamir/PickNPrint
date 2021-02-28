@@ -37,8 +37,7 @@ class OrderCreationScreen extends StatefulWidget {
 class _OrderCreationScreenState extends State<OrderCreationScreen> {
 
   OrderCreationBloc orderBloc ;
-
-
+  static GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -59,64 +58,80 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-      listener: (context, state){
-        if (state is OrderCreationLoadingFailureState) {
-          if (state.error.errorCode == HttpStatus.requestTimeout) {
-            UIHelpers.showNetworkError(context);
-            return;
+    return Scaffold(
+      extendBody: false,
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
+      body: BlocConsumer(
+        listener: (context, state){
+          if (state is OrderCreationLoadingFailureState) {
+            if (state.error.errorCode == HttpStatus.requestTimeout) {
+              UIHelpers.showNetworkError(context);
+              return;
+            }
+            else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
+              return;
+            }
+            else {
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
+              return;
+            }
           }
-          else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
-            UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true);
-            return;
+          else if(state is OrderCreationLoadedSuccessState){
+            BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderConfirmationScreen(
+              orderNumber: state.orderNumber,
+              orderShippingDuration: state.shippingDuration,
+            )));
           }
-          else {
-            UIHelpers.showToast(state.error.errorMessage ?? '', true, true);
-            return;
+          else if(state is OrderCreationInitialStateWithPromoStatus){
+            if(state.orderPromoCodeModel != null){
+              widget.orderModel.promoCode = state.orderPromoCodeModel;
+            } else {
+              UIHelpers.showToast( (LocalKeys.INVALID_PROMO_CODE).tr(), true, true);
+              widget.orderModel.promoCode = null;
+            }
           }
-        }
-        else if(state is OrderCreationLoadedSuccessState){
-          BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OrderConfirmationScreen(
-            orderNumber: state.orderNumber,
-            orderShippingDuration: state.shippingDuration,
-          )));
-        }
-      },
-      builder:  (context, state){
-        return ModalProgressHUD(
-          progressIndicator: LoadingWidget(),
-          inAsyncCall: state is OrderCreationLoadingState,
-          child: BaseScreen(
-            hasDrawer: true,
-            child: Form(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(height: 5,),
-                    Text((LocalKeys.ORDER_DETAILS).tr(), style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ), textAlign: TextAlign.start,),
-                    Text((LocalKeys.PLEASE_CHECK_ORDER).tr(), style: TextStyle(
-                      color: AppColors.lightBlue,
-                      fontSize: 20,
-                    ), textAlign: TextAlign.start,),
-                    SizedBox(height: 5,),
-                    Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                    SizedBox(height: 5,),
-                   getStatisticsWidget(),
-                    SizedBox(height: 25,),
-                  ],
+        },
+        builder:  (context, state){
+          return ModalProgressHUD(
+            progressIndicator: LoadingWidget(),
+            inAsyncCall: state is OrderCreationLoadingState,
+            child: BaseScreen(
+              hasDrawer: true,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(height: 5,),
+                        Text((LocalKeys.ORDER_DETAILS).tr(), style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ), textAlign: TextAlign.start,),
+                        Text((LocalKeys.PLEASE_CHECK_ORDER).tr(), style: TextStyle(
+                          color: AppColors.lightBlue,
+                          fontSize: 20,
+                        ), textAlign: TextAlign.start,),
+                        SizedBox(height: 5,),
+                        Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
+                        SizedBox(height: 5,),
+                       getStatisticsWidget(),
+                        SizedBox(height: 25,),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-      cubit: orderBloc,
+          );
+        },
+        cubit: orderBloc,
+      ),
     );
   }
 
@@ -160,6 +175,7 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
   Widget getStatisticsWidget() {
 
     return OrderStatisticWidget(
+      viewOnlyWidget: false,
       orderModel: widget.orderModel,
       onCreateOrder: (OrderModel order){
         if(order.orderPackage == null || order.orderPackage.packageId == null){
@@ -179,6 +195,9 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
         }
         orderBloc.add(CreateOrder(orderModel: widget.orderModel));
         return;
+      },
+      onPromoCodeInput: (String promoCodeText){
+        orderBloc.add(CheckPromoCodeValidity(promoText: promoCodeText , orderTotal: widget.orderModel.calculateOrderTotal()));
       },
     );
   }

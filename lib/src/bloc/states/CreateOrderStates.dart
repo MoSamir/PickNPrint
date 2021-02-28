@@ -1,17 +1,23 @@
 import 'package:picknprint/src/bloc/events/CreateOrderEvent.dart';
 import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
+import 'package:picknprint/src/data_providers/models/PromocodeModel.dart';
 
 abstract class CreateOrderStates {}
 
 
 class OrderCreationLoadingState extends CreateOrderStates{}
+
 class OrderCreationInitialState extends CreateOrderStates{}
+class OrderCreationInitialStateWithPromoStatus extends OrderCreationInitialState{
+  final PromoCodeModel orderPromoCodeModel ;
+  OrderCreationInitialStateWithPromoStatus({this.orderPromoCodeModel});
+}
+
 class OrderCreationLoadedSuccessState extends CreateOrderStates{
   final String orderNumber ;
-  final OrderAction orderAction;
   final String shippingDuration ;
-  OrderCreationLoadedSuccessState({this.orderNumber , this.shippingDuration , this.orderAction});
+  OrderCreationLoadedSuccessState({this.orderNumber , this.shippingDuration});
 
 }
 class OrderCreationLoadingFailureState extends CreateOrderStates{
@@ -21,7 +27,7 @@ class OrderCreationLoadingFailureState extends CreateOrderStates{
 }
 
 class OrderSavingSuccessState extends CreateOrderStates{
-  final List<OrderModel> cartOrders ;
+  final OrderModel cartOrders ;
   OrderSavingSuccessState({this.cartOrders});
 }
 
@@ -36,11 +42,4 @@ class OrderSavingFailedState extends CreateOrderStates{
   final ErrorViewModel error ;
   final CreateOrderEvents failedEvent;
   OrderSavingFailedState({this.failedEvent , this.error});
-}
-
-
-
-enum OrderAction{
- CREATION,
- SAVING,
 }

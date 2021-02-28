@@ -18,6 +18,7 @@ import 'package:picknprint/src/ui/screens/ProfileScreen.dart';
 import 'package:easy_localization/easy_localization.dart' as ll;
 import 'package:picknprint/src/ui/screens/UserCartScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 
 import 'NetworkErrorView.dart';
 
@@ -54,31 +55,12 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
         listener: (context , state){
           if (state is UserDataLoadingFailedState) {
             if (state.error.errorCode == HttpStatus.requestTimeout) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return NetworkErrorView();
-                  });
-            } else if (state.error.errorCode ==
-                HttpStatus.serviceUnavailable) {
-              Fluttertoast.showToast(
-                  msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              UIHelpers.showNetworkError(context);
+            } else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
+              UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true, true );
             } else {
-              Fluttertoast.showToast(
-                  msg: state.error.errorMessage ?? '',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+
+              UIHelpers.showToast(state.error.errorMessage ?? '', true, true );
             }
           }
         },

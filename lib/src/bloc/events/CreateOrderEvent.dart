@@ -8,6 +8,11 @@ class CreateOrder extends CreateOrderEvents{
   CreateOrder( {this.orderModel});
 }
 
+class CheckPromoCodeValidity extends CreateOrderEvents {
+  final String promoText;
+  final double orderTotal ;
+  CheckPromoCodeValidity({this.promoText , this.orderTotal});
+}
 
 class SaveOrder extends CreateOrderEvents{
   final OrderModel order ;

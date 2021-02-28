@@ -636,21 +636,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userImageFile = File.fromUri(Uri.parse(image.path)) ;
       setState(() {});
     } else {
-      Fluttertoast.showToast(
-          msg: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+
+      UIHelpers.showToast((LocalKeys.UNABLE_TO_READ_IMAGE).tr(), true,true);
     }
   }
 
   Widget getUserImage() {
-
-    print(" Hello => ${BlocProvider.of<UserBloc>(context).currentLoggedInUser.userProfileImage}");
     if(isEditingModeOn && userImageFile != null)
       return Image.file(userImageFile,
         height: 100,

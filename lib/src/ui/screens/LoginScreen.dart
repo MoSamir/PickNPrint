@@ -165,35 +165,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           height: 50,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text((LocalKeys.DONT_HAVE_ACCOUNT_YET).tr()),
-                                  SizedBox(width: 5,),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      List<String> usernameAndPassword =  await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
-                                      if(usernameAndPassword != null && usernameAndPassword.length == 2){
-                                        usernameTextController.text = usernameAndPassword[0];
-                                        passwordTextController.text = usernameAndPassword[1];
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: Text((LocalKeys.SIGN_UP).tr() , style: TextStyle(
-                                      color: AppColors.lightBlue,
-                                      decoration: TextDecoration.underline,
-                                    ) ,),
-                                  ),
-                                ],
-                              ),
+                              Text((LocalKeys.DONT_HAVE_ACCOUNT_YET).tr()),
+                              SizedBox(width: 5,),
                               GestureDetector(
-                                onTap: (){},
-                                child: Text((LocalKeys.FORGET_YOUR_PASSWORD).tr(),),
+                                onTap: () async {
+                                  List<String> usernameAndPassword =  await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                                  if(usernameAndPassword != null && usernameAndPassword.length == 2){
+                                    usernameTextController.text = usernameAndPassword[0];
+                                    passwordTextController.text = usernameAndPassword[1];
+                                    setState(() {});
+                                  }
+                                },
+                                child: Text((LocalKeys.SIGN_UP).tr() , style: TextStyle(
+                                  color: AppColors.lightBlue,
+                                  decoration: TextDecoration.underline,
+                                ) ,),
                               ),
                             ],
                           ),),
+
+
                         Text((LocalKeys.OR_LABEL).tr(), style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),),

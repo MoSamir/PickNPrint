@@ -18,6 +18,7 @@ import 'package:picknprint/src/resources/instgramImagePicker/flutter_instagram_i
 import 'package:picknprint/src/resources/instgramImagePicker/model/photo.dart' as instgramPhoto;
 import 'package:picknprint/src/resources/instgramImagePicker/screens.dart';
 import 'package:picknprint/src/ui/BaseScreen.dart';
+import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
 import 'package:picknprint/src/utilities/UIHelpers.dart';
 class SelectImageSourceScreen extends StatefulWidget {
@@ -40,6 +41,16 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
       customAppbar: PickNPrintAppbar(
         appbarColor: AppColors.black,
         actions: [],
+        leadAction: IconButton(
+          icon: Icon(Icons.arrow_back),
+      onPressed: (){
+        if(Navigator.canPop(context)){
+          Navigator.pop(context);
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+        }
+      },
+    ),
         centerTitle: true,
         //title: (LocalKeys.ABOUT_SCREEN_TITLE).tr(),
       ),
@@ -118,7 +129,6 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
                 child: Center(
                   child: GestureDetector(
                     onTap: (){
-                      print("Image Source is !");
                       pickUserImage(ImageSource.camera);
                       return;
                     },
@@ -324,20 +334,16 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
     final _picker = ImagePicker();
 
     PickedFile image = await _picker.getImage(
-        source: source, imageQuality: 100, maxHeight: 150, maxWidth: 150);
+      source: source,
+      maxHeight: 720.0,
+      maxWidth: 720.0,
+      imageQuality: 100
+    );
     if (image != null) {
       File croppedFilePath = await UIHelpers.cropImage(image.path);
       Navigator.of(context).pop([croppedFilePath.path, image.path]);
     } else {
-      Fluttertoast.showToast(
-          msg: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      UIHelpers.showToast((LocalKeys.UNABLE_TO_READ_IMAGE).tr(), true,true);
     }
   }
 
@@ -409,7 +415,6 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
 
 
   void getImageFromPickNPrintGallery() async {
-//    Navigator.pop(context);
     String imageFilePath = await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => CustomGallery()));
 
@@ -417,15 +422,8 @@ class _SelectImageSourceScreenState extends State<SelectImageSourceScreen> {
       File croppedFilePath = await UIHelpers.cropImage(imageFilePath);
       Navigator.of(context).pop([croppedFilePath.path, imageFilePath]);
     } else {
-      Fluttertoast.showToast(
-          msg: (LocalKeys.UNABLE_TO_READ_IMAGE).tr(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+
+      UIHelpers.showToast((LocalKeys.UNABLE_TO_READ_IMAGE).tr(), true,true);
     }
   }
 }

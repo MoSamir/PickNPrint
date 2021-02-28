@@ -170,7 +170,10 @@
   "EMPTY_CART_PLACEHOLDER": "No Orders in cart yet",
   "ACTIVE_ORDERS_PLACEHOLDER": "You don't have active orders yet",
   "CLOSED_ORDERS_PLACEHOLDER": "You didn't complete any orders yet",
-  "SAVED_ORDERS_PLACEHOLDER": "You didn't save any orders yet"
+  "SAVED_ORDERS_PLACEHOLDER": "You didn't save any orders yet",
+  "INVALID_PROMO_CODE": "Sorry this promo code is expired or invalid",
+  "DISCOUNT_LABEL": "Discount"
+
 
 
 

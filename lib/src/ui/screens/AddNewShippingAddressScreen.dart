@@ -26,6 +26,7 @@ import 'package:picknprint/src/ui/screens/OrderCreationScreen.dart';
 import 'package:picknprint/src/ui/screens/ShippingAddressScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 import 'package:picknprint/src/ui/widgets/NetworkErrorView.dart';
+import 'package:picknprint/src/utilities/UIHelpers.dart';
 class AddNewShippingAddressScreen extends StatefulWidget {
 
   final bool comingFromRegistration ;
@@ -70,36 +71,14 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
                 });
           } else if (state.error.errorCode ==
               HttpStatus.serviceUnavailable) {
-            Fluttertoast.showToast(
-                msg: (LocalKeys.SERVER_UNREACHABLE).tr(),
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            UIHelpers.showToast((LocalKeys.SERVER_UNREACHABLE).tr(), true , true);
           } else {
-            Fluttertoast.showToast(
-                msg: state.error.errorMessage ?? '',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            UIHelpers.showToast(state.error.errorMessage ?? '', true , true);
+
           }
         }
         else if(state is UserDataLoadedState){
-          Fluttertoast.showToast(
-              msg: (LocalKeys.YOUR_UPDATES_ARE_SUCCESS).tr(),
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
-          //Navigator.of(context).pop();
-
+          UIHelpers.showToast((LocalKeys.YOUR_UPDATES_ARE_SUCCESS).tr(), false , true);
 
           UserViewModel loggedInUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
           AddressViewModel newAddress ;
@@ -116,10 +95,6 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
             order.orderAddress = newAddress;
           } catch(exception){}
 
-
-          print("Order is null ? $order");
-          print("User Widget Order Before dismissing => ${widget.userOrderModel}");
-
           if(loggedInUser.userPhoneNumber == null || loggedInUser.userPhoneNumber.toString().isEmpty || newAddress == null){
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => ShippingAddressScreen(order)
@@ -130,8 +105,6 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
                 builder: (context) => OrderCreationScreen(orderModel: order,)
             ));
           }
-
-
         }
       },
       builder: (context , state){

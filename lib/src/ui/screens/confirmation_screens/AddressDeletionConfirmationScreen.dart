@@ -52,14 +52,7 @@ class _AddressDeletionConfirmationScreenState extends State<AddressDeletionConfi
               }
             }
             else if(state is UserAddressSavedSuccessfully){
-              Fluttertoast.showToast(
-                  msg: (LocalKeys.SUCCESSFULLY_UPDATED).tr(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.green,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              UIHelpers.showToast((LocalKeys.SUCCESSFULLY_UPDATED).tr(), false, true);
               Navigator.pop(context);
             }
           },

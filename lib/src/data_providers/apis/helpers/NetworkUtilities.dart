@@ -299,8 +299,7 @@ class NetworkUtilities {
 
     if (customHeaders != null) {
       for (int i = 0; i < customHeaders.length; i++) {
-        headers.putIfAbsent(customHeaders.keys.toList()[i],
-                () => customHeaders[customHeaders.keys.toList()[i]]);
+        headers.putIfAbsent(customHeaders.keys.toList()[i], () => customHeaders[customHeaders.keys.toList()[i]]);
       }
     }
     return headers;

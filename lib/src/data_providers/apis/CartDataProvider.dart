@@ -44,7 +44,7 @@ class CartDataProvider {
       errorViewModel: saveOrderResponse.errorViewModel,
     );
   }
-  static Future<ResponseViewModel<List<OrderModel>>> saveOrderToLater(OrderModel order) async {
+  static Future<ResponseViewModel<OrderModel>> saveOrderToLater(OrderModel order) async {
     String token = await UserSharedPreference.getUserToken();
 
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
@@ -68,16 +68,10 @@ class CartDataProvider {
         requestBody: requestBody,
         requestHeaders: requestHeaders,
         parserFunction: (saveOrderRawResponse){
-
-
-          print("*******************************************************");
-          print(saveOrderRawResponse);
-          print("*******************************************************");
-
-          return OrderModel.fromOrdersList(saveOrderRawResponse[ApiParseKeys.ORDER_KEY]);
+          return OrderModel.fromJson(saveOrderRawResponse[ApiParseKeys.ORDER_KEY]);
         }
     );
-    return ResponseViewModel<List<OrderModel>>(
+    return ResponseViewModel<OrderModel>(
       responseData: saveOrderResponse.responseData,
       isSuccess: saveOrderResponse.isSuccess,
       errorViewModel: saveOrderResponse.errorViewModel,
@@ -86,7 +80,7 @@ class CartDataProvider {
 
 
 
-  static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel order) async {
+  static Future<ResponseViewModel<OrderModel>> createOrder(OrderModel order) async {
     String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
       HttpHeaders.authorizationHeader : 'Bearer $token'
@@ -94,16 +88,21 @@ class CartDataProvider {
     Map<String,dynamic> requestBody = {
       'address_id' : order.orderAddress.id,
     };
+
+    if(order.promoCode != null){
+      requestBody.putIfAbsent('promoCode' , () => order.promoCode.promoCode);
+    }
+
     String apiURL = URL.getURL(apiPath: URL.POST_CREATE_ORDER);
     ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
         methodURL: apiURL,
         requestBody: requestBody,
         requestHeaders: requestHeaders,
         parserFunction: (createOrderRawResponse){
-          return OrderModel.fromOrdersList(createOrderRawResponse[ApiParseKeys.ORDER_KEY]);
+          return OrderModel.fromJson(createOrderRawResponse[ApiParseKeys.ORDER_KEY]);
         }
     );
-    return ResponseViewModel<List<OrderModel>>(
+    return ResponseViewModel<OrderModel>(
       responseData: saveOrderResponse.responseData,
       isSuccess: saveOrderResponse.isSuccess,
       errorViewModel: saveOrderResponse.errorViewModel,
@@ -191,7 +190,7 @@ class CartDataProvider {
 
   }
 
-  static Future<ResponseViewModel<List<OrderModel>>> createSavedOrder(OrderModel orderModel) async{
+  static Future<ResponseViewModel<OrderModel>> createSavedOrder(OrderModel orderModel) async{
 
     String token = await UserSharedPreference.getUserToken();
     Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
@@ -201,16 +200,21 @@ class CartDataProvider {
       'address_id' : orderModel.orderAddress.id.toString(),
       'order_id' : orderModel.orderNumber.toString(),
     };
+
+    if(orderModel.promoCode != null){
+      requestBody.putIfAbsent('promoCode' , () => orderModel.promoCode.promoCode);
+    }
+
     String apiURL = URL.getURL(apiPath: URL.POST_CREATE_SAVED_ORDER);
     ResponseViewModel saveOrderResponse = await NetworkUtilities.handlePostRequest(
         methodURL: apiURL,
         requestBody: requestBody,
         requestHeaders: requestHeaders,
         parserFunction: (createOrderRawResponse){
-          return OrderModel.fromOrdersList(createOrderRawResponse[ApiParseKeys.ORDER_KEY]);
+          return OrderModel.fromJson(createOrderRawResponse[ApiParseKeys.ORDER_KEY]);
         }
     );
-    return ResponseViewModel<List<OrderModel>>(
+    return ResponseViewModel<OrderModel>(
       responseData: saveOrderResponse.responseData,
       isSuccess: saveOrderResponse.isSuccess,
       errorViewModel: saveOrderResponse.errorViewModel,

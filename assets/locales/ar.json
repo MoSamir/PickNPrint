@@ -170,6 +170,8 @@
   "EMPTY_CART_PLACEHOLDER": "لا يوجد طلبات في السله",
   "ACTIVE_ORDERS_PLACEHOLDER": "لا يوجد اي طلبات حاليا",
   "CLOSED_ORDERS_PLACEHOLDER": "لم تقم باي طلبات بعد",
-  "SAVED_ORDERS_PLACEHOLDER": "لم تقم بحفظ اي طلبات بعد"
+  "SAVED_ORDERS_PLACEHOLDER": "لم تقم بحفظ اي طلبات بعد",
+  "INVALID_PROMO_CODE": "هذا الكوبون غير صحيح او منتهي الصلاحيه",
+  "DISCOUNT_LABEL": "خصم"
 
 }

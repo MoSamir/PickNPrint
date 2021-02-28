@@ -20,7 +20,7 @@ class AddressViewModel {
 
   @override
   String toString() {
-    return '${city.name} , ${area.name} , $buildingNumber $addressName';
+    return '${city.name ?? ''} , ${area.name ?? ''} , ${buildingNumber ?? ''} ${addressName ?? ''} , ${additionalInformation ?? ''}';
   }
 
   static fromJson(Map<String,dynamic> newAddressResponse) {
@@ -35,6 +35,20 @@ class AddressViewModel {
     );
     return address;
   }
+
+  static getOrderAddressFromJson(Map<String,dynamic> newAddressResponse){
+    AddressViewModel  address = AddressViewModel(
+      deliveryFees: ParserHelper.parseDouble(newAddressResponse[ApiParseKeys.ADDRESSES_SHIPPING_FEES].toString()),
+      city: LocationModel(name: newAddressResponse[ApiParseKeys.ADDRESS_CITY]),
+      area: LocationModel(name: newAddressResponse[ApiParseKeys.ADDRESS_AREA]),
+      id:  (newAddressResponse[ApiParseKeys.ADDRESS_ID] ?? '').toString(),
+      addressName: (newAddressResponse[ApiParseKeys.ADDRESS_NAME] ?? '').toString(),
+      additionalInformation: (newAddressResponse[ApiParseKeys.ADDRESS_REMARKS] ?? '').toString(),
+      buildingNumber: (newAddressResponse[ApiParseKeys.ADDRESS_BUILDING_NO] ?? '').toString(),
+    );
+    return address;
+  }
+
 
   static List<AddressViewModel> fromListJson(List<dynamic> addressesJson) {
     List<AddressViewModel> userAddresses = List<AddressViewModel>();

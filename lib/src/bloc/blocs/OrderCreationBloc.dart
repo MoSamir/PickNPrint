@@ -9,6 +9,7 @@ import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart
 import 'package:picknprint/src/data_providers/apis/helpers/URL.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:picknprint/src/data_providers/models/PromocodeModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -51,6 +52,10 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     }
     if(event is AddOrderToCart){
       yield* _handleAddOrderToCart(event);
+      return;
+    }
+    if(event is CheckPromoCodeValidity){
+      yield* _handlePromoCodeEntering(event);
       return;
     }
   }
@@ -141,12 +146,12 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       }
 
       if(saveOrderResponse.isSuccess){
-        ResponseViewModel<List<OrderModel>> orderCreationResult = await Repository.createOrder(event.orderModel);
+        ResponseViewModel<OrderModel> orderCreationResult = await Repository.createOrder(event.orderModel);
         if(orderCreationResult.isSuccess){
           await Repository.removeCachedImages();
           yield OrderCreationLoadedSuccessState(
-            orderNumber: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].orderNumber.toString() : '',
-            shippingDuration: orderCreationResult.responseData.length > 0 ? orderCreationResult.responseData[0].deliveryTime.toString() : '',
+            orderNumber: orderCreationResult.responseData .orderNumber.toString(),
+            shippingDuration: (orderCreationResult.responseData.deliveryTime ?? 5).toString(),
           );
           return ;
         }
@@ -189,7 +194,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       );
     }
     if(uploadCartImages.isSuccess){
-      ResponseViewModel<List<OrderModel>> saveUserCart = await Repository.saveOrderForLater(event.order);
+      ResponseViewModel<OrderModel> saveUserCart = await Repository.saveOrderForLater(event.order);
       if(saveUserCart.isSuccess){
         await Repository.removeCachedImages();
         yield OrderSavingSuccessState(
@@ -212,12 +217,12 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
   }
   Stream<CreateOrderStates> _handleSavedOrderCreation(CreateOrder event) async*{
     yield OrderCreationLoadingState();
-    ResponseViewModel<List<OrderModel>> savedOrderCreationResult = await Repository.createSavedOrder(event.orderModel);
+    ResponseViewModel<OrderModel> savedOrderCreationResult = await Repository.createSavedOrder(event.orderModel);
     if(savedOrderCreationResult.isSuccess){
       await Repository.removeCachedImages();
       yield OrderCreationLoadedSuccessState(
-        orderNumber: savedOrderCreationResult.responseData.length > 0 ? savedOrderCreationResult.responseData[0].orderNumber.toString() : '',
-        shippingDuration: "5",
+        orderNumber:  savedOrderCreationResult.responseData.orderNumber.toString(),
+        shippingDuration: (savedOrderCreationResult.responseData.deliveryTime ?? 5).toString(),
       );
       return ;
     }
@@ -228,6 +233,13 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
       );
       return ;
     }
+  }
+
+  Stream<CreateOrderStates> _handlePromoCodeEntering(CheckPromoCodeValidity event) async*{
+    yield OrderCreationLoadingState();
+    ResponseViewModel<PromoCodeModel> promoCode = await Repository.checkPromoCode(event.promoText , event.orderTotal);
+    yield OrderCreationInitialStateWithPromoStatus(orderPromoCodeModel: promoCode.responseData ?? null);
+    return;
   }
 
 }

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
@@ -49,14 +49,14 @@ class UIHelpers {
     Navigator.pop(context);
   }
 
-
   static Future<File> cropImage(String imagePath) async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imagePath,
         maxHeight: 4096,
         maxWidth: 4096,
         cropStyle: CropStyle.rectangle,
-
+        compressQuality: 100,
+        compressFormat: ImageCompressFormat.png,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         androidUiSettings: AndroidUiSettings(
           hideBottomControls: true,
@@ -70,17 +70,15 @@ class UIHelpers {
 
     return croppedFile;
   }
-  static  Widget buildTextField({BuildContext context , String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate}){
+  static  Widget buildTextField({BuildContext context , String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate , Function(String) onEditingCompleted}){
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        key: GlobalKey(),
         obscureText: secured ?? false,
         validator: validator ?? Validator.requiredField,
         controller: textController,
-        // onFieldSubmitted: (text){
-        //   if(nextNode != null)
-        //     FocusScope.of(context).requestFocus(nextNode);
-        // },
+        onFieldSubmitted: onEditingCompleted,
         //focusNode: focusNode,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
@@ -108,11 +106,6 @@ class UIHelpers {
   }
 
 
-
-  static Future<File> testCompressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(file.path, targetPath , minWidth: 4096 , minHeight: 4096 , keepExif: true);
-    return result;
-  }
 
 
 

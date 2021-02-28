@@ -5,7 +5,7 @@ import 'package:easy_localization/easy_localization.dart' as ll;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_filestack/flutter_filestack.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:picknprint/main.dart';
@@ -742,6 +742,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   Widget getImageFromPath(String userImage) {
+
+    if(userImage.lastIndexOf("https://cdn.filestackcontent.com") > 0){
+      userImage = userImage.replaceFirst("https://cdn.filestackcontent.com", "");
+    }
+
     if (userImage.toLowerCase().contains('/http') ||
         userImage.toLowerCase().contains('/https')) {
       return Image.network(

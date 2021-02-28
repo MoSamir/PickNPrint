@@ -92,7 +92,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       //   child: getLanguageSection(),
                       // ),
                       getHaveIssueSection()
-
                     ],
                   ),
                 ),

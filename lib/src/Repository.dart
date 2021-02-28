@@ -7,6 +7,7 @@ import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/PromocodeModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/UserViewModel.dart';
 
@@ -154,7 +155,7 @@ class Repository {
       return order;
   }
 
-  static Future<ResponseViewModel<List<OrderModel>>> createOrder(OrderModel orderModel) async{
+  static Future<ResponseViewModel<OrderModel>> createOrder(OrderModel orderModel) async{
     return CartDataProvider.createOrder(orderModel);
   }
 
@@ -167,7 +168,7 @@ class Repository {
   }
 
 
-  static Future<ResponseViewModel<List<OrderModel>>> createSavedOrder(OrderModel orderModel) async{
+  static Future<ResponseViewModel<OrderModel>> createSavedOrder(OrderModel orderModel) async{
     return CartDataProvider.createSavedOrder(orderModel);
   }
 
@@ -222,6 +223,7 @@ class Repository {
   static Future<List<String>> getCachedOriginalOrderImages() async {
     return await OrderSharedPreference.getImagesList(Constants.SHARED_PREFERENCE_ORIGINAL_ORDER_KEY);
   }
+  static Future<ResponseViewModel<PromoCodeModel>> checkPromoCode(String promoText , double orderTotal) async => await ApplicationDataProvider.checkPromoCode(promoText , orderTotal);
 
 
 }

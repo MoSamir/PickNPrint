@@ -8,7 +8,6 @@ import 'package:picknprint/src/resources/LocalKeys.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/screens/PickYourPhotosScreen.dart';
-import 'package:picknprint/src/ui/screens/UserCartScreen.dart';
 import 'package:picknprint/src/ui/screens/orders_screens/ActiveOrdersScreen.dart';
 import 'package:picknprint/src/ui/widgets/PackListTile.dart';
 import 'package:picknprint/src/ui/widgets/PickNPrintAppbar.dart';
@@ -25,7 +24,6 @@ class OrderConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
 
     return WillPopScope(
       onWillPop: () async => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> HomeScreen()) ,(route) => false),
@@ -169,26 +167,13 @@ class OrderConfirmationScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 15 , horizontal: 8),
                 color: AppColors.white,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text((LocalKeys.REQUEST_EXTRA_PACKAGES_THAN).tr(args:[BlocProvider.of<ApplicationDataBloc>(context).maxPackageSize.toString()]) , style: TextStyle(
                       color: AppColors.lightBlue,
                     ),),
-                    GestureDetector(
-                      onTap: (){},
-                      child: Row(
-                        children: <Widget>[
-                          Text((LocalKeys.CHECKOUT_EXTRA_RATE).tr() , style: TextStyle(
-                          ),),
-                          Text((LocalKeys.HERE_LABEL).tr() , style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: AppColors.lightBlue,
-                          ),),
-
-
-                        ],
-                      ),
-                    ),
+                    Text((LocalKeys.CHECKOUT_EXTRA_RATE).tr() , style: TextStyle(
+                    ),),
                     SizedBox(height: 15,),
                   ],
                 ),

@@ -4,6 +4,7 @@ import 'package:picknprint/src/data_providers/apis/UserDataProvider.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
+import 'package:picknprint/src/data_providers/models/PromocodeModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
 import 'package:picknprint/src/data_providers/models/TestimonialViewModel.dart';
 import 'package:picknprint/src/data_providers/shared_preference/UserSharedPreference.dart';
@@ -135,12 +136,40 @@ class ApplicationDataProvider {
         return TestimonialViewModel.fromListJson(testimonialsResponse['testimonials']);
       }
     );
-
     return ResponseViewModel<List<TestimonialViewModel>>(
       isSuccess: testimonialsListResponse.isSuccess,
       errorViewModel: testimonialsListResponse.errorViewModel,
       responseData: testimonialsListResponse.responseData,
     );
+  }
+
+  static Future<ResponseViewModel<PromoCodeModel>> checkPromoCode(String promoText , double orderTotal) async{
+
+    String url = URL.getURL(apiPath: URL.POST_CHECK_PROMO_CODE);
+    String token = await UserSharedPreference.getUserToken();
+    Map<String,String> requestHeaders = NetworkUtilities.getHeaders(customHeaders: {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+    });
+
+    Map<String,dynamic> requestBody = {
+      "promoCode" : promoText,
+      "totalPrice" : orderTotal.toString(),
+    };
+    ResponseViewModel testimonialsListResponse = await NetworkUtilities.handlePostRequest(
+        methodURL: url,
+        requestBody: requestBody,
+        requestHeaders: requestHeaders,
+        parserFunction: (Map<String,dynamic> testimonialsResponse){
+          print("Hello World => $testimonialsResponse");
+          return PromoCodeModel.fromJson(testimonialsResponse , promoText);
+        }
+    );
+    return ResponseViewModel<PromoCodeModel>(
+      isSuccess: testimonialsListResponse.isSuccess,
+      errorViewModel: testimonialsListResponse.errorViewModel,
+      responseData: testimonialsListResponse.responseData,
+    );
+
   }
 
   
