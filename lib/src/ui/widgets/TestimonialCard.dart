@@ -18,7 +18,7 @@ class TestimonialCard extends StatelessWidget {
           blurRadius: 5.0,
         ),]
       ),
-      height: 300,
+      height: 320,
       width: 240,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -40,6 +40,10 @@ class TestimonialCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 5,),
+                if(testimonialViewModel.testimonialOwner != null && testimonialViewModel.testimonialOwner.isNotEmpty)
+                Text('${testimonialViewModel.testimonialOwner}' , style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),),
                 Text(testimonialViewModel.testimonialComment , textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,),
               ],
             ),

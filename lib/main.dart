@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
 
 import 'package:picknprint/src/bloc/events/ApplicationDataEvents.dart';
 import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/bloc/states/ApplicationDataState.dart';
 import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
@@ -16,14 +19,28 @@ import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/resources/Constants.dart';
 import 'package:picknprint/src/resources/Resources.dart';
 import 'package:picknprint/src/ui/screens/HomeScreen.dart';
-import 'package:picknprint/src/ui/screens/confirmation_screens/OrderConfirmationScreen.dart';
 import 'package:picknprint/src/utilities/BlocObserver.dart';
+import 'package:picknprint/src/utilities/FirebaseHelper.dart';
 
 
 
 ApplicationDataBloc appBloc = ApplicationDataBloc(ApplicationDataLoadingState());
 AuthenticationBloc authenticationBloc = AuthenticationBloc(AuthenticationInitiated());
 UserBloc userBloc ;
+
+Future<dynamic> onForegroundMessage(RemoteMessage message) {
+  print("Hello World I received Message => ${message.toString()}");
+  print("*******************************************************");
+
+  Firebase.initializeApp().then((value){
+    if(userBloc != null){
+      userBloc.add(LoadUserOrders());
+    }
+  });
+  return null;
+}
+
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = BlocLogObserver();
@@ -31,29 +48,21 @@ void main() async{
   appBloc.add(LoadApplicationData());
   authenticationBloc.add(AuthenticateUser());
   Constants.appLocale = "en";
-
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black12,
     statusBarBrightness: Brightness.dark,
     statusBarIconBrightness: Brightness.light
   ));
-
-
-  runApp(
-      EasyLocalization(
+  await Firebase.initializeApp();
+  FireBaseHelper.initFireBaseMessaging(omMessageReceived: onForegroundMessage);
+  runApp(EasyLocalization(
           supportedLocales: [Locale('en'),  /* Locale('ar') */ ],
           path: 'assets/locales',
           useOnlyLangCode: true,
           saveLocale: true,
-
-          //startLocale: Locale('en'),
           fallbackLocale: Locale('en'),
           child: AppEntrance(),
-        ),
-  );
-
-
+        ),);
 }
 
 

@@ -47,10 +47,17 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
       );
     }
 
-    double orderSubTotal = widget.orderModel.orderPackage.packagePrice + widget.orderModel.orderAddress.deliveryFees;
-    double orderTotal = orderSubTotal -
-        (widget.orderModel.promoCode != null ? widget.orderModel.promoCode.discount : 0.0);
+    double orderSubTotal = 0.0;
+    double orderTotal = 0.0;
 
+
+    if(widget.orderModel.orderNumber == null) {
+      orderSubTotal = widget.orderModel.orderPackage.packagePrice;
+      orderTotal = (orderSubTotal  + widget.orderModel.orderAddress.deliveryFees ) - (widget.orderModel.promoCode != null ? widget.orderModel.promoCode.discount : 0.0);
+    } else {
+      orderSubTotal = widget.orderModel.orderNetPrice;
+      orderTotal = widget.orderModel.orderGrossPrice - (widget.orderModel.promoCode != null ? widget.orderModel.promoCode.discount : 0.0);
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

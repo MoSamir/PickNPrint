@@ -225,15 +225,28 @@ class NetworkUtilities {
 
       final bytes = await _image.readAsBytes();
       var serverResponse = await http.post(methodURL, body: bytes);
-      print("Method URL -> $methodURL");
 
 
       if (serverResponse.statusCode == 200) {
-        uploadResponse = ResponseViewModel(
-          isSuccess: true,
-          errorViewModel: null,
-          responseData: parserFunction(json.decode(serverResponse.body)),
-        );
+        print("************************************");
+        print(serverResponse.body);
+        print("************************************");
+
+        if(serverResponse.body is String && serverResponse.body.toLowerCase().contains("blocked")){
+          uploadResponse = ResponseViewModel(
+            isSuccess: false,
+            errorViewModel: ErrorViewModel(
+              errorCode: HttpStatus.requestTimeout,
+              errorMessage: (LocalKeys.UNABLE_TO_READ_IMAGE).tr()
+            ),
+          );
+        } else {
+          uploadResponse = ResponseViewModel(
+            isSuccess: true,
+            errorViewModel: null,
+            responseData: parserFunction(json.decode(serverResponse.body)),
+          );
+        }
       }
       else {
           uploadResponse = handleError(serverResponse);

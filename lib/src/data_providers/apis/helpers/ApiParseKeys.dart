@@ -82,7 +82,12 @@ class ApiParseKeys {
   static const String ORDER_ITEM_STATUS_KEY = "key";
   static const String ORDER_SHIPPING_TIME = "shippingDurationTo";
 
-  //
+
+  static const String ORDER_PROMOTION_ROOT = "promotion";
+  static const String ORDER_PROMOTION_NAME = "code";
+  static const String ORDER_PROMOTION_PERCENTAGE = "discountPercentage";
+
+
 
 
   static const String ORDER_CART_GROSS_PRICE = "totalPrice";
@@ -96,6 +101,7 @@ class ApiParseKeys {
 //- ------------------- GET TESTIMONIALS -----------------------------------
 
   static const String TESTIMONIAL_COMMENT_KEY = "comment";
+  static const String TESTIMONIAL_HEADER_KEY = "header";
   static const String TESTIMONIAL_IMAGE_KEY = "image";
   static const String TESTIMONIAL_ID_KEY = "id";
 

@@ -5,6 +5,7 @@ class Resources{
 
   static const String CONNECTION_ERROR_IMG = "assets/images/connection_error.png";
 
+  static const String APP_LOGO_IMG = "assets/images/app_logo.jpg";
   static const String APP_FOOTER_HEART_IMG = "assets/images/footer_hearts_img.png";
   static const String APP_FOOTER_PARACHUTE_IMG = "assets/images/footer_parachute_img.png";
   static const String APP_FOOTER_PACKAGES_IMG = "assets/images/footer_packages.png";

@@ -315,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget getTestimonialSlider(List<TestimonialViewModel> testimonials) {
          return CarouselSlider(
-      options: CarouselOptions(height: 310.0 , autoPlay: true , viewportFraction: .7 ),
+      options: CarouselOptions(height: 335.0 , autoPlay: true , viewportFraction: .7 ),
       items: testimonials.map((TestimonialViewModel testimonial){
         return TestimonialCard(testimonialViewModel: testimonial,);
       }).toList(),);

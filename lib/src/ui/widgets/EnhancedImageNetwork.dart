@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:picknprint/src/resources/Resources.dart';
 
 class EnhancedImageNetwork extends StatelessWidget {
-
   final ImageProvider  placeHolder;
   final String image;
   final double width , height ;
@@ -16,24 +16,22 @@ class EnhancedImageNetwork extends StatelessWidget {
       imageErrorBuilder: (BuildContext context,
           Object exception,
           StackTrace stackTrace) {
-        return Image(image: placeHolder,) ??  Image.asset('assets/images/app_logo.png' , width: width ?? 50, height: height ?? 50,);
+        return Image(image: placeHolder,) ??  Image.asset(Resources.APP_LOGO_IMG , width: width ?? 50, height: height ?? 50,);
       },
       fit: fit ?? BoxFit.cover,
       width: width ?? 50,
       height: height ?? 50,
-      placeholder: placeHolder ?? AssetImage('assets/images/app_logo.png') ,
+      placeholder: placeHolder ?? AssetImage(Resources.APP_LOGO_IMG) ,
       image: NetworkImage(image ?? '' + "?${DateTime.now().timeZoneOffset}" ?? ''),
     ),) :
     FadeInImage(
       imageErrorBuilder: (BuildContext context,
           Object exception,
           StackTrace stackTrace) {
-        return Image(image: placeHolder,) ?? Image.asset(
-            'assets/images/app_logo.png');
+        return Image(image: placeHolder,) ?? Image.asset(Resources.APP_LOGO_IMG);
       },
       fit: fit ?? BoxFit.cover,
-      placeholder: placeHolder ?? AssetImage(
-          'assets/images/app_logo.png'),
+      placeholder: placeHolder ?? AssetImage(Resources.APP_LOGO_IMG),
       image:NetworkImage(image + "?${DateTime.now().timeZoneOffset}" ?? ''),
     );
   }

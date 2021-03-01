@@ -44,6 +44,7 @@ class OrderModel {
 
 
     AddressViewModel orderAddress = AddressViewModel(deliveryFees: ParserHelper.parseDouble((orderJson[ApiParseKeys.ADDRESSES_SHIPPING_FEES]).toString()),);
+    double orderGrossValue = ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_GROSS_PRICE]).toString());
 
     try{
       if(orderJson[ApiParseKeys.ADDRESS_ROOT_KEY] != null && orderJson[ApiParseKeys.ADDRESS_ROOT_KEY] is Map ) {
@@ -54,6 +55,15 @@ class OrderModel {
     } catch(_){}
 
 
+    PromoCodeModel promoCode ;
+    if(orderJson[ApiParseKeys.ORDER_PROMOTION_ROOT] != null && orderJson[ApiParseKeys.ORDER_PROMOTION_ROOT] is Map){
+      String promoCodeName = orderJson[ApiParseKeys.ORDER_PROMOTION_ROOT][ApiParseKeys.ORDER_PROMOTION_NAME] ?? '' ;
+      double percentage  =  ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_PROMOTION_ROOT][ApiParseKeys.ORDER_PROMOTION_PERCENTAGE]).toString());
+      promoCode = PromoCodeModel(
+        promoCode: promoCodeName,
+        discount: (percentage  < 1) ? percentage * orderGrossValue : (percentage / 100.0) * orderGrossValue,
+      );
+    }
 
     int deliveryExpectedTime = 5 ;
     try{
@@ -61,13 +71,13 @@ class OrderModel {
     } catch(_){}
 
     return OrderModel(
+      promoCode: promoCode,
       statues: getOrderStatus(itemStatus),
      deliveryTime: deliveryExpectedTime,
       orderTime:  DateTime.parse(orderJson[ApiParseKeys.ORDER_CREATED_AT] ?? DateTime.now().toString()),
-      orderGrossPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_GROSS_PRICE]).toString()),
+      orderGrossPrice: orderGrossValue,
       orderNetPrice: ParserHelper.parseDouble((orderJson[ApiParseKeys.ORDER_CART_NET_PRICE]).toString()),
       orderNumber: int.parse((orderJson[ApiParseKeys.ORDER_ID]).toString()),
-
       orderPackage: PackageModel(
         packagePrice: ParserHelper.parseDouble(orderJson[ApiParseKeys.ORDER_PACKAGE_PRICE].toString()),
         packageSize: int.parse((orderJson[ApiParseKeys.ORDER_PACKAGE_SIZE] ?? 3).toString()),
