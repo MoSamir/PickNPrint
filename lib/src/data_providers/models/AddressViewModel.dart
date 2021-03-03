@@ -20,7 +20,7 @@ class AddressViewModel {
 
   @override
   String toString() {
-    return '${city.name ?? ''} , ${area.name ?? ''} , ${buildingNumber ?? ''} ${addressName ?? ''} , ${additionalInformation ?? ''}';
+    return '${city.toString() ?? ''} , ${area.toString() ?? ''} , ${buildingNumber ?? ''} ${addressName ?? ''} , ${additionalInformation ?? ''}';
   }
 
   static fromJson(Map<String,dynamic> newAddressResponse) {
@@ -66,8 +66,16 @@ class AddressViewModel {
 class LocationModel {
   int id ;
   String name ;
+
+  @override
+  String toString() {
+    return '${name ?? ''}';
+  }
+
   List<LocationModel> childLocations ;
   LocationModel({this.id, this.name , this.childLocations});
+
+
 
 
 

@@ -8,7 +8,8 @@ class RegistrationInitialState extends RegistrationStates{}
 class RegistrationLoadingState extends RegistrationStates{}
 class RegistrationSuccessState extends RegistrationStates{
   final UserViewModel userModel ;
-  RegistrationSuccessState({this.userModel});
+  final String userPassword ;
+  RegistrationSuccessState({this.userModel , this.userPassword});
 }
 class RegistrationFailedState extends RegistrationStates{
   final RegistrationEvents failureEvent;

@@ -14,7 +14,7 @@
     <application
         android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="picknprint"
+        android:label="pick n print"
         android:icon="@mipmap/launcher_icon">
 
 

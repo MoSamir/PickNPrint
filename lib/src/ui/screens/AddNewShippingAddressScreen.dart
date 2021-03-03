@@ -34,7 +34,7 @@ class AddNewShippingAddressScreen extends StatefulWidget {
   // in case of new address the user should be directed to the shipping Location screen not back home
   final OrderModel userOrderModel ;
   final AddressViewModel addressModel ;
-  AddNewShippingAddressScreen({this.comingFromRegistration , this.userOrderModel ,this.addressModel});
+  AddNewShippingAddressScreen(this.userOrderModel , {this.comingFromRegistration , this.addressModel});
   @override
   _AddNewShippingAddressScreenState createState() => _AddNewShippingAddressScreenState();
 }
@@ -59,8 +59,6 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
     return BlocConsumer(
       listener: (context , state){
 
-        print("User Widget Order => ${widget.userOrderModel}");
-
         if (state is UserDataLoadingFailedState) {
           if (state.error.errorCode == HttpStatus.requestTimeout) {
             showDialog(
@@ -79,6 +77,10 @@ class _AddNewShippingAddressScreenState extends State<AddNewShippingAddressScree
         }
         else if(state is UserDataLoadedState){
           UIHelpers.showToast((LocalKeys.YOUR_UPDATES_ARE_SUCCESS).tr(), false , true);
+
+          if(widget.userOrderModel == null){
+            Navigator.pop(context);
+          }
 
           UserViewModel loggedInUser = BlocProvider.of<UserBloc>(context).currentLoggedInUser;
           AddressViewModel newAddress ;

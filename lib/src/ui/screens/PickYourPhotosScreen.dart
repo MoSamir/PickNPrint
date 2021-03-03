@@ -99,7 +99,6 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       onWillPop: () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => HomeScreen())),
       child: Scaffold(
-        key: _scaffoldKey,
         body: BlocConsumer(
           listener: (context, state) async {
             if (state is OrderCreationLoadingFailureState) {
@@ -499,7 +498,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             child: Stack(
               children: [
                 AnimatedContainer(
-                  duration: Duration(seconds: 1),
+                  duration: Duration(milliseconds: 200),
                   height: (frameDimension),
                   width: (frameDimension),
                   decoration: BoxDecoration(
@@ -525,12 +524,12 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
                         ? EdgeInsets.all(16)
                         : EdgeInsets.all(0),
                     // margin: EdgeInsets.all(8),
-                    duration: Duration(seconds: 1),
+                    duration: Duration(milliseconds: 200),
                     child: userOrder.userImages[i] == null ||
                         userOrder.userImages[i].isEmpty
                         ? Center(
                       child: Icon(
-                        Icons.add_circle,
+                        Icons.photo,
                         color: AppColors.lightBlue,
                         size: 35,
                       ),
@@ -584,11 +583,11 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: AnimatedContainer(
-            duration: Duration(seconds: 1),
+            duration: Duration(milliseconds: 200),
             height: (frameDimension),
             width: (frameDimension),
             decoration: BoxDecoration(
-              color: AppColors.lightBlue,
+              color: AppColors.white,
               boxShadow: [
                 BoxShadow(
                   color: userOrder.isWhiteFrame
@@ -601,16 +600,9 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             ),
             child: AnimatedContainer(
               margin: EdgeInsets.all(8),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 200),
               child: Center(
-                child: Text(
-                  (LocalKeys.ADD_MORE_IMAGES).tr(args: [
-                    widget.userSelectedPackage == null ? '' :
-                    (widget.userSelectedPackage.packageAfterDiscountPrice ?? '').toString(),
-                  ]),
-                  textAlign: TextAlign.center,
-                  style: Styles.baseTextStyle,
-                ),
+                child: Icon(Icons.add_circle_outline_rounded , color: AppColors.lightBlue, size: 35,),
               ),
             ),
           ),
@@ -630,7 +622,31 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
         BlocProvider.of<AuthenticationBloc>(context).currentUser;
 
     if (currentUser != null && currentUser.isAnonymous() == false) {
-      createOrderBloc.add(SaveOrder(order: userOrder));
+
+      if(userOrder.userImages != null && userOrder.userImages.length > 0) {
+        createOrderBloc.add(SaveOrder(order: userOrder));
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => AlertDialog(
+              elevation: 2,
+              content: Container(
+                width: MediaQuery.of(context).size.width * .7,
+                height: 150,
+                child: Center(
+                  child: Text((LocalKeys.SOME_IMAGES_IS_MISSING).tr(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ));
+        return;
+      }
     } else {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -706,15 +722,13 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   void _addToCartAndContinueShopping() async {
-    if (BlocProvider.of<AuthenticationBloc>(context)
-        .currentUser
-        .isAnonymous()) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+    if (BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
       return;
     }
-    String errorMessageIfExist = await createOrderBloc.validateOrder(userOrder);
-    if (errorMessageIfExist == null || errorMessageIfExist.isEmpty) {
+
+
+    if (userOrder.userImages != null && userOrder.userImages.length > 0) {
       createOrderBloc.add(AddOrderToCart(order: userOrder));
     } else {
       showDialog(
@@ -726,8 +740,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
               width: MediaQuery.of(context).size.width * .7,
               height: 150,
               child: Center(
-                child: Text(
-                  errorMessageIfExist,
+                child: Text((LocalKeys.SOME_IMAGES_IS_MISSING).tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.red,
@@ -890,23 +903,16 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
   }
 
   void _checkoutOrder() async {
-    if (BlocProvider.of<AuthenticationBloc>(context)
-        .currentUser
-        .isAnonymous()) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
-    } else if (BlocProvider.of<AuthenticationBloc>(context)
-        .currentUser
-        .userSavedAddresses
-        .length ==
-        0) {
+    if (BlocProvider.of<AuthenticationBloc>(context).currentUser.isAnonymous()) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+    } else if (BlocProvider.of<AuthenticationBloc>(context).currentUser.userSavedAddresses.length == 0) {
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => AddNewShippingAddressScreen(
+            userOrder,
             comingFromRegistration: false,
           )));
     } else {
-      await Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ShippingAddressScreen(userOrder)));
+      await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ShippingAddressScreen(userOrder)));
     }
   }
 

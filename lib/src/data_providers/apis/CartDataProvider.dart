@@ -87,6 +87,7 @@ class CartDataProvider {
     });
     Map<String,dynamic> requestBody = {
       'address_id' : order.orderAddress.id,
+      'contact_number' : order.contactPhoneNumber.toString(),
     };
 
     if(order.promoCode != null){
@@ -199,6 +200,7 @@ class CartDataProvider {
     Map<String,dynamic> requestBody = {
       'address_id' : orderModel.orderAddress.id.toString(),
       'order_id' : orderModel.orderNumber.toString(),
+      'contact_number' : orderModel.contactPhoneNumber.toString(),
     };
 
     if(orderModel.promoCode != null){

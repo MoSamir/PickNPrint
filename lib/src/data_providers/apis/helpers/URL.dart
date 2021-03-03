@@ -2,9 +2,10 @@ import 'package:picknprint/src/resources/Constants.dart';
 
 class URL{
 
-  static const String SERVER_LINK = "http://dawayerdev.com";
+  static const String SERVER_LINK = "http://pickandprint.net";
+  static const String BASE_URL = "$SERVER_LINK/api/"; // server
 
-  static const String BASE_URL = "$SERVER_LINK/pickandprint/api/"; // server
+
   static const String POST_REGISTER = "auth/register?locale=";
   static const String GET_RETRIEVE_SYSTEM_INFO = "getSystemSettings";
   static const String POST_LOGIN = "auth/login?locale=";

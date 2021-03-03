@@ -431,7 +431,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(width: 4,),
                     GestureDetector(
                       onTap: () async{
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(addressModel: userAddresses[index],)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen( null , addressModel: userAddresses[index],)));
                         setState(() {});
                       },
                       child: Container(
@@ -456,7 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return Container(
         child: GestureDetector(
           onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen(comingFromRegistration: false, )));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddNewShippingAddressScreen( null ,comingFromRegistration: false, )));
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16),

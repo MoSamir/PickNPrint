@@ -34,28 +34,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  YoutubePlayerController _controller;
 
 
   @override
   void initState() {
     super.initState();
 
-    _controller = YoutubePlayerController(
-      initialVideoId: 'K18cpp_-gP8',
-      params: YoutubePlayerParams(
-        startAt: Duration(seconds: 30),
-        showControls: false,
-        enableCaption: false,
-        showVideoAnnotations: false,
-        showFullscreenButton: false,
-      ),
-    );
   }
 
   @override
   void dispose() {
-    _controller.close();
     super.dispose();
   }
 
@@ -66,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (state is ApplicationDataLoadingFailureState) {
             if (state.error.errorCode == HttpStatus.requestTimeout) {
               UIHelpers.showNetworkError(context);
+              resolveAutoDispatch(state);
               return;
             }
             else if (state.error.errorCode == HttpStatus.serviceUnavailable) {
@@ -97,37 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: MediaQuery.of(context).size.width,
                           child: Stack(
                             children: <Widget>[
-                              SizedBox(
+                              Container(
                                 height:MediaQuery.of(context).size.height * .5,
                                 width: MediaQuery.of(context).size.width,
-                                child: FutureBuilder<bool>(
-                                  future: NetworkUtilities.isConnected(),
-                                  builder: (context, snapshot){
-                                    Widget child = Center(child: LoadingWidget(),);
-                                    if(snapshot.hasData){
-                                      if(snapshot.data){
-                                        child = YoutubePlayerIFrame(
-                                          controller: _controller,
-                                          aspectRatio: 16 / 9,
-                                        );
-                                      } else {
-                                        child = Center(
-                                          child: Container(
-                                            height:MediaQuery.of(context).size.height * .5,
-                                            width: MediaQuery.of(context).size.width,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(Resources.SHIPPING_ADDRESS_BANNER_IMG),
-                                                  fit: BoxFit.fill
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    }
-                                    return child;
-                                  },
-                                ),
+                                child: Image.asset(Resources.HOME_SCREEN_BANNER , fit: BoxFit.contain, alignment: Alignment.topCenter , height: MediaQuery.of(context).size.height * .4,),
+                                alignment: Alignment.topCenter,
                               ),
                               Positioned(
                                 bottom: 0,
@@ -194,16 +157,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(height: 10,),
                         Text(LocalKeys.PICK_N_PRINT_KEY , textAlign: TextAlign.start,).tr(),
                         SizedBox(height: 10,),
-                        GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AboutScreen()));
-                            return;
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text((LocalKeys.READ_MORE_KEY).tr() , textAlign: TextAlign.end,),
-                          ),
-                        ),
                         Center(
                           child: GestureDetector(
                             onTap: (){
@@ -262,7 +215,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  getAvailablePackagesView(BlocProvider.of<ApplicationDataBloc>(context).applicationPackages),
+                  Container(
+                    child: getAvailablePackagesView(BlocProvider.of<ApplicationDataBloc>(context).applicationPackages),
+                  ),
                   Visibility(
                     replacement: Container(height: 0, width: 0,),
                     visible: state is ApplicationDataLoadedState ,
@@ -271,23 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           child: getTestimonialSlider(BlocProvider.of<ApplicationDataBloc>(context).testimonials),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          color: AppColors.transparent,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text((LocalKeys.REQUEST_EXTRA_PACKAGES_THAN).tr(args:[BlocProvider.of<ApplicationDataBloc>(context).maxPackageSize.toString()]) , style: TextStyle(
-                                color: AppColors.lightBlue,
-                              ),),
-                              SizedBox(height: 5,),
-                              Text((LocalKeys.CHECKOUT_EXTRA_RATE).tr() , style: TextStyle(
-                                decoration: TextDecoration.underline,
-                              ),),
-                              SizedBox(height: 15,),
-                            ],
-                          ),
-                        ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -301,24 +240,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget getAvailablePackagesView(List<PackageModel> systemPackages) {
-    return ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.all(6),
-      physics: NeverScrollableScrollPhysics(),
-      children: systemPackages.map((PackageModel package){
-       return PackageHomeScreenListing(package: package , onPackageTap: (){
-         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
-       },);
-      }).toList(),);
+    return SizedBox(
+      height: 400,
+      child: CarouselSlider(
+        options: CarouselOptions(height: 400.0 , autoPlay: false , viewportFraction: .7 ),
+        //physics: NeverScrollableScrollPhysics(),
+        items: systemPackages.map((PackageModel package){
+         return PackageHomeScreenListing(package: package , onPackageTap: (){
+           Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userSelectedPackage: package,)));
+         },);
+        }).toList(),),
+    );
 
   }
-
   Widget getTestimonialSlider(List<TestimonialViewModel> testimonials) {
          return CarouselSlider(
       options: CarouselOptions(height: 335.0 , autoPlay: true , viewportFraction: .7 ),
       items: testimonials.map((TestimonialViewModel testimonial){
         return TestimonialCard(testimonialViewModel: testimonial,);
       }).toList(),);
+
+  }
+  void resolveAutoDispatch(ApplicationDataLoadingFailureState state) {
+    if(state.error.errorCode == HttpStatus.requestTimeout){
+      BlocProvider.of<ApplicationDataBloc>(context).add(state.failureEvent);
+      return;
+    }
 
   }
 

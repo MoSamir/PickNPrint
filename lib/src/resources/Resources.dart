@@ -29,6 +29,9 @@ class Resources{
   static const String TESTIMONIALS_FAME_ICON = "assets/images/white_frame.svg";
 
 
+  static const String HOME_SCREEN_BANNER = "assets/images/home_banner_image.jpg";
+
+
 
   //------------- FONTS ----------------------------------------------------
 

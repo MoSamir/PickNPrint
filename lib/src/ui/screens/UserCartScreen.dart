@@ -69,7 +69,6 @@ class _UserCartScreenState extends State<UserCartScreen> {
               ),
               isScrollEnabled: true,
               listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCart.map((OrderModel order){
-                print("Order Status => ${order.statues}");
                 return  GestureDetector(
                   onTap: (){
                     Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PickYourPhotosScreen(userOrder: order,)));
@@ -90,8 +89,7 @@ class _UserCartScreenState extends State<UserCartScreen> {
                           ),),
                           Text(DateFormat.yMd(localeName).format(order.orderTime ?? DateTime.now()).replaceAll('/', ' / ') , style: TextStyle(
                             color: AppColors.white,
-                          ),
-                          ),
+                          )),
                         ],
                       ),
                     ),

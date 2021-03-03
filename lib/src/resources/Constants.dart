@@ -16,8 +16,8 @@ class Constants {
   static const String SHARED_PREFERENCE_CROPPED_ORDER_KEY = "SHARED_PREFERENCE_CROPPED_ORDER_KEY";
   static const String SHARED_PREFERENCE_ORIGINAL_ORDER_KEY = "SHARED_PREFERENCE_ORIGINAL_ORDER_KEY";
 
-  // static const String FILE_STACK_API_KEY =  "AspW9mDCPREWfktPAU5O4z";
-  static const String FILE_STACK_API_KEY =  "APb5UOct7StW2ZppDsR8Fz"; // DEV
+  static const String FILE_STACK_API_KEY =  "AO2q0LVmBSe2iuzw4npmkz" ; ///PRODUCTION KEY
+  // static const String FILE_STACK_API_KEY =  "APb5UOct7StW2ZppDsR8Fz"; // DEV
 
 
 }

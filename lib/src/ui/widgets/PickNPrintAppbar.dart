@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
-
+import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/bloc/states/UserBlocStates.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/Constants.dart';
@@ -129,6 +129,14 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
 
 
   Widget getCartSize() {
+
+
+
+    int itemsCount = 0 ;
+    BlocProvider.of<UserBloc>(context).userCart.forEach((OrderModel element) {
+      itemsCount += element.orderPackage.packageSize;
+    });
+
     if(BlocProvider.of<UserBloc>(context).currentLoggedInUser.isAnonymous() == false)
       return Container(
           color: AppColors.transparent,
@@ -159,7 +167,7 @@ class _PickNPrintAppbarState extends State<PickNPrintAppbar> {
                         color: AppColors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Center(child: Text(BlocProvider.of<UserBloc>(context).userCart.length.toString() , textScaleFactor: 1 ,style: TextStyle(
+                      child: Center(child: Text(itemsCount.toString() , textScaleFactor: 1 ,style: TextStyle(
                         color: AppColors.white,
                         fontSize: 12,
                       ),)),

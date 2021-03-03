@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:picknprint/src/bloc/blocs/AuthenticationBloc.dart';
+import 'package:picknprint/src/bloc/events/AuthenticationEvents.dart';
+import 'package:picknprint/src/bloc/states/AuthenticationStates.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'package:flutter/material.dart';
@@ -90,7 +93,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
         }
         else if(state is RegistrationSuccessState){
-          Navigator.pop(context , [userEmailTextController.text , userPasswordTextController.text]);
+          BlocProvider.of<AuthenticationBloc>(context).add(LoginUser(loginMethod: LoginMethod.MAIL , userEmail: userEmailTextController.text , userPassword: state.userPassword));
+          Navigator.pop(context , [userEmailTextController.text , state.userPassword]);
         }
       },
       builder:  (context, state){
@@ -139,6 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           userMail: userEmailTextController.text,
                           userPhoneNumber: userPhoneNumberTextController.text,
                         );
+
+                        print("Password => ${passwordTextController.text}");
                         _registrationBloc.add(RegisterUser(userModel: userModel , password: passwordTextController.text));
                       }
                     },

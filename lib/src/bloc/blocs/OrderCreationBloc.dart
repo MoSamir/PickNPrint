@@ -85,10 +85,19 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
   Stream<CreateOrderStates> _handleAddOrderToCart(AddOrderToCart event) async*{
     yield OrderCreationLoadingState();
 
+    if(event.order.userImages != null)
+      for(int i = 0 ; i < event.order.userImages.length ; i++){
+        if(event.order.uploadedImages.contains(event.order.userImages[i]) == false && isNetworkError(event.order.userImages[i])){
+          event.order.uploadedImages.add(event.order.userImages[i]);
+        }
+      }
+    List<String> tobeUploadedFiles = getFilesToBeUploaded(event.order.userImages);
     ResponseViewModel<List<String>> uploadCartImages;
-    if(event.order.uploadedImages == null || event.order.uploadedImages.length < event.order.userImages.length) {
-      uploadCartImages = await Repository.uploadMultipleFiles(event.order.userImages);
+    if(tobeUploadedFiles != null && tobeUploadedFiles.length > 0) {
+      uploadCartImages = await Repository.uploadMultipleFiles(tobeUploadedFiles);
       if(uploadCartImages.isSuccess){
+        if(event.order.uploadedImages == null)
+        event.order.uploadedImages= new List<String>();
         event.order.uploadedImages.addAll(uploadCartImages.responseData);
       }
     }
@@ -122,26 +131,24 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     yield OrderCreationLoadingState();
 
     // filter the images if there's new images to be uploaded
-    ResponseViewModel<List<String>> uploadCartImages = ResponseViewModel(isSuccess: true);
-    List<String> tobeUploaded = List<String>();
-    for(int i = 0 ; i < event.orderModel.userImages.length ; i++){
-      if(event.orderModel.userImages[i].contains('https://cdn.filestackcontent.com') == false)
-        tobeUploaded.add(event.orderModel.userImages[i]);
-      else
-        event.orderModel.uploadedImages.add(event.orderModel.userImages[i]);
-    }
 
-
-    if(tobeUploaded != null && tobeUploaded.length > 0){
-      uploadCartImages = await Repository.uploadMultipleFiles(event.orderModel.userImages);
+    List<String> tobeUploadedFiles = getFilesToBeUploaded(event.orderModel.userImages);
+    ResponseViewModel<List<String>> uploadCartImages;
+    if(tobeUploadedFiles != null && tobeUploadedFiles.length > 0) {
+      uploadCartImages = await Repository.uploadMultipleFiles(tobeUploadedFiles);
       if(uploadCartImages.isSuccess){
         event.orderModel.uploadedImages.addAll(uploadCartImages.responseData);
       }
     }
+    else {
+      uploadCartImages = ResponseViewModel(
+          isSuccess: true
+      );
+    }
 
     if(uploadCartImages.isSuccess){
       ResponseViewModel<OrderModel> saveOrderResponse = ResponseViewModel<OrderModel>(isSuccess: true);
-      if(event.orderModel.statues != OrderStatus.CART_ORDER) {
+      if(event.orderModel.statues != OrderStatus.CART_ORDER && event.orderModel.uploadedImages.length > 0) {
         saveOrderResponse = await Repository.saveOrderToCart(orderModel: event.orderModel);
       }
 
@@ -179,12 +186,20 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
 
   Stream<CreateOrderStates> _handleSaveOrder(SaveOrder event) async*{
     yield OrderCreationLoadingState();
-
-    event.order.userImages.removeWhere((element) => element== null || element.isEmpty);
+    if(event.order.userImages != null)
+    for(int i = 0 ; i < event.order.userImages.length ; i++){
+      if(event.order.uploadedImages.contains(event.order.userImages[i]) == false && isNetworkError(event.order.userImages[i]) ){
+        event.order.uploadedImages.add(event.order.userImages[i]);
+      }
+    }
+    List<String> tobeUploadedFiles = getFilesToBeUploaded(event.order.userImages);
     ResponseViewModel<List<String>> uploadCartImages;
-    if(event.order.uploadedImages == null || event.order.uploadedImages.length < event.order.userImages.length) {
-      uploadCartImages = await Repository.uploadMultipleFiles(event.order.userImages);
+
+    if(tobeUploadedFiles != null && tobeUploadedFiles.length > 0) {
+      uploadCartImages = await Repository.uploadMultipleFiles(tobeUploadedFiles);
       if(uploadCartImages.isSuccess){
+        if(event.order.uploadedImages == null)
+          event.order.uploadedImages= new List<String>();
         event.order.uploadedImages.addAll(uploadCartImages.responseData);
       }
     }
@@ -193,6 +208,7 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
           isSuccess: true
       );
     }
+
     if(uploadCartImages.isSuccess){
       ResponseViewModel<OrderModel> saveUserCart = await Repository.saveOrderForLater(event.order);
       if(saveUserCart.isSuccess){
@@ -241,5 +257,18 @@ class OrderCreationBloc extends Bloc<CreateOrderEvents , CreateOrderStates>{
     yield OrderCreationInitialStateWithPromoStatus(orderPromoCodeModel: promoCode.responseData ?? null);
     return;
   }
+
+  List<String> getFilesToBeUploaded(List<String> filesLinks){
+    List<String> localFiles = List<String>();
+    filesLinks.removeWhere((element) => element== null || element.isEmpty);
+    localFiles = filesLinks.where((element) => (element.startsWith('http') && element.startsWith('https')) == false).toList();
+    return localFiles;
+  }
+
+  bool isNetworkError(String url) {
+    return url.contains('http') || url.contains('https');
+  }
+
+
 
 }

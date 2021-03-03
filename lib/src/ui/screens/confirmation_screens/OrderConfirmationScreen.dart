@@ -163,21 +163,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                 );
               } , physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(0), shrinkWrap: true, itemCount: BlocProvider.of<ApplicationDataBloc>(context).applicationPackages.length,),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 15 , horizontal: 8),
-                color: AppColors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text((LocalKeys.REQUEST_EXTRA_PACKAGES_THAN).tr(args:[BlocProvider.of<ApplicationDataBloc>(context).maxPackageSize.toString()]) , style: TextStyle(
-                      color: AppColors.lightBlue,
-                    ),),
-                    Text((LocalKeys.CHECKOUT_EXTRA_RATE).tr() , style: TextStyle(
-                    ),),
-                    SizedBox(height: 15,),
-                  ],
-                ),
-              ),
+              SizedBox(height: 15,),
             ],
           ),
         ),

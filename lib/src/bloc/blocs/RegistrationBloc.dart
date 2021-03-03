@@ -42,7 +42,7 @@ class RegistrationBloc extends Bloc<RegistrationEvents , RegistrationStates>{
       Repository.saveUser(responseViewModel.responseData);
       Repository.saveEncryptedPassword(event.password);
       userModel = responseViewModel.responseData;
-      yield RegistrationSuccessState(userModel: userModel);
+      yield RegistrationSuccessState(userModel: userModel , userPassword: event.password);
       return ;
     } else {
       yield RegistrationFailedState(error: responseViewModel.errorViewModel , failureEvent: event);

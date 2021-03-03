@@ -135,42 +135,6 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
     );
   }
 
-  Widget buildTextField({String Function(String text) validator, bool secured, hint, FocusNode nextNode, TextEditingController textController, FocusNode focusNode, bool autoValidate}){
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        obscureText: secured ?? false,
-        validator: Validator.requiredField,
-        controller: textController,
-        onFieldSubmitted: (text){
-          if(nextNode != null)
-            FocusScope.of(context).requestFocus(nextNode);
-        },
-        focusNode: focusNode,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: .5,
-              color: AppColors.lightBlue,
-            ),
-          ),
-          fillColor: AppColors.offWhite,
-          filled: true,
-          hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: .5,
-              color: AppColors.lightBlue,
-            ),
-          ),
-          alignLabelWithHint: true,
-        ),
-        textInputAction: nextNode != null ? TextInputAction.next : TextInputAction.done,
-      ),
-    );
-  }
 
   Widget getStatisticsWidget() {
 
@@ -197,6 +161,14 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
         return;
       },
       onPromoCodeInput: (String promoCodeText){
+
+        if(promoCodeText.length == 0){
+          setState(() {
+            widget.orderModel.promoCode = null;
+          });
+          return;
+        }
+
         orderBloc.add(CheckPromoCodeValidity(promoText: promoCodeText , orderTotal: widget.orderModel.calculateOrderTotal()));
       },
     );

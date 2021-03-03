@@ -41,6 +41,7 @@ class UserDataProvider{
       requestHeaders: requestHeader,
       methodURL: apiURL,
       parserFunction: (registerUserRawResponse){
+        print("Register Raw Response => $registerUserRawResponse");
         return UserViewModel.fromJson(registerUserRawResponse[ApiParseKeys.RESPONSE_SUCCESS_ROOT]);
       },
     );
