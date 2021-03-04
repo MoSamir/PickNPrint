@@ -12,19 +12,15 @@ class UserViewModel {
 
 
 
-
   static UserViewModel fromAnonymous(){
     return UserViewModel(
       userId: -1,
       userSavedAddresses: List<AddressViewModel>(),
     );
   }
-
-
    bool isAnonymous(){
     return userId == -1;
   }
-
   Map<String,dynamic> toJson() {
 
 
@@ -38,14 +34,9 @@ class UserViewModel {
     userDataMap.putIfAbsent(ApiParseKeys.REGISTER_USER_IMAGE, () => userProfileImage);
     userJson.putIfAbsent(ApiParseKeys.REGISTER_USER_DATA, () => userDataMap);
     userJson.putIfAbsent(ApiParseKeys.REGISTER_USER_TOKEN, () => userToken);
-
     return userJson;
-
   }
-
   static UserViewModel fromJson(userJson) {
-
-
     String userTokenInformation = userJson[ApiParseKeys.REGISTER_USER_TOKEN];
     Map<String,dynamic> userDataInformation = userJson[ApiParseKeys.REGISTER_USER_DATA];
     return UserViewModel(
@@ -63,4 +54,5 @@ class UserViewModel {
   String toString() {
     return 'UserViewModel{userId: $userId, userName: $userName, userMail: $userMail, userPhoneNumber: $userPhoneNumber, userProfileImage: $userProfileImage}';
   }
+
 }

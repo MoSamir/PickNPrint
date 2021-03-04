@@ -201,6 +201,10 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     yield UserDataLoadingState();
     ResponseViewModel<UserViewModel> uploadImageResponse = await Repository.updateProfileImage(imageLink: event.imageLink);
     if(uploadImageResponse.isSuccess){
+
+
+
+
       await Repository.saveUser(uploadImageResponse.responseData);
       currentLoggedInUser = uploadImageResponse.responseData;
       yield UserDataLoadedState();
@@ -218,6 +222,13 @@ class UserBloc extends Bloc<UserBlocEvents , UserBlocStates>{
     ResponseViewModel<UserViewModel> updateUserInformationResponse = await Repository.updateUserProfile(updatedUser: event.userViewModel , oldPassword: event.oldPassword , newPassword : event.newPassword);
     if(updateUserInformationResponse.isSuccess){
       currentLoggedInUser = updateUserInformationResponse.responseData;
+      ResponseViewModel<List<AddressViewModel>> userAddresses = await Repository.getUserAddresses();
+      if(userAddresses.isSuccess){
+        if(currentLoggedInUser.userSavedAddresses != null) {
+          currentLoggedInUser.userSavedAddresses.clear();
+          currentLoggedInUser.userSavedAddresses.addAll(userAddresses.responseData);
+        }
+      }
       await Repository.saveUser(currentLoggedInUser);
       if(event.newPassword != null) await Repository.saveEncryptedPassword(event.newPassword);
       yield UserDataLoadedState();

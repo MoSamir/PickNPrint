@@ -20,7 +20,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
   Stream<AuthenticationStates> mapEventToState(AuthenticationEvents event) async*{
 
     bool isUserConnected = await NetworkUtilities.isConnected();
-
     if(isUserConnected == false){
       yield AuthenticationFailed(
         failedEvent: event,
@@ -45,14 +44,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvents , AuthenticationState
 
   Stream<AuthenticationStates> _checkIfUserLoggedIn() async*{
     yield AuthenticationLoading();
-
     UserViewModel loggedInUser = await Repository.getUser();
     currentUser = loggedInUser;
+
     if(loggedInUser.isAnonymous() == false){
       ResponseViewModel<List<AddressViewModel>> userAddresses = await Repository.getUserAddresses();
       if(userAddresses.isSuccess){
-        currentUser.userSavedAddresses.clear();
-        currentUser.userSavedAddresses.addAll(userAddresses.responseData);
+        if(currentUser.userSavedAddresses != null) {
+          currentUser.userSavedAddresses.clear();
+          currentUser.userSavedAddresses.addAll(userAddresses.responseData);
+        }
       }
     }
     yield UserAuthenticated(currentUser: currentUser);
