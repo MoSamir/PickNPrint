@@ -149,6 +149,7 @@ class _OrderStatisticWidgetState extends State<OrderStatisticWidget> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ListView(
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
                   SizedBox(

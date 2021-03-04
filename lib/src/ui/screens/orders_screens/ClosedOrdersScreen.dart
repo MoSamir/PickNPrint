@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picknprint/src/bloc/blocs/UserBloc.dart';
+import 'package:picknprint/src/bloc/events/UserBlocEvents.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/resources/AppStyles.dart';
 import 'package:picknprint/src/resources/LocalKeys.dart';
@@ -21,39 +21,45 @@ class ClosedOrderScreen extends StatefulWidget {
 class _ClosedOrderScreenState extends State<ClosedOrderScreen> {
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      hasDrawer: false,
-      hasAppbar: true,
-      customAppbar: PickNPrintAppbar(
-        leadAction: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            if(Navigator.canPop(context)){
-              Navigator.pop(context);
-            } else {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
-            }
-          },
+    return RefreshIndicator(
+      onRefresh: () async{
+        BlocProvider.of<UserBloc>(context).add(LoadUserOrders());
+        return null;
+      },
+      child: BaseScreen(
+        hasDrawer: false,
+        hasAppbar: true,
+        customAppbar: PickNPrintAppbar(
+          leadAction: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              if(Navigator.canPop(context)){
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+              }
+            },
+          ),
+          appbarColor: AppColors.black,
+          actions: [],
+          centerTitle: true,
+          title: (LocalKeys.PREVIOUS_ORDERS).tr(),
         ),
-        appbarColor: AppColors.black,
-        actions: [],
-        centerTitle: true,
-        title: (LocalKeys.PREVIOUS_ORDERS).tr(),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text((LocalKeys.MY_PREVIOUS_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListViewAnimatorWidget(
-                placeHolder: Center(child: Text((LocalKeys.CLOSED_ORDERS_PLACEHOLDER).tr() , textAlign: TextAlign.center,),),
-                isScrollEnabled: false,
-                listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCompletedOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text((LocalKeys.MY_PREVIOUS_ORDERS).tr() , style: TextStyle(fontWeight: FontWeight.bold),),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListViewAnimatorWidget(
+                  placeHolder: Center(child: Text((LocalKeys.CLOSED_ORDERS_PLACEHOLDER).tr() , textAlign: TextAlign.center,),),
+                  isScrollEnabled: false,
+                  listChildrenWidgets: BlocProvider.of<UserBloc>(context).userCompletedOrders.map((OrderModel order) => OrderListingCardTile(orderModel: order,)).toList(),
+                ),
               ),
-            ),
 
-          ],
+            ],
+          ),
         ),
       ),
     );

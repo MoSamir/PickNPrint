@@ -100,30 +100,28 @@ class _OrderCreationScreenState extends State<OrderCreationScreen> {
             inAsyncCall: state is OrderCreationLoadingState,
             child: BaseScreen(
               hasDrawer: true,
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(height: 5,),
-                        Text((LocalKeys.ORDER_DETAILS).tr(), style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ), textAlign: TextAlign.start,),
-                        Text((LocalKeys.PLEASE_CHECK_ORDER).tr(), style: TextStyle(
-                          color: AppColors.lightBlue,
-                          fontSize: 20,
-                        ), textAlign: TextAlign.start,),
-                        SizedBox(height: 5,),
-                        Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
-                        SizedBox(height: 5,),
-                       getStatisticsWidget(),
-                        SizedBox(height: 25,),
-                      ],
-                    ),
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(height: 5,),
+                      Text((LocalKeys.ORDER_DETAILS).tr(), style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ), textAlign: TextAlign.start,),
+                      Text((LocalKeys.PLEASE_CHECK_ORDER).tr(), style: TextStyle(
+                        color: AppColors.lightBlue,
+                        fontSize: 20,
+                      ), textAlign: TextAlign.start,),
+                      SizedBox(height: 5,),
+                      Image(image: AssetImage(Resources.LOGO_BANNER_IMG), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * .25, fit: BoxFit.cover,),
+                      SizedBox(height: 5,),
+                     getStatisticsWidget(),
+                      SizedBox(height: 25,),
+                    ],
                   ),
                 ),
               ),

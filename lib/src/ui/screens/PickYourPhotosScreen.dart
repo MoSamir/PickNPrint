@@ -472,141 +472,38 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     int currentFrames = Math.max(3, userOrder.userImages.length);
 
 
+
+
+
+
     for (int i = 0; i < currentFrames; i++) {
+      Widget child = userOrder.userImages[i] == null || userOrder.userImages[i].isEmpty
+          ? Center(
+        child: Icon(
+          Icons.photo,
+          color: AppColors.lightBlue,
+          size: 35,
+        ),
+      )
+          : getImageFromPath(userOrder.userImages[i],);
+
       pictures.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-          child: GestureDetector(
-            onTap: () async{
-              if (userOrder.userImages[i] != null &&
-                  userOrder.userImages[i].length > 0) {
-                _openEditImage(userOrder.originalImages[i], i);
-              } else {
-                List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SelectImageSourceScreen()));
-                try{
-                  userOrder.userImages[i] = imagePath[0] ?? '';
-                  userOrder.originalImages[i] = imagePath[1] ?? '';
-                  cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
-                  setState(() {});
-                  double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
-                  _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
-                } catch(exception){}
-              }
-              return;
-            },
-            child: Stack(
-              children: [
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  height: (frameDimension),
-                  width: (frameDimension),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: userOrder.isWhiteFrame
-                            ? AppColors.black
-                            : AppColors.addressCardBg,
-                        spreadRadius: .4,
-                        blurRadius: 5,
-                      )
-                    ],
-                    color: AppColors.white.withOpacity(.95),
-                    border: Border.all(
-                      color: userOrder.isWhiteFrame
-                          ? AppColors.white
-                          : AppColors.black,
-                      width: 8,
-                    ),
-                  ),
-                  child: AnimatedContainer(
-                    padding: userOrder.frameWithPath
-                        ? EdgeInsets.all(16)
-                        : EdgeInsets.all(0),
-                    // margin: EdgeInsets.all(8),
-                    duration: Duration(milliseconds: 200),
-                    child: userOrder.userImages[i] == null ||
-                        userOrder.userImages[i].isEmpty
-                        ? Center(
-                      child: Icon(
-                        Icons.photo,
-                        color: AppColors.lightBlue,
-                        size: 35,
-                      ),
-                    )
-                        : getImageFromPath(userOrder.userImages[i]),
-                  ),
-                ),
-                Visibility(
-                  child: Positioned.directional(
-                    textDirection: Constants.appLocale == "en"
-                        ? TextDirection.ltr
-                        : TextDirection.rtl,
-                    top: 6,
-                    start: 6,
-                    child: GestureDetector(
-                      onTap: () => deleteFrameAt(i),
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: AppColors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.clear,
-                            color: AppColors.white,
-                            size: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  visible: currentFrames > 3,
-                  replacement: Container(
-                    width: 0,
-                    height: 0,
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+            child: GestureDetector(
+              onTap: ()=> onSelectImagePressed(i),
+              child: getFrameDecoration( child , i > 3 ? (){
+                deleteFrameAt(i);
+              } : null ),
             ),
-          ),
-        ),
-      );
+          ),);
     }
     pictures.add(
       GestureDetector(
-        onTap: () {
-          _addExtraFrame();
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            height: (frameDimension),
-            width: (frameDimension),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: userOrder.isWhiteFrame
-                      ? AppColors.black
-                      : AppColors.addressCardBg,
-                  spreadRadius: .4,
-                  blurRadius: 5,
-                )
-              ],
-            ),
-            child: AnimatedContainer(
-              margin: EdgeInsets.all(8),
-              duration: Duration(milliseconds: 200),
-              child: Center(
-                child: Icon(Icons.add_circle_outline_rounded , color: AppColors.lightBlue, size: 35,),
-              ),
-            ),
-          ),
-        ),
+        onTap: () {_addExtraFrame();},
+        child: getFrameDecoration( Center(
+          child: Icon(Icons.add_circle_outline_rounded , color: AppColors.lightBlue, size: 35,),
+        ) , null ),
       ),
     );
     return ListView(
@@ -677,8 +574,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
             ),
           ));
       return;
-    } else if (errorMessageIfExist ==
-        (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
+    } else if (errorMessageIfExist == (LocalKeys.PROCEED_WITH_CURRENT_AMOUNT_WARNING).tr()) {
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -955,4 +851,92 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
     });
 
   }
+
+  void onSelectImagePressed(int i) async{
+    if (userOrder.userImages[i] != null &&
+        userOrder.userImages[i].length > 0) {
+      _openEditImage(userOrder.originalImages[i], i);
+    } else {
+      List<String> imagePath = await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => SelectImageSourceScreen()));
+      try{
+        userOrder.userImages[i] = imagePath[0] ?? '';
+        userOrder.originalImages[i] = imagePath[1] ?? '';
+        cacheImages(croppedVersion: imagePath[0],originalVersion: imagePath[1]);
+        setState(() {});
+        double animationIndex = (frameDimension * (userOrder.userImages.indexWhere((element) => element == '')));
+        _scrollController.animateTo(animationIndex, duration: Duration(seconds: 2), curve: Curves.decelerate);
+      } catch(exception){}
+    }
+    return;
+
+  }
+
+
+  Widget getFrameDecoration(Widget child ,Function deleteAction){
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+      child: Stack(
+        children: [
+          ClipRect(
+            child: AnimatedContainer(
+              width: frameDimension,
+              height: frameDimension,
+              alignment: Alignment.center,
+              padding: userOrder.frameWithPath
+                  ? EdgeInsets.all(28)
+                  : EdgeInsets.all(4),
+              duration: Duration(milliseconds: 200),
+              child: child,
+            ),
+          ),
+          Container(
+            width: frameDimension,
+            height: frameDimension,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(userOrder.isWhiteFrame ? Resources.WHITE_FRAME_IMG : Resources.BLACK_FRAME_IMG),
+              ),
+            ),
+
+          ),
+          Visibility(
+            visible: deleteAction != null,
+            child: Positioned.directional(
+              textDirection: Constants.appLocale == "en"
+                  ? TextDirection.ltr
+                  : TextDirection.rtl,
+              top: 6,
+              start: 6,
+              child: GestureDetector(
+                onTap: deleteAction,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: AppColors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.clear,
+                      color: AppColors.white,
+                      size: 15,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            replacement: Container(
+              width: 0,
+              height: 0,
+            ),
+          ),
+        ],
+      ),
+    );
+
+  }
+
+
 }

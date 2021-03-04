@@ -82,15 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * .5,
                           width: MediaQuery.of(context).size.width,
                           child: Stack(
                             children: <Widget>[
                               Container(
-                                height:MediaQuery.of(context).size.height * .5,
                                 width: MediaQuery.of(context).size.width,
                                 child: Image.asset(Resources.HOME_SCREEN_BANNER , fit: BoxFit.contain, alignment: Alignment.topCenter , height: MediaQuery.of(context).size.height * .4,),
                                 alignment: Alignment.topCenter,
+                                padding: EdgeInsets.only(bottom: 10),
                               ),
                               Positioned(
                                 bottom: 0,

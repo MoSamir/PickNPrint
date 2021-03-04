@@ -26,8 +26,9 @@ class Resources{
   static const String FAST_DELIVERY_SLIDER_ICON = "assets/images/fast_delivery_icon.png";
   static const String BLACK_FRAME_OPTION_ICON = "assets/images/black_frame_icon.png";
   static const String WHITE_FRAME_OPTION_ICON = "assets/images/white_frame_icon.png";
-  static const String TESTIMONIALS_FAME_ICON = "assets/images/white_frame.svg";
 
+  static const String WHITE_FRAME_IMG = "assets/images/white_frame.png";
+  static const String BLACK_FRAME_IMG = "assets/images/black_frame.png";
 
   static const String HOME_SCREEN_BANNER = "assets/images/home_banner_image.jpg";
 
