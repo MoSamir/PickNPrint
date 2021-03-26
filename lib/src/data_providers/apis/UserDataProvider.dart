@@ -4,6 +4,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/ApiParseKeys.dart';
 import 'package:picknprint/src/data_providers/apis/helpers/NetworkUtilities.dart';
 import 'package:picknprint/src/data_providers/models/AddressViewModel.dart';
+import 'package:picknprint/src/data_providers/models/ErrorViewModel.dart';
 import 'package:picknprint/src/data_providers/models/OrderModel.dart';
 import 'package:picknprint/src/data_providers/models/PackageModel.dart';
 import 'package:picknprint/src/data_providers/models/ResponseViewModel.dart';
@@ -216,27 +217,38 @@ class UserDataProvider{
   }
 
   static Future<ResponseViewModel<UserViewModel>> signInWithFacebook() async{
-    final facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email']);
-    final token = result.accessToken.token;
-    ResponseViewModel facebookGraphResponse = await NetworkUtilities.handleGetRequest(
-      parserFunction: (graphResponse){
-        return UserViewModel(
-          userName: graphResponse['name'],
-          userMail: graphResponse['email'],
-          userId: graphResponse['id'],
-          userProfileImage: graphResponse['picture']['data']['url'],
-          userToken: token,
-        );
-      },
-      methodURL: 'https://graph.facebook.com/v9.0/me?fields=name,first_name,last_name,email,picture&access_token=$token',
-    );
 
-    return ResponseViewModel<UserViewModel>(
-      errorViewModel: facebookGraphResponse.errorViewModel,
-      isSuccess: facebookGraphResponse.isSuccess,
-      responseData: facebookGraphResponse.responseData,
-    );
+    try{
+      final facebookLogin = FacebookLogin();
+      final result = await facebookLogin.logIn(['email']);
+      final token = result.accessToken.token;
+      ResponseViewModel facebookGraphResponse = await NetworkUtilities.handleGetRequest(
+        parserFunction: (graphResponse){
+          return UserViewModel(
+            userName: graphResponse['name'],
+            userMail: graphResponse['email'],
+            userId: graphResponse['id'],
+            userProfileImage: graphResponse['picture']['data']['url'],
+            userToken: token,
+          );
+        },
+        methodURL: 'https://graph.facebook.com/v9.0/me?fields=name,first_name,last_name,email,picture&access_token=$token',
+      );
+
+      return ResponseViewModel<UserViewModel>(
+        errorViewModel: facebookGraphResponse.errorViewModel,
+        isSuccess: facebookGraphResponse.isSuccess,
+        responseData: facebookGraphResponse.responseData,
+      );
+    } catch(_){
+      return ResponseViewModel<UserViewModel>(
+        errorViewModel: ErrorViewModel(errorCode: 401 , errorMessage: ''),
+        isSuccess: false,
+
+      );
+    }
+
+
 
   }
 

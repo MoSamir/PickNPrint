@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:picknprint/src/ui/screens/HomeScreen.dart';
 import 'package:picknprint/src/ui/widgets/LoadingWidget.dart';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -55,9 +56,20 @@ class _LoginScreenState extends State<LoginScreen> {
             progressIndicator: LoadingWidget(),
             inAsyncCall: state is AuthenticationLoading,
             child: BaseScreen(
+
               hasDrawer: false,
               hasAppbar: true,
               customAppbar: PickNPrintAppbar(
+                leadAction: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: (){
+                    if(Navigator.canPop(context)){
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> HomeScreen()));
+                    }
+                  },
+                ),
                 title: (LocalKeys.SIGN_IN).tr(),
                 actions: [],
                 centerTitle: true,

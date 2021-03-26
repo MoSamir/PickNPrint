@@ -1,5 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -28,17 +28,15 @@ ApplicationDataBloc appBloc = ApplicationDataBloc(ApplicationDataLoadingState())
 AuthenticationBloc authenticationBloc = AuthenticationBloc(AuthenticationInitiated());
 UserBloc userBloc ;
 
-Future<dynamic> onForegroundMessage(RemoteMessage message) {
-  print("Hello World I received Message => ${message.toString()}");
-  print("*******************************************************");
-
-  Firebase.initializeApp().then((value){
-    if(userBloc != null){
-      userBloc.add(LoadUserOrders());
-    }
-  });
-  return null;
-}
+//Future<dynamic> onForegroundMessage(RemoteMessage message) {
+//
+//  Firebase.initializeApp().then((value){
+//    if(userBloc != null){
+//      userBloc.add(LoadUserOrders());
+//    }
+//  });
+//  return null;
+//}
 
 
 void main() async{
@@ -53,8 +51,8 @@ void main() async{
     statusBarBrightness: Brightness.dark,
     statusBarIconBrightness: Brightness.light
   ));
-  await Firebase.initializeApp();
-  FireBaseHelper.initFireBaseMessaging(omMessageReceived: onForegroundMessage);
+//  await Firebase.initializeApp();
+//  FireBaseHelper.initFireBaseMessaging(omMessageReceived: onForegroundMessage);
   runApp(EasyLocalization(
           supportedLocales: [Locale('en'),  /* Locale('ar') */ ],
           path: 'assets/locales',

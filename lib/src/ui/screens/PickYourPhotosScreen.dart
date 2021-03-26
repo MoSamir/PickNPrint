@@ -489,7 +489,7 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
       pictures.add(
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
             child: GestureDetector(
               onTap: ()=> onSelectImagePressed(i),
               child: getFrameDecoration( child , i > 3 ? (){
@@ -652,6 +652,8 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
 
   Widget getImageFromPath(String userImage) {
 
+    double framePadding = userOrder.isWhiteFrame ? 25 : 16 ;
+
     if(userImage.lastIndexOf("https://cdn.filestackcontent.com") > 0){
       userImage = userImage.replaceFirst("https://cdn.filestackcontent.com", "");
     }
@@ -661,11 +663,16 @@ class _PickYourPhotosScreenState extends State<PickYourPhotosScreen> {
       return Image.network(
         userImage.replaceFirst('/', ''),
         fit: BoxFit.fill,
+        width: frameDimension -  framePadding,
+        height: frameDimension - framePadding,
       );
     } else {
       return Image.file(
         File(userImage),
         fit: BoxFit.fill,
+        width: frameDimension - framePadding,
+        height: frameDimension - framePadding,
+
       );
     }
   }
